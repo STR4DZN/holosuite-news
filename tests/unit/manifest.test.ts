@@ -11,6 +11,6 @@ describe("Foundry module manifest", () => {
   });
 
   it("requires the verified HoloSuite Core contract", () => {
-    expect(manifest.relationships.requires).toContainEqual({ id: "holosuite-core", type: "module", compatibility: { minimum: "1.0.12" } });
+    expect(manifest.relationships.requires).toContainEqual({ id: "holosuite-core", type: "module" });
   });
 });

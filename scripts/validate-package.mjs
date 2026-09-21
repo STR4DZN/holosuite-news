@@ -11,7 +11,7 @@ const failures = [];
 if (manifest.id !== "holosuite-news") failures.push("module id must be holosuite-news");
 if (manifest.version !== packageJson.version) failures.push("module.json and package.json versions differ");
 if (manifest.compatibility?.minimum !== "13" || manifest.compatibility?.verified !== "13") failures.push("Foundry compatibility must target v13");
-if (manifest.relationships?.requires?.find((value) => value.id === "holosuite-core")?.compatibility?.minimum !== "1.0.12") failures.push("HoloSuite Core 1.0.12 requirement is missing");
+if (!manifest.relationships?.requires?.some((value) => value.id === "holosuite-core")) failures.push("HoloSuite Core requirement is missing");
 if (manifest.socket !== true) failures.push("module socket must be enabled");
 
 const required = [

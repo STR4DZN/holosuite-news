@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-09-20
+
+- corrige a ativação no Foundry quando uma instalação funcional do HoloSuite Core não satisfaz a restrição de versão declarada pelo HoloNews;
+- mantém o HoloSuite Core como dependência obrigatória pelo ID canônico `holosuite-core`.
+
 ## 1.0.0 — 2026-09-20
 
 - implementa Reader e Mesa editorial separados por função;

@@ -14,14 +14,14 @@ Esta árvore implementa a versão 1.0.0 e possui validação local de tipos, lin
 ## Requisitos
 
 - Foundry Virtual Tabletop v13;
-- HoloSuite Core 1.0.12 ou superior;
+- HoloSuite Core instalado e ativo;
 - um usuário GM para criar e publicar conteúdo.
 
 HoloNews não altera o DOM nem o código do HoloSuite Core. Ele usa apenas o contrato público `registerApp` e o hook `holosuite-core.apiReady`.
 
 ## Instalação
 
-1. Instale e ative HoloSuite Core 1.0.12 ou superior.
+1. Instale e ative o HoloSuite Core.
 2. Extraia o ZIP instalável em `Data/modules/holosuite-news`, preservando `module.json` na raiz dessa pasta.
 3. Ative **HoloNews** na configuração de módulos do mundo.
 4. Entre no mundo com um GM e aguarde a preparação das projeções publicadas.
