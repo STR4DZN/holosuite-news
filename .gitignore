@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+test-results/
+playwright-report/
+.release/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.tfstate
+*.tfvars
+.npmrc
+.pypirc

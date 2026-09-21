@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "platform": "web",
+  "mode": "operate",
+  "direction": "transmission-broadsheet",
+  "surfaces": ["reader", "editorial-manager"],
+  "tokens": {
+    "displayFont": "Newsreader",
+    "uiFont": "Space Grotesk",
+    "readerMeasure": "70ch",
+    "controlMinHeight": "38px"
+  }
+}

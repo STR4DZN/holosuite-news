@@ -1,0 +1,25 @@
+<form class="hsn-editor-form">
+  <header><h1>{{#if isNew}}Nova publicação{{else}}Editar publicação{{/if}}</h1><p>Identidade, tema e regras de acesso do jornal.</p></header>
+  <div class="hsn-form-grid">
+    <label>Nome<input name="name" required maxlength="300" value="{{publication.name}}"></label>
+    <label>Nome curto<input name="shortName" maxlength="20" value="{{publication.shortName}}"></label>
+    <label class="hsn-span-2">Descrição<textarea name="description" rows="3">{{publication.description}}</textarea></label>
+    <label>Logo<input name="logo" value="{{publication.logo}}"></label>
+    <button type="button" data-hsn-editor-action="file" data-target="logo"><i class="fa-solid fa-folder-open"></i> Arquivos</button>
+    <label>Ícone Font Awesome<input name="icon" value="{{publication.icon}}"></label>
+    <label>Tema<select name="themeId">{{#each themes}}<option value="{{this}}" {{hsnSelected this ../publication.themeId}}>{{this}}</option>{{/each}}</select></label>
+    <label>Layout padrão<select name="defaultIssueLayout"><option value="frontpage-a" {{hsnSelected publication.defaultIssueLayout "frontpage-a"}}>Capa editorial</option><option value="frontpage-modern" {{hsnSelected publication.defaultIssueLayout "frontpage-modern"}}>Capa moderna</option><option value="two-column" {{hsnSelected publication.defaultIssueLayout "two-column"}}>Duas colunas</option><option value="three-column" {{hsnSelected publication.defaultIssueLayout "three-column"}}>Três colunas</option></select></label>
+    <label>Ordem<input name="sort" type="number" step="1" value="{{publication.sort}}"></label>
+    <label>Cor principal<input name="primaryColor" type="color" value="{{publication.primaryColor}}"></label>
+    <label>Cor secundária<input name="secondaryColor" type="color" value="{{publication.secondaryColor}}"></label>
+    <label>Slogan<input name="slogan" value="{{publication.slogan}}"></label>
+    <label>Editor fictício<input name="editorName" value="{{publication.editorName}}"></label>
+    <label>Localização<input name="location" value="{{publication.location}}"></label>
+    <label>Preço in-world<input name="price" value="{{publication.price}}"></label>
+    <label>Periodicidade<input name="periodicity" value="{{publication.periodicity}}"></label>
+    <label>Visibilidade<select name="visibilityMode"><option value="all" {{hsnSelected publication.visibility.mode "all"}}>Todos</option><option value="gm-only" {{hsnSelected publication.visibility.mode "gm-only"}}>Somente GM</option><option value="specific-users" {{hsnSelected publication.visibility.mode "specific-users"}}>Usuários específicos</option><option value="exclude-users" {{hsnSelected publication.visibility.mode "exclude-users"}}>Excluir usuários</option></select></label>
+    <fieldset class="hsn-span-2 hsn-user-picker"><legend>Jogadores desta regra</legend>{{#each visibilityUsers}}<label class="hsn-check"><input type="checkbox" name="visibilityUsers" value="{{id}}" {{#if selected}}checked{{/if}}> {{name}}</label>{{else}}<p>Nenhum jogador cadastrado no mundo.</p>{{/each}}</fieldset>
+    <label class="hsn-check"><input type="checkbox" name="enabled" {{hsnChecked publication.enabled}}> Publicação ativa</label>
+  </div>
+  <footer><button type="submit" class="hsn-primary">Salvar publicação</button></footer>
+</form>

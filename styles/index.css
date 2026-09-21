@@ -1,0 +1,8 @@
+@import "./tokens.css";
+@import "./shell.css";
+@import "./reader.css";
+@import "./editorial.css";
+@import "./responsive.css";
+
+@font-face { font-family: "Newsreader"; font-style: normal; font-display: swap; font-weight: 400; src: url("@fontsource/newsreader/files/newsreader-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Newsreader"; font-style: normal; font-display: swap; font-weight: 700; src: url("@fontsource/newsreader/files/newsreader-latin-700-normal.woff2") format("woff2"); }

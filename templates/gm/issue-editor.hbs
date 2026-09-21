@@ -1,0 +1,15 @@
+<form class="hsn-editor-form">
+  <header><h1>{{#if isNew}}Nova edição{{else}}Editar edição{{/if}}</h1><p>A edição permanece fora do Reader até a ação explícita de publicar.</p></header>
+  <div class="hsn-form-grid">
+    <label>Publicação<select name="publicationId" required>{{#each publications}}<option value="{{id}}" {{hsnSelected id ../issue.publicationId}}>{{name}}</option>{{/each}}</select></label>
+    <label>Número<input name="number" type="number" min="0" step="1" required value="{{issue.number}}"></label>
+    <label class="hsn-span-2">Título<input name="title" required maxlength="300" value="{{issue.title}}"></label>
+    <label>Data in-world<input name="inWorldDate" value="{{issue.inWorldDate}}"></label>
+    <label>Ordem<input name="sort" type="number" step="1" value="{{issue.sort}}"></label>
+    <label>Status editorial<select name="status"><option value="draft" {{hsnSelected issue.status "draft"}}>Rascunho</option><option value="scheduled" {{hsnSelected issue.status "scheduled"}}>Agendada</option><option value="hidden" {{hsnSelected issue.status "hidden"}}>Oculta</option>{{#if (hsnEq issue.status "published")}}<option value="published" selected>Publicada — use as ações de ciclo</option>{{/if}}{{#if (hsnEq issue.status "archived")}}<option value="archived" selected>Arquivada — use as ações de ciclo</option>{{/if}}</select></label>
+    <label>Publicar em (horário real)<input name="scheduledAt" type="datetime-local" value="{{scheduledLocal}}"></label>
+    <label>Visibilidade<select name="visibilityMode"><option value="all" {{hsnSelected issue.visibility.mode "all"}}>Todos</option><option value="gm-only" {{hsnSelected issue.visibility.mode "gm-only"}}>Somente GM</option><option value="specific-users" {{hsnSelected issue.visibility.mode "specific-users"}}>Usuários específicos</option><option value="exclude-users" {{hsnSelected issue.visibility.mode "exclude-users"}}>Excluir usuários</option></select></label>
+    <fieldset class="hsn-span-2 hsn-user-picker"><legend>Jogadores desta regra</legend>{{#each visibilityUsers}}<label class="hsn-check"><input type="checkbox" name="visibilityUsers" value="{{id}}" {{#if selected}}checked{{/if}}> {{name}}</label>{{else}}<p>Nenhum jogador cadastrado no mundo.</p>{{/each}}</fieldset>
+  </div>
+  <footer><button type="submit" class="hsn-primary">Salvar edição</button></footer>
+</form>

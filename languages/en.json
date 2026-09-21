@@ -1,0 +1,20 @@
+{
+  "HOLONEWS.Title": "HoloNews",
+  "HOLONEWS.Reader": "Reader",
+  "HOLONEWS.Editorial": "Editorial desk",
+  "HOLONEWS.Current": "Current",
+  "HOLONEWS.Archive": "Archive",
+  "HOLONEWS.Search": "Search news",
+  "HOLONEWS.Empty.Title": "No published issue",
+  "HOLONEWS.Empty.Body": "The network is online, but no news is available to you yet.",
+  "HOLONEWS.Action.Save": "Save",
+  "HOLONEWS.Action.Publish": "Publish",
+  "HOLONEWS.Action.Unpublish": "Unpublish",
+  "HOLONEWS.Action.Archive": "Archive",
+  "HOLONEWS.Action.Delete": "Delete",
+  "HOLONEWS.Status.Draft": "Draft",
+  "HOLONEWS.Status.Scheduled": "Scheduled",
+  "HOLONEWS.Status.Published": "Published",
+  "HOLONEWS.Status.Archived": "Archived",
+  "HOLONEWS.Status.Hidden": "Hidden"
+}

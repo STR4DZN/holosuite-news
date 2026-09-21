@@ -1,0 +1,27 @@
+:root { color: #e9f7ff; background: #020911; font-family: var(--hs-font-ui, "Rajdhani", "Orbitron", "Segoe UI", system-ui, sans-serif); }
+body { min-width: 320px; min-height: 100vh; margin: 0; background: radial-gradient(circle at 50% -10%, #123046 0, #06131f 34%, #020911 72%); }
+.preview-toolbar { position: sticky; z-index: 40; top: 0; display: flex; min-height: 64px; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid rgba(105, 232, 255, .24); padding: 9px clamp(12px, 4vw, 36px); background: rgba(2, 9, 17, .94); backdrop-filter: blur(16px); }
+.preview-toolbar > div:first-child { display: grid; }
+.preview-toolbar strong { color: #69e8ff; letter-spacing: .04em; }
+.preview-toolbar span { color: #91abba; font-size: .7rem; text-transform: uppercase; }
+.preview-controls { display: flex; align-items: center; gap: 7px; }
+.preview-controls button,
+.preview-controls select { min-height: 36px; border: 1px solid rgba(105, 232, 255, .24); border-radius: 8px; padding: 0 10px; background: #0b2232; color: #e9f7ff; }
+.preview-controls button.is-active { border-color: #69e8ff; color: #69e8ff; }
+.preview-controls label { display: flex; align-items: center; gap: 6px; color: #91abba; font-size: .72rem; }
+.preview-stage { display: grid; min-height: calc(100vh - 64px); place-items: start center; padding: clamp(12px, 3vw, 34px); }
+.preview-device { width: min(100%, 760px); height: min(840px, calc(100vh - 100px)); overflow: hidden; border: 1px solid rgba(105, 232, 255, .35); border-radius: 18px; box-shadow: 0 30px 90px rgba(0, 0, 0, .55); }
+.preview-device .window-content,
+.preview-editorial .window-content { height: 100%; }
+.preview-editorial { width: min(100%, 1240px); height: min(820px, calc(100vh - 100px)); overflow: hidden; border: 1px solid rgba(105, 232, 255, .35); border-radius: 14px; box-shadow: 0 30px 90px rgba(0, 0, 0, .55); }
+[data-preview-view][hidden], [hidden] { display: none !important; }
+[data-preview-view] { outline: none; }
+.preview-stats { margin-top: 22px; }
+@media (max-width: 680px) {
+  .preview-toolbar { position: static; align-items: stretch; flex-direction: column; }
+  .preview-controls { display: grid; grid-template-columns: 1fr 1fr; }
+  .preview-controls label { grid-column: 1 / -1; }
+  .preview-controls select { flex: 1; }
+  .preview-stage { min-height: 0; padding: 0; }
+  .preview-device, .preview-editorial { width: 100%; height: calc(100vh - 126px); border: 0; border-radius: 0; }
+}

@@ -1,0 +1,35 @@
+<form class="hsn-editor-form" data-autosave="{{#unless isNew}}true{{/unless}}">
+  <header><h1>{{#if isNew}}Nova matéria{{else}}Editar matéria{{/if}}</h1><p>O autosave protege rascunhos existentes; a publicação da edição continua explícita.</p></header>
+  <div class="hsn-form-grid">
+    <label>Edição<select name="issueId" required>{{#each issues}}<option value="{{id}}" {{hsnSelected id ../article.issueId}}>#{{number}} · {{title}}</option>{{/each}}</select></label>
+    <label>Ordem<input name="sort" type="number" min="0" step="1" value="{{article.sort}}"></label>
+    <label class="hsn-span-2">Título<input name="title" required maxlength="500" value="{{article.title}}"></label>
+    <label class="hsn-span-2">Subtítulo<input name="subtitle" maxlength="700" value="{{article.subtitle}}"></label>
+    <label>Linha fina<input name="kicker" value="{{article.kicker}}"></label>
+    <label>Status<select name="status"><option value="draft" {{hsnSelected article.status "draft"}}>Rascunho</option><option value="scheduled" {{hsnSelected article.status "scheduled"}}>Agendada</option><option value="published" {{hsnSelected article.status "published"}}>Publicada</option><option value="archived" {{hsnSelected article.status "archived"}}>Arquivada</option><option value="hidden" {{hsnSelected article.status "hidden"}}>Oculta</option></select></label>
+    <label>Autor<select name="authorId"><option value="">Texto livre</option>{{#each authors}}<option value="{{id}}" {{hsnSelected id ../article.authorId}}>{{name}}</option>{{/each}}</select></label>
+    <label>Autor livre<input name="author" value="{{article.author}}"></label>
+    <label>Cargo do autor<input name="authorTitle" value="{{article.authorTitle}}"></label>
+    <label>Categoria<select name="categoryId"><option value="">Texto livre</option>{{#each categories}}<option value="{{id}}" {{hsnSelected id ../article.categoryId}}>{{name}}</option>{{/each}}</select></label>
+    <label>Categoria livre<input name="category" value="{{article.category}}"></label>
+    <label>Tags<input name="tags" value="{{hsnJoin article.tags}}" placeholder="política, colônia"></label>
+    <label>Badge<input name="badge" value="{{article.badge}}" placeholder="URGENTE"></label>
+    <label>Data in-world<input name="inWorldDate" value="{{article.inWorldDate}}"></label>
+    <label>Hora in-world<input name="inWorldTime" value="{{article.inWorldTime}}"></label>
+    <label class="hsn-span-2">Visualizações públicas<input name="publicViews" type="number" min="0" step="1" value="{{article.publicViews}}"><span class="hsn-view-presets"><button type="button" data-hsn-editor-action="views-adjust" data-delta="-1000">−1.000</button><button type="button" data-hsn-editor-action="views-adjust" data-delta="-100">−100</button><button type="button" data-hsn-editor-action="views-adjust" data-delta="-10">−10</button><button type="button" data-hsn-editor-action="views-preset" data-value="0">0</button><button type="button" data-hsn-editor-action="views-adjust" data-delta="10">+10</button><button type="button" data-hsn-editor-action="views-adjust" data-delta="100">+100</button><button type="button" data-hsn-editor-action="views-adjust" data-delta="1000">+1.000</button><button type="button" data-hsn-editor-action="views-preset" data-value="18432">18.432</button><button type="button" data-hsn-editor-action="views-preset" data-value="1000000">1 mi</button></span></label>
+    <label>Imagem principal<input name="heroImage" value="{{article.heroImage}}"></label>
+    <button type="button" data-hsn-editor-action="file" data-target="heroImage"><i class="fa-solid fa-folder-open"></i> Arquivos</button>
+    <label class="hsn-span-2">Texto alternativo<input name="heroImageAlt" value="{{article.heroImageAlt}}"></label>
+    <label>Miniatura<input name="thumbnail" value="{{article.thumbnail}}"></label>
+    <button type="button" data-hsn-editor-action="file" data-target="thumbnail"><i class="fa-solid fa-folder-open"></i> Arquivos</button>
+    <div class="hsn-span-2 hsn-rich-editor"><span>Corpo da matéria</span>{{editor article.body target="body" button=false engine="prosemirror" collaborate=false editable=true}}</div>
+    <label class="hsn-span-2">Atualizações (JSON)<textarea name="updatesJson" rows="6" spellcheck="false">{{updatesJson}}</textarea><small>Array com os campos time, title e body.</small></label>
+    <label>Visibilidade<select name="visibilityMode"><option value="all" {{hsnSelected article.visibility.mode "all"}}>Todos</option><option value="gm-only" {{hsnSelected article.visibility.mode "gm-only"}}>Somente GM</option><option value="specific-users" {{hsnSelected article.visibility.mode "specific-users"}}>Usuários específicos</option><option value="exclude-users" {{hsnSelected article.visibility.mode "exclude-users"}}>Excluir usuários</option></select></label>
+    <fieldset class="hsn-span-2 hsn-user-picker"><legend>Jogadores desta regra</legend>{{#each visibilityUsers}}<label class="hsn-check"><input type="checkbox" name="visibilityUsers" value="{{id}}" {{#if selected}}checked{{/if}}> {{name}}</label>{{else}}<p>Nenhum jogador cadastrado no mundo.</p>{{/each}}</fieldset>
+    <label class="hsn-span-2">Matérias relacionadas<select name="relatedArticleIds" multiple>{{#each articles}}<option value="{{id}}" {{#if (hsnIncludes ../article.relatedArticleIds id)}}selected{{/if}}>{{title}}</option>{{/each}}</select></label>
+    <label class="hsn-span-2">Notas privadas do GM<textarea name="gmNotes" rows="4">{{article.gmNotes}}</textarea></label>
+    <label class="hsn-check"><input type="checkbox" name="featured" {{hsnChecked article.featured}}> Destaque</label>
+    <label class="hsn-check"><input type="checkbox" name="breaking" {{hsnChecked article.breaking}}> Breaking news</label>
+  </div>
+  <footer><button type="submit" class="hsn-primary">Salvar matéria</button></footer>
+</form>

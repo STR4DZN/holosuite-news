@@ -1,0 +1,33 @@
+:root {
+  --hsn-shell: var(--hs-surface-bg, #04111d);
+  --hsn-shell-panel: var(--hs-panel-bg, #071a29);
+  --hsn-shell-control: var(--hs-control-bg, #0b2232);
+  --hsn-shell-control-hover: var(--hs-control-bg-hover, #103147);
+  --hsn-cyan: var(--hs-cyan, #69e8ff);
+  --hsn-cyan-soft: rgba(105, 232, 255, 0.14);
+  --hsn-shell-line: var(--hs-line, rgba(105, 232, 255, 0.24));
+  --hsn-shell-text: var(--hs-text, #e9f7ff);
+  --hsn-shell-muted: var(--hs-muted, #91abba);
+  --hsn-paper: #eee8d8;
+  --hsn-paper-2: #e5deca;
+  --hsn-ink: #181713;
+  --hsn-muted: #625f55;
+  --hsn-rule: #28251f;
+  --hsn-signal: #8f1d1d;
+  --hsn-success: #2c8061;
+  --hsn-warning: #a66c12;
+  --hsn-danger: #c44747;
+  --hsn-ui-font: var(--hs-font-ui, "Rajdhani", "Orbitron", "Segoe UI", system-ui, sans-serif);
+  --hsn-news-font: "Newsreader", Georgia, serif;
+  --hsn-radius: 10px;
+  --hsn-control-height: 38px;
+  --hsn-fast: 170ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --hsn-panel-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.hsn-theme-modern { --hsn-paper: #f3f4f5; --hsn-paper-2: #e6e8ea; --hsn-ink: #101318; --hsn-muted: #5b616a; --hsn-rule: #1d252e; --hsn-signal: #275cc8; }
+.hsn-theme-tabloid { --hsn-paper: #f1e4cf; --hsn-paper-2: #e5cfad; --hsn-ink: #16100d; --hsn-muted: #6f5142; --hsn-rule: #2c1712; --hsn-signal: #c01920; --hsn-news-font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; }
+.hsn-theme-corporate { --hsn-paper: #f1f3f6; --hsn-paper-2: #dfe5ec; --hsn-ink: #122235; --hsn-muted: #536173; --hsn-rule: #173b5e; --hsn-signal: #0e6f8c; }
+.hsn-theme-military { --hsn-paper: #d9d6bf; --hsn-paper-2: #c9c5aa; --hsn-ink: #1c2118; --hsn-muted: #4d5745; --hsn-rule: #303c2a; --hsn-signal: #8a391c; }
+.hsn-theme-underground { --hsn-paper: #252525; --hsn-paper-2: #1d1d1d; --hsn-ink: #f0eadf; --hsn-muted: #bbb2a4; --hsn-rule: #ddd1c0; --hsn-signal: #ff5b4d; }
+.hsn-theme-terminal { --hsn-paper: #07140f; --hsn-paper-2: #0a1e16; --hsn-ink: #b6ffd0; --hsn-muted: #72bb8b; --hsn-rule: #43de79; --hsn-signal: #ffe078; --hsn-news-font: var(--hsn-ui-font); }

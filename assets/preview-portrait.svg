@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Retrato da correspondente</title>
+  <desc id="desc">Silhueta editorial abstrata de uma correspondente diante de uma janela estelar.</desc>
+  <rect width="600" height="900" fill="#13202a"/>
+  <path d="M80 90h440v720H80z" fill="#203943" stroke="#7ce2ed" stroke-width="6"/>
+  <circle cx="300" cy="315" r="110" fill="#c7d0c5"/>
+  <path d="M145 735c18-170 85-260 155-260s137 90 155 260" fill="#6d1f25"/>
+  <g fill="#d9faff"><circle cx="155" cy="175" r="5"/><circle cx="465" cy="235" r="7"/><circle cx="420" cy="130" r="4"/></g>
+  <text x="300" y="850" text-anchor="middle" fill="#e9f7ff" font-family="sans-serif" font-size="24" letter-spacing="5">E. VANCE // ORLA</text>
+</svg>
