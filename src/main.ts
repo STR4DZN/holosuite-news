@@ -14,7 +14,7 @@ import {
 let portal: PortalApp | undefined, manager: ManagerApp | undefined;
 let templatesReady: Promise<unknown>;
 function refresh(): void {
-  if (portal?.rendered) void portal.render({ force: true });
+  if (portal?.rendered) void portal.render({ force: false });
   manager?.refresh();
 }
 const store = new FoundryNewsStore();
@@ -38,7 +38,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.1.0",
+  version: "2.1.1",
   openReader: openPortal,
   openManager,
   openArticle: async (id: string) => {
@@ -114,7 +114,7 @@ for (const event of [
       doc.getFlag(MODULE_ID, "kind") === "article" &&
       portal?.rendered
     )
-      void portal.render({ force: true });
+      void portal.render({ force: false });
   });
 Hooks.on("updateSetting", (setting: any) => {
   if (setting.key === "core.compendiumConfiguration") store.invalidate();

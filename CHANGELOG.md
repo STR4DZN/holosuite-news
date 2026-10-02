@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.1.1 — Correções do criador no Foundry
+
+- Autosave não redesenha a lista do mestre enquanto um criador está aberto; a lista atualiza ao fechar a edição.
+- Atualizações automáticas não forçam a reabertura de janelas fechadas.
+- ProseMirror configurado como editor sempre ativo, sem colaboração, com altura explícita e layout flexível para exibir texto e formatação.
+- Cor, cursor e espaçamento do texto corrigidos no editor nativo em tema claro.
+- Eventos do formulário são removidos ao fechar/remontar; debounce e prévias assíncronas não acessam formulários destruídos.
+- 34 testes unitários e 18 testes de navegador, incluindo quatro regressões do adaptador/estrutura do editor Foundry.
+
 ## 2.1.0 — Motion editorial e acesso do mestre
 
 - Pesquisa de 14 referências de design/motion e documentação de escolhas.

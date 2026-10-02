@@ -62,10 +62,10 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
     return {};
   }
 
-  _onRender(context: unknown, options: unknown): void {
-    (
+  async _onRender(context: unknown, options: unknown): Promise<void> {
+    await (
       super._onRender as
-        ((context: unknown, options: unknown) => void) | undefined
+        ((context: unknown, options: unknown) => void | Promise<void>) | undefined
     )?.call(this, context, options);
     const root = this.root();
     if (root) {
@@ -90,7 +90,8 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
   }
 
   protected async rerender(): Promise<void> {
-    await (this as any).render({ force: true });
+    // Background updates must never reopen a window that closed while awaiting data.
+    await (this as any).render({ force: false });
   }
 
   protected report(error: unknown): void {

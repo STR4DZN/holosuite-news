@@ -24,6 +24,7 @@ export class CreatorApp extends HoloNewsApplication {
     item: NewsItem,
     private readonly newsroom: Newsroom,
     changed: () => void,
+    private readonly closed: () => void = () => {},
   ) {
     super({ id: `holonews-creator-${item.id}` });
     assertWriter();
@@ -67,14 +68,24 @@ export class CreatorApp extends HoloNewsApplication {
     assertWriter();
     const mount = root.querySelector("[data-rich-editor]");
     const Element = foundry?.applications?.elements?.HTMLProseMirrorElement;
-    if (mount && Element)
+    if (mount && Element && !mount.querySelector("prose-mirror"))
       mount.replaceChildren(
-        Element.create({ name: "body", value: this.session.item.draft.body }),
+        Element.create({
+          name: "body",
+          value: this.session.item.draft.body,
+          toggled: false,
+          collaborate: false,
+          compact: false,
+          height: 300,
+        }),
       );
     this.session.bind(root);
   }
   override async close(options: object = {}): Promise<void> {
-    if (await this.session.beforeClose()) await super.close(options);
+    if (await this.session.beforeClose()) {
+      await super.close(options);
+      this.closed();
+    }
   }
   async revokeAccess(): Promise<void> {
     const root = this.root();
@@ -129,12 +140,22 @@ export class ManagerApp extends HoloNewsApplication {
       await this.newsroom.get(id),
       this.newsroom,
       () => this.refresh(),
+      () => {
+        if (this.creators.get(id) === creator) this.creators.delete(id);
+        this.refresh();
+      },
     );
     this.creators.set(id, creator);
     await creator.render({ force: true });
   }
   refresh(): void {
-    if (this.rendered)
+    // Foundry raises re-rendered windows. Defer the list while any creator is open.
+    // The closed callback reloads the latest data without interrupting typing.
+    if (
+      this.rendered &&
+      game.user.isGM &&
+      ![...this.creators.values()].some((creator) => creator.rendered)
+    )
       void this.rerender().catch((error) => this.report(error));
   }
   protected override bind(root: HTMLElement): void {

@@ -52,6 +52,7 @@ export class EditorSession {
   private generation = 0;
   private previewGeneration = 0;
   private busy = false;
+  private listeners?: AbortController;
   constructor(
     public item: NewsItem,
     private readonly newsroom: Newsroom,
@@ -59,56 +60,68 @@ export class EditorSession {
     private readonly motion = new MotionScene(),
   ) {}
   bind(root: HTMLElement): void {
+    this.listeners?.abort();
+    this.listeners = new AbortController();
+    const options = { signal: this.listeners.signal };
     this.root = root;
     this.motion.mount(root, "creator");
     const form = this.form();
+    if (!form) return;
     const input = () => {
+      if (this.root !== root || options.signal.aborted) return;
       this.dirty = true;
       this.generation++;
       this.label("Alterações não salvas", "editing");
       this.schedule();
     };
-    form.addEventListener("input", input);
-    form.addEventListener("change", input);
-    form.addEventListener("submit", (event) => event.preventDefault());
+    form.addEventListener("input", input, options);
+    form.addEventListener("change", input, options);
+    form.addEventListener("submit", (event) => event.preventDefault(), options);
+    // ProseMirror emits save when its toolbar/keyboard save command is used.
+    form.querySelector('prose-mirror[name="body"]')?.addEventListener("save", input, options);
     root
       .querySelector("[data-save]")
       ?.addEventListener(
         "click",
         () => void this.flush().catch(this.ports.error),
+        options,
       );
     root
       .querySelector("[data-publish]")
       ?.addEventListener(
         "click",
         () => void this.publish().catch(this.ports.error),
+        options,
       );
     root
       .querySelector("[data-preview]")
       ?.addEventListener(
         "click",
         () => void this.updatePreview().catch(this.ports.error),
+        options,
       );
     root
       .querySelector("[data-unpublish]")
       ?.addEventListener(
         "click",
         () => void this.unpublish().catch(this.ports.error),
+        options,
       );
     root
       .querySelector("[data-pick]")
       ?.addEventListener(
         "click",
         () => void this.pick().catch(this.ports.error),
+        options,
       );
     form
       .querySelector('[name="audience"]')
-      ?.addEventListener("change", () => this.updateAudience());
+      ?.addEventListener("change", () => this.updateAudience(), options);
     this.updateAudience();
     void this.updatePreview().catch(this.ports.error);
   }
-  private form(): HTMLFormElement {
-    return this.root!.querySelector<HTMLFormElement>("form[data-editor]")!;
+  private form(): HTMLFormElement | null {
+    return this.root?.querySelector<HTMLFormElement>("form[data-editor]") ?? null;
   }
   private label(text: string, state = "saved"): void {
     const node = this.root?.querySelector("[data-save-state]");
@@ -120,12 +133,13 @@ export class EditorSession {
     }
   }
   private updateAudience(): void {
+    const form = this.form();
     const selected = this.root?.querySelector<HTMLElement>(
       "[data-user-selection]",
     );
     if (selected)
       selected.hidden =
-        new FormData(this.form()).get("audience") !== "selected";
+        form ? new FormData(form).get("audience") !== "selected" : true;
   }
   private schedule(): void {
     clearTimeout(this.timer);
@@ -138,11 +152,13 @@ export class EditorSession {
     }, 300);
   }
   async updatePreview(): Promise<void> {
+    const root = this.root, form = this.form();
+    if (!root || !form) return;
     const generation = ++this.previewGeneration,
-      draft = readForm(this.form(), this.item.id).draft;
+      draft = readForm(form, this.item.id).draft;
     const html = await this.ports.preview(await articleContext(draft));
     const target = this.root?.querySelector<HTMLElement>("[data-live-preview]");
-    if (target && generation === this.previewGeneration) {
+    if (target && this.root === root && generation === this.previewGeneration) {
       const changed = target.innerHTML !== html;
       target.innerHTML = html;
       if (changed) this.motion.pulsePreview(target);
@@ -151,9 +167,10 @@ export class EditorSession {
   flush(): Promise<void> {
     clearTimeout(this.timer);
     const action = this.chain.then(async () => {
-      if (!this.dirty) return;
+      const form = this.form();
+      if (!this.dirty || !form) return;
       const generation = this.generation,
-        values = readForm(this.form(), this.item.id);
+        values = readForm(form, this.item.id);
       this.label("Salvando rascunho…", "saving");
       try {
         this.item = await this.newsroom.save(
@@ -188,7 +205,7 @@ export class EditorSession {
         : "Publicar notícia";
   }
   private async operation(action: () => Promise<NewsItem>): Promise<void> {
-    if (this.busy) return;
+    if (this.busy || !this.form()) return;
     this.busy = true;
     const controls = this.root?.querySelectorAll<HTMLButtonElement>(
       "[data-publish], [data-unpublish], [data-save]",
@@ -238,10 +255,12 @@ export class EditorSession {
     this.label("Notícia retirada do portal", "unpublished");
   }
   private async pick(): Promise<void> {
+    const form = this.form();
+    if (!form) return;
     const input =
-      this.form().querySelector<HTMLInputElement>('[name="cover"]')!;
+      form.querySelector<HTMLInputElement>('[name="cover"]')!;
     const path = await this.ports.pickImage(input.value);
-    if (path !== null) {
+    if (path !== null && this.form() === form) {
       input.value = path;
       input.dispatchEvent(new Event("input", { bubbles: true }));
     }
@@ -264,6 +283,7 @@ export class EditorSession {
     }
   }
   dispose(): void {
+    this.listeners?.abort();
     clearTimeout(this.timer);
     clearTimeout(this.previewTimer);
     this.previewGeneration++;

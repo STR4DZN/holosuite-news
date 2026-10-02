@@ -18,3 +18,10 @@ Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir 
 
 12. Motion: conferir abertura, cartões, troca de categoria, capa/matéria, progresso de leitura, novas linhas e seções do criador. Alterar a preferência Reduzir animações com o editor aberto; não deve apagar valores nem remontar o formulário. Ocultar a aba e fechar/reabrir repetidamente; não deve acumular efeitos.
 13. Rebaixar a função do GM numa sessão de teste: as janelas administrativas precisam desaparecer imediatamente e novas chamadas de criar/publicar/exportar devem ser recusadas. Voltar a GM e reabrir normalmente.
+
+## Regressões do criador (2.1.1)
+
+- Deixe a lista de notícias aberta atrás do criador. Digite título, resumo e texto com pausas maiores que um segundo: o autosave deve concluir sem trazer a lista para frente ou tirar o foco do campo.
+- Confira texto, títulos, listas, negrito e cursor no campo Texto da notícia, além da prévia. Feche e reabra: o HTML do rascunho deve persistir.
+- Feche imediatamente depois de digitar; aguarde alguns segundos. Não deve aparecer erro de querySelector. Repita fechando a lista antes de fechar o criador: a lista não deve reabrir.
+- O teste automatizado do adaptador usa as classes reais do módulo com contratos simulados de ApplicationV2 e estrutura ProseMirror; ele não executa o engine licenciado do Foundry.

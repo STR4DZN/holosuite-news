@@ -20,12 +20,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-A release [v2.1.0](https://github.com/STR4DZN/holosuite-news/releases/tag/v2.1.0) inclui o manifesto, o ZIP instalável, o código e a prévia independente. HoloSuite Core precisa estar instalado e ativo.
+A release [v2.1.1](https://github.com/STR4DZN/holosuite-news/releases/tag/v2.1.1) inclui o manifesto, o ZIP instalável, o código e a prévia independente. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.1.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.1.1.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -68,7 +68,7 @@ Node 22+ e Python 3 são necessários para gerar os ZIPs. O runtime não depende
 
 ## Validação e limites
 
-32 testes de domínio/adaptador/integração e 14 testes de navegador passaram nesta entrega. TypeScript, lint, build e integridade dos ZIPs também foram verificados. JS de runtime: cerca de 40 kB; CSS: cerca de 24 kB, sem fontes ou bibliotecas de editor adicionais carregadas pelo módulo.
+34 testes de domínio/adaptador/integração e 18 testes de navegador passaram nesta entrega. TypeScript, lint, build e integridade dos ZIPs também foram verificados. JS de runtime: cerca de 40 kB; CSS: cerca de 24 kB, sem fontes ou bibliotecas de editor adicionais carregadas pelo módulo.
 
 A validação em um mundo real Foundry v13 + HoloSuite Core ainda precisa ser feita. O manifesto declara v13 como alvo mínimo/máximo e **não declara uma versão verificada**. Veja [roteiro de teste](docs/foundry-smoke-test.md), especialmente criação do compêndio, edição rica, permissão de usuários e recarregamento. Seleção de público segue as permissões nativas do Foundry; não constitui criptografia ou revogação de cópias já recebidas.
 

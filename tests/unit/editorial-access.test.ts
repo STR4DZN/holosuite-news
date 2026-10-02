@@ -14,6 +14,30 @@ function setup(gm = false) {
 }
 afterEach(() => vi.unstubAllGlobals());
 describe("Separação mestre/jogador", () => {
+  it("atualização do autosave espera os criadores fecharem e não reabre uma lista fechada", () => {
+    const {room} = setup(true);
+    const manager = new ManagerApp(room, () => {});
+    (manager as any).rendered = true;
+    const editor = {rendered: true};
+    (manager as any).creators.set("a", editor);
+    const render = vi.spyOn(manager as any, "render").mockResolvedValue(manager);
+    manager.refresh();
+    expect(render).not.toHaveBeenCalled();
+    editor.rendered = false;
+    manager.refresh();
+    expect(render).toHaveBeenCalledWith({force:false});
+    render.mockClear();
+    (manager as any).rendered = false;
+    manager.refresh();
+    expect(render).not.toHaveBeenCalled();
+  });
+  it("uma atualização pendente nunca usa force para reabrir a janela", async () => {
+    const {room} = setup(true);
+    const manager = new ManagerApp(room, () => {});
+    const render = vi.spyOn(manager as any, "render").mockResolvedValue(manager);
+    await (manager as any).rerender();
+    expect(render).toHaveBeenCalledExactlyOnceWith({force:false});
+  });
   it("recusa criar janelas administrativas antes de montar qualquer formulário", () => {
     const { room } = setup();
     expect(() => new ManagerApp(room, () => {})).toThrow("exclusivo");
