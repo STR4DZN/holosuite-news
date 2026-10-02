@@ -21,7 +21,10 @@ export interface HoloSuiteAdapter {
   openReader(): unknown;
 }
 
-const successfulAdapters = new WeakMap<object, HoloSuiteApiLike["registerApp"]>();
+const successfulAdapters = new WeakMap<
+  object,
+  HoloSuiteApiLike["registerApp"]
+>();
 
 export function registerWithHoloSuite(adapter: HoloSuiteAdapter): boolean {
   const api = adapter.getApi();
@@ -35,7 +38,8 @@ export function registerWithHoloSuite(adapter: HoloSuiteAdapter): boolean {
     playerVisible: true,
     description: "Jornal e rede de notícias do universo da campanha.",
     featureId: "holosuite-news",
-    open: () => adapter.currentUserIsGM() ? adapter.openManager() : adapter.openReader()
+    open: () =>
+      adapter.currentUserIsGM() ? adapter.openManager() : adapter.openReader(),
   });
   successfulAdapters.set(adapter, api.registerApp);
   return true;

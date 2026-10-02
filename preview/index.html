@@ -1,55 +1,40 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark">
-    <title>HoloNews — Preview funcional</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>HoloNews — Nova versão</title>
   </head>
   <body>
-    <header class="preview-toolbar" aria-label="Controles do preview">
-      <div><strong>HoloNews</strong><span>preview funcional</span></div>
-      <div class="preview-controls">
-        <button type="button" data-preview-mode="reader" class="is-active">Leitor</button>
-        <button type="button" data-preview-mode="editorial">Mesa editorial</button>
-        <label>Tema <select data-preview-theme><option value="classic">Clássico</option><option value="modern">Moderno</option><option value="corporate">Corporativo</option><option value="military">Militar</option><option value="underground">Clandestino</option><option value="tabloid">Tabloide</option><option value="terminal">Terminal</option></select></label>
+    <div class="demo-toolbar">
+      <div>
+        <strong>HoloNews <span>2.1</span></strong
+        ><small>Prévia navegável · dados de demonstração</small>
       </div>
-    </header>
-
-    <main class="preview-stage">
-      <section id="preview-reader" class="hsn-window preview-device" aria-label="Preview do leitor HoloNews">
-        <div class="window-content">
-          <section class="hsn-reader hsn-theme-classic" data-preview-reader>
-            <header class="hsn-device-bar"><div class="hsn-device-brand"><span aria-hidden="true">▣</span><span>HoloNews</span></div><div class="hsn-reader-history"><button type="button" data-preview-back aria-label="Voltar">←</button><button type="button" disabled aria-label="Avançar">→</button></div><span class="hsn-unread-total" aria-label="3 matérias não lidas">3</span></header>
-            <nav class="hsn-reader-nav" aria-label="Navegação do jornal"><button type="button" data-preview-route="home" class="is-active">⌂ <span>Atual</span></button><button type="button" data-preview-route="issue">▦ <span>Edição</span></button><button type="button" data-preview-route="archive">▤ <span>Arquivo</span></button></nav>
-            <nav class="hsn-publication-switcher" aria-label="Publicações disponíveis"><button type="button" class="is-active">UC · Union Chronicle</button><button type="button">OS · Orla Semanal</button><button type="button">BM · Boletim Militar</button></nav>
-            <main class="hsn-paper">
-              <section data-preview-view="home">
-                <header class="hsn-masthead"><div aria-hidden="true">◈</div><div><p class="hsn-publication-location">Estação orbital Novastan · 5016U</p><h1>Union Chronicle</h1><p class="hsn-slogan">A verdade atravessa o vazio</p></div><div class="hsn-issue-stamp"><strong>#42</strong><span>20/09/5016U</span></div></header>
-                <form class="hsn-search" role="search"><span aria-hidden="true">⌕</span><label class="sr-only" for="preview-search">Pesquisar notícias</label><input id="preview-search" type="search" placeholder="Pesquisar notícias..."><button type="submit">Buscar</button></form>
-                <article class="hsn-lead-story is-breaking"><span class="hsn-badge hsn-badge--breaking">Urgente</span><button type="button" class="hsn-story-link" data-preview-route="article"><h2>Colônia perde contato após uma transmissão que jamais deveria ter existido</h2><p class="hsn-deck">O último pacote de dados chegou fragmentado, onze minutos depois do silêncio oficial.</p><img src="../assets/preview-landscape.svg" alt="Estação orbital diante de um planeta, com a transmissão interrompida" class="hsn-hero-image"></button><div class="hsn-story-meta"><span>Por Eleanor Vance</span><span>1.000.000 visualizações</span><span class="hsn-read-state">Nova</span></div></article>
-                <section class="hsn-story-grid" aria-label="Outras notícias"><article class="hsn-story-card"><span class="hsn-badge">Exclusivo</span><button type="button" class="hsn-story-link" data-preview-route="article"><img src="../assets/preview-portrait.svg" alt="Retrato editorial da correspondente Eleanor Vance"><h3>Arquivo da correspondente revela três versões do mesmo desembarque</h3><p>Uma investigação longa o bastante para provar que títulos extensos continuam legíveis.</p></button><div class="hsn-story-meta"><span>Mistérios</span><span>18.432</span></div></article><article class="hsn-story-card"><button type="button" class="hsn-story-link" data-preview-route="article"><h3>Mercado da Orla reabre sem imagens oficiais</h3><p>O comércio volta a operar com restrições e nenhuma fotografia disponível.</p></button><div class="hsn-story-meta"><span>Economia</span><span>1 visualização</span></div></article></section>
-              </section>
-
-              <section data-preview-view="issue" hidden>
-                <header class="hsn-section-heading"><h2>Edição 42</h2><p>4 matérias em 3 páginas</p></header>
-                <div class="hsn-page-tabs" role="list"><button type="button" class="is-active">1. Capa</button><button type="button">2. Notícias</button><button type="button">3. Classificados</button></div>
-                <section class="hsn-print-page hsn-layout-frontpage-a" aria-label="Página 1: Capa"><article class="hsn-page-block hsn-block--headline hsn-span-3 hsn-emphasis-headline"><span class="hsn-badge hsn-badge--breaking">Urgente</span><button type="button" class="hsn-story-link" data-preview-route="article"><img src="../assets/preview-landscape.svg" alt="Estação orbital em silêncio"><h3>Colônia perde contato</h3><p>Sinais oficiais cessaram às 18:42.</p></button></article><article class="hsn-page-block hsn-block--quote hsn-span-1"><h3>Declaração</h3><div class="hsn-block-body">“Não recebemos uma falha. Recebemos uma despedida.”</div></article><article class="hsn-page-block hsn-block--classified hsn-span-2"><h3>Procura-se</h3><div class="hsn-block-body">Piloto certificado para rota orbital. Pagamento negociável.</div></article></section>
-                <header class="hsn-list-heading"><h3>Todas as notícias</h3></header><section class="hsn-list-view"><button type="button" class="hsn-list-story" data-preview-route="article"><span class="hsn-read-dot"></span><span><strong>Colônia perde contato</strong><small>Segurança · 1.000.000 visualizações</small></span><span>›</span></button><button type="button" class="hsn-list-story" data-preview-route="article"><span class="hsn-read-dot is-read"></span><span><strong>Mercado da Orla reabre</strong><small>Economia · 1 visualização</small></span><span>›</span></button></section>
-              </section>
-
-              <article class="hsn-article" data-preview-view="article" hidden><button type="button" class="hsn-back-link" data-preview-back>← Voltar</button><header><p class="hsn-article-publication">Union Chronicle</p><span class="hsn-badge hsn-badge--breaking">Atualização</span><h1>Colônia perde contato após uma transmissão impossível</h1><p class="hsn-deck">O Conselho nega qualquer operação na faixa de rádio registrada.</p><div class="hsn-byline"><span>Por <strong>Eleanor Vance</strong>, correspondente</span><span>20/09/5016U · 18:42</span></div></header><figure><img src="../assets/preview-landscape.svg" alt="Estação orbital diante de um planeta"><figcaption>Último quadro recebido antes da interrupção.</figcaption></figure><div class="hsn-article-body"><p>Às dezoito horas e quarenta e dois minutos, os repetidores da Orla registraram uma sequência que não corresponde a nenhum protocolo civil ou militar conhecido.</p><p>Documentos internos apontam que a estação continuou transmitindo por onze minutos. O conteúdo, no entanto, parece descrever acontecimentos ainda não ocorridos.</p><blockquote>O sinal não pede socorro. Ele avisa quem estiver ouvindo.</blockquote><h2>O que se sabe</h2><ul><li>três retransmissores confirmaram o pacote;</li><li>nenhuma nave declarou aproximação;</li><li>o Conselho bloqueou os registros originais.</li></ul></div><section class="hsn-article-update"><h2>Atualização — 19:17</h2><h3>Uma segunda estação respondeu</h3><p>A resposta chegou usando a mesma assinatura criptográfica.</p></section><footer class="hsn-article-footer"><span>1.000.000 visualizações</span><span>mistério · orla · transmissão</span></footer></article>
-
-              <section data-preview-view="archive" hidden><header class="hsn-section-heading"><h2>Arquivo</h2><p>Edições publicadas e arquivadas</p></header><ol class="hsn-archive-list"><li><button type="button" data-preview-route="issue"><span><strong>Edição #42</strong><small>20/09/5016U</small></span><span class="hsn-status">publicada</span></button></li><li><button type="button" data-preview-route="issue"><span><strong>Edição #41</strong><small>19/09/5016U</small></span><span class="hsn-status">arquivada</span></button></li></ol></section>
-            </main>
-          </section>
-        </div>
-      </section>
-
-      <section id="preview-editorial" class="hsn-window preview-editorial" aria-label="Preview da mesa editorial" hidden>
-        <div class="window-content"><section class="hsn-editorial"><header class="hsn-editorial-topbar"><div><span aria-hidden="true">▣</span><span>HoloNews</span><small>Mesa editorial</small></div><div class="hsn-topbar-actions"><button type="button">Preview como player</button><button type="button" class="hsn-primary">Criação rápida</button></div></header><div class="hsn-editorial-layout"><nav class="hsn-editorial-nav" aria-label="Seções editoriais"><button type="button" class="is-active">⌁ <span>Dashboard</span></button><button type="button">▦ <span>Publicações</span></button><button type="button">▤ <span>Edições</span></button><button type="button">≡ <span>Matérias</span></button><button type="button">▥ <span>Páginas</span></button><button type="button">◎ <span>Leituras reais</span></button></nav><main class="hsn-editorial-workspace"><header class="hsn-workspace-heading"><div><h1>Controle de publicação</h1><p>Crie, revise e publique sem expor dados administrativos aos jogadores.</p></div><span class="hsn-revision">Revisão 184</span></header><section class="hsn-current-strip"><div><span>Edição atual</span><strong>#42 · Sinal da Orla</strong></div><div><span>Visualizações narrativas</span><strong>1.018.433</strong></div><div><span>Jogadores ativos</span><strong>4</strong></div></section><section class="hsn-dashboard-columns"><div><h2>Fila editorial</h2><div class="hsn-activity-list"><button type="button"><span><strong>#43 Cerco de Meridian</strong><small>Agendada · 21/09/5016U</small></span><span class="hsn-status hsn-status--scheduled">agendada</span></button><button type="button"><span><strong>#42 Sinal da Orla</strong><small>20/09/5016U</small></span><span class="hsn-status hsn-status--published">publicada</span></button><button type="button"><span><strong>#41 Mercado em queda</strong><small>19/09/5016U</small></span><span class="hsn-status hsn-status--archived">arquivada</span></button></div></div><div><h2>Atividade recente</h2><ol class="hsn-audit-list"><li><span>PUBLISH_ISSUE</span><time>18:42</time></li><li><span>ARTICLE_OPENED · Jogador A</span><time>18:47</time></li><li><span>UPDATE_ARTICLE</span><time>19:17</time></li></ol></div></section><div class="hsn-table-wrap preview-stats"><table><thead><tr><th>Matéria</th><th>Views fictícias</th><th>Leituras reais</th></tr></thead><tbody><tr><td>Colônia perde contato</td><td>1.000.000</td><td>4 / 5</td></tr><tr><td>Mercado da Orla reabre</td><td>1</td><td>2 / 5</td></tr></tbody></table></div></main></div><footer class="hsn-editorial-footer"><span>Master data · GM only</span><div><button type="button">Exportar JSON</button><button type="button">Importar</button></div></footer></section></div>
+      <nav aria-label="Prévia">
+        <button data-mode="portal" class="is-active">Portal</button
+        ><button data-mode="manager" hidden>Criador do mestre</button
+        ><label
+          >Leitor<select id="demo-reader">
+            <option value="player">Jogador</option>
+            <option value="gm">Mestre</option>
+            <option value="iris">Íris</option>
+          </select></label
+        ><label class="demo-motion-preference"
+          ><input id="demo-reduce-motion" type="checkbox" />Reduzir
+          movimento</label
+        ><button data-reset hidden title="Restaurar dados de demonstração">
+          Reiniciar
+        </button>
+      </nav>
+    </div>
+    <main class="demo-stage">
+      <section class="hsn-window">
+        <div id="demo" class="window-content"></div>
       </section>
     </main>
+    <div id="demo-toast" role="status" aria-live="polite"></div>
     <script type="module" src="./preview.ts"></script>
   </body>
 </html>

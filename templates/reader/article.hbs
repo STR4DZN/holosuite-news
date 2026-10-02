@@ -1,0 +1,22 @@
+<article class="hn-article" data-article-id="{{id}}">
+  <header>
+    <div class="hn-eyebrow">{{#if urgent}}<span
+          class="hn-urgent"
+        >Urgente</span>{{/if}}<span>{{category}}</span></div>
+    <h1>{{#if title}}{{title}}{{else}}Sua próxima notícia começa aqui{{/if}}</h1>
+    {{#if summary}}<p class="hn-deck">{{summary}}</p>{{/if}}
+    <div class="hn-byline"><div>{{#if author}}Por
+          <strong>{{author}}</strong>{{else}}Redação{{/if}}{{#if date}}<span
+          >{{date}}</span>{{/if}}</div><span
+        class="hn-views"
+      >{{viewsLabel}}</span></div>
+  </header>
+  {{#if cover}}<figure><img
+        src="{{cover}}"
+        alt="{{coverAlt}}"
+        decoding="async"
+      /><figcaption>{{coverAlt}}</figcaption></figure>{{/if}}
+  <div class="hn-article-body">{{{bodyHtml}}}</div>
+  {{#if tags}}<footer class="hn-tags">{{#each tags}}<span
+        >{{this}}</span>{{/each}}</footer>{{/if}}
+</article>

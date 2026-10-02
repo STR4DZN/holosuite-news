@@ -1,6 +1,6 @@
 {
   "name": "holosuite-news",
-  "version": "1.0.1",
+  "version": "2.1.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,14 +8,15 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "playwright test",
+    "test:e2e": "npm run preview:build && playwright test",
     "lint": "oxlint src tests preview",
     "validate": "npm run typecheck && npm run lint && npm run test && npm run build && node scripts/validate-package.mjs",
-    "package": "npm run build && node scripts/package.mjs",
-    "release": "npm run validate && npm run test:e2e && node scripts/package.mjs"
+    "package": "npm run build && npm run preview:build && node scripts/package.mjs",
+    "release": "npm run validate && npm run test:e2e && npm run package",
+    "preview": "vite --host 127.0.0.1 --port 4173",
+    "preview:build": "node scripts/build-preview.mjs"
   },
   "devDependencies": {
-    "@fontsource/newsreader": "^5.2.8",
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.3.1",
     "handlebars": "^4.7.9",

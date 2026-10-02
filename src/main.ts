@@ -1,114 +1,133 @@
 import "../styles/index.css";
-
-import { createPublicApi, exposePublicApi } from "./api/public-api";
-import { HoloNewsApps } from "./apps/controller";
-import { MODULE_ID, SOCKET_NAME } from "./constants";
+import { MODULE_ID, TEMPLATE_ROOT } from "./constants";
 import { Newsroom } from "./core/newsroom";
-import type { ReaderIdentity } from "./domain/model";
-import { registerWithHoloSuite, type HoloSuiteAdapter } from "./integration/holosuite";
-import { FoundryAuthority } from "./permissions/authority";
-import { registerHandlebarsHelpers, registerSettings } from "./settings";
-import { installSocketHandlers, isPrimaryActiveGM } from "./socket/handlers";
-import { FoundryMasterStore } from "./storage/foundry-master-store";
-import { FoundryPublishedStore } from "./storage/foundry-published-store";
+import { FoundryNewsStore } from "./storage/foundry-store";
+import { assertWriter, primaryGM } from "./permissions/authority";
+import { ManagerApp } from "./apps/editorial-app";
+import { PortalApp } from "./apps/reader-app";
+import { registerSettings, registerHelpers } from "./settings";
+import {
+  registerWithHoloSuite,
+  type HoloSuiteAdapter,
+} from "./integration/holosuite";
 
-const master = new FoundryMasterStore();
-const published = new FoundryPublishedStore((revision) => {
-  game.socket?.emit?.(SOCKET_NAME, { type: "PUBLIC_STATE_UPDATED", revision });
-  Hooks.callAll?.(`${MODULE_ID}.projectionUpdated`, revision);
-});
-const authority = new FoundryAuthority();
-const listReaders = (): ReaderIdentity[] => [...(game.users ?? [])].map((user: any) => ({ id: String(user.id), name: String(user.name ?? ""), isGM: user.isGM === true }));
-const newsroom = new Newsroom({
-  master,
-  published,
-  authority,
-  listReaders,
-  onEvent: (action, result) => {
-    const hook = ({ CREATE_ISSUE: "newspaperIssueCreated", PUBLISH_ISSUE: "newspaperIssuePublished", ARCHIVE_ISSUE: "newspaperIssueArchived", CREATE_ARTICLE: "newspaperArticleCreated", ARTICLE_OPENED: "newspaperArticleRead" } as Record<string, string>)[action];
-    if (hook) Hooks.callAll?.(hook, result);
-    Hooks.callAll?.(`${MODULE_ID}.changed`, action, result);
-    const id = result && typeof result === "object" && "id" in result ? String((result as { id: unknown }).id) : undefined;
-    if (action === "PUBLISH_ISSUE") game.socket?.emit?.(SOCKET_NAME, { type: "ISSUE_PUBLISHED", issueId: id });
-    if (action === "UNPUBLISH_ISSUE") game.socket?.emit?.(SOCKET_NAME, { type: "ISSUE_UNPUBLISHED", issueId: id });
-  }
-});
-const apps = new HoloNewsApps(newsroom);
-const api = createPublicApi(newsroom, published, apps);
-apps.configureApi(api);
-
-const holoSuiteAdapter: HoloSuiteAdapter = {
-  getApi: () => game.modules?.get?.("holosuite-core")?.api,
-  currentUserIsGM: () => game.user?.isGM === true,
-  openManager: () => apps.openManager(),
-  openReader: () => apps.openReader({ view: "home" })
-};
-
-function registerCoreTile(): boolean {
-  try { return registerWithHoloSuite(holoSuiteAdapter); }
-  catch (error) { console.error(`${MODULE_ID} | HoloSuite registration failed.`, error); return false; }
+let portal: PortalApp | undefined, manager: ManagerApp | undefined;
+let templatesReady: Promise<unknown>;
+function refresh(): void {
+  if (portal?.rendered) void portal.render({ force: true });
+  manager?.refresh();
 }
-
-Hooks.on("holosuite-core.apiReady", registerCoreTile);
-
+const store = new FoundryNewsStore();
+const newsroom = new Newsroom(
+  store,
+  assertWriter,
+  () => foundry.utils.randomID(),
+  () => Hooks.callAll(`${MODULE_ID}.changed`),
+);
+async function openPortal(): Promise<PortalApp> {
+  portal ??= new PortalApp(newsroom);
+  await portal.render({ force: true });
+  return portal;
+}
+async function openManager(): Promise<ManagerApp> {
+  assertWriter();
+  manager ??= new ManagerApp(newsroom, () => {
+    void openPortal();
+  });
+  await manager.render({ force: true });
+  return manager;
+}
+const api = Object.freeze({
+  version: "2.1.0",
+  openReader: openPortal,
+  openManager,
+  openArticle: async (id: string) => {
+    const app = await openPortal();
+    await app.openArticle(id);
+    return app;
+  },
+  getArticles: () => newsroom.articles(game.user),
+  createArticle: async () => {
+    const app = await openManager(),
+      item = await newsroom.create();
+    await app.edit(item.id);
+    return item.id;
+  },
+  exportBackup: () => newsroom.backup(),
+});
+const adapter: HoloSuiteAdapter = {
+  getApi: () => game.modules.get("holosuite-core")?.api,
+  currentUserIsGM: () => game.user.isGM,
+  openManager: () => void openManager().catch(report),
+  openReader: () => void openPortal().catch(report),
+};
+function registerTile(): void {
+  try {
+    registerWithHoloSuite(adapter);
+  } catch (error) {
+    report(error);
+  }
+}
+function report(error: unknown): void {
+  console.error("HoloNews", error);
+  ui.notifications.error(
+    error instanceof Error ? error.message : String(error),
+  );
+}
 Hooks.once("init", () => {
   registerSettings();
-  registerHandlebarsHelpers();
-  exposePublicApi(api);
-  console.info(`${MODULE_ID} | Initialized.`);
+  registerHelpers();
+  templatesReady = loadTemplates([`${TEMPLATE_ROOT}/reader/article.hbs`]);
+  game.modules.get(MODULE_ID).api = api;
+  (globalThis as any).HoloNews = api;
 });
-
 Hooks.once("ready", async () => {
-  const socket = installSocketHandlers({
-    newsroom,
-    apps,
-    users: () => game.users ?? [],
-    currentUserId: () => String(game.user?.id ?? "")
-  });
-
-  try {
-    if (game.user?.isGM) {
-      await newsroom.getMasterState();
-      await newsroom.publishDueIssues();
-      await newsroom.rebuildProjections();
-      await socket.scanPendingReadSignals();
-    } else {
-      game.socket?.emit?.(SOCKET_NAME, { type: "REQUEST_PUBLIC_STATE" });
+  await templatesReady;
+  registerTile();
+  if (game.user.isGM && primaryGM()?.id === game.user.id) {
+    try {
+      await newsroom.recover();
+    } catch (error) {
+      report(error);
     }
-  } catch (error) {
-    console.error(`${MODULE_ID} | Ready sequence failed.`, error);
-    ui.notifications?.error?.("HoloNews não conseguiu preparar os dados. Consulte o console do Foundry.");
   }
-
-  registerCoreTile();
-  startScheduler();
-  Hooks.callAll?.(`${MODULE_ID}.ready`, api);
-  Hooks.callAll?.("newspaperReady", api);
+  Hooks.callAll(`${MODULE_ID}.ready`, api);
 });
-
-Hooks.on("createUser", () => { if (game.user?.isGM) void newsroom.rebuildProjections().catch(reportLifecycleError); });
-Hooks.on("deleteUser", () => { if (game.user?.isGM) void newsroom.rebuildProjections().catch(reportLifecycleError); });
-Hooks.on("hotReload", (data: Record<string, unknown>) => {
-  const packageData = data?.package && typeof data.package === "object" ? data.package as Record<string, unknown> : null;
-  const packageId = String(data?.packageId ?? packageData?.id ?? "");
-  if (!packageId || packageId === MODULE_ID || packageId === "holosuite-core") {
-    registerCoreTile();
-    apps.refreshReader();
-    apps.refreshManager();
+Hooks.on("holosuite-core.apiReady", registerTile);
+Hooks.on(`${MODULE_ID}.changed`, () => manager?.refresh());
+Hooks.on(`${MODULE_ID}.brandChanged`, refresh);
+Hooks.on(`${MODULE_ID}.motionChanged`, (reduced: boolean) => {
+  portal?.updateMotionPreference(reduced);
+  manager?.updateMotionPreference(reduced);
+});
+for (const event of [
+  "createJournalEntry",
+  "updateJournalEntry",
+  "deleteJournalEntry",
+])
+  Hooks.on(event, (doc: any, ...args: any[]) => {
+    const userId = args.at(-1);
+    if (doc.pack === "world.holonews-workspace" && userId !== game.user.id)
+      store.invalidate();
+    if (
+      !doc.pack &&
+      doc.getFlag(MODULE_ID, "kind") === "article" &&
+      portal?.rendered
+    )
+      void portal.render({ force: true });
+  });
+Hooks.on("updateSetting", (setting: any) => {
+  if (setting.key === "core.compendiumConfiguration") store.invalidate();
+});
+Hooks.on("updateUser", (user: any, changes: any) => {
+  if (user.id === game.user.id && "role" in changes && !game.user.isGM) {
+    const previous = manager;
+    manager = undefined;
+    void previous?.revokeAccess().catch(report);
+    store.invalidate();
   }
+  if ("active" in changes && game.user.isGM && primaryGM()?.id === game.user.id)
+    void newsroom.recover().catch(report);
+  if (user.id === game.user.id && ("role" in changes || "active" in changes))
+    refresh();
 });
-
-function reportLifecycleError(error: unknown): void {
-  console.error(`${MODULE_ID} | Could not rebuild player projections.`, error);
-  ui.notifications?.error?.("HoloNews não conseguiu atualizar as projeções dos jogadores.");
-}
-
-function startScheduler(): void {
-  const module = game.modules?.get?.(MODULE_ID) as any;
-  if (!module) return;
-  if (module._holonewsScheduleTimer) clearInterval(module._holonewsScheduleTimer);
-  module._holonewsScheduleTimer = setInterval(() => {
-    if (!isPrimaryActiveGM(game.users ?? [], String(game.user?.id ?? ""))) return;
-    void newsroom.publishDueIssues().catch(reportLifecycleError);
-  }, 60_000);
-}

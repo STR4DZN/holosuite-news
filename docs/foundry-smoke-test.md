@@ -1,76 +1,20 @@
-# Smoke test real no Foundry v13
+# Teste obrigatório em Foundry v13 + HoloSuite Core
 
-Este procedimento é o gate de host e multiplayer. Não substitua seus resultados por testes unitários, preview ou inspeção de ZIP.
+Use uma cópia de teste do mundo e sessões separadas de GM, jogador e jogador selecionado. A entrega não executou este roteiro em servidor Foundry licenciado.
 
-## Ambiente
+1. Instalar/ativar e confirmar o tile HoloNews no HoloSuite sem duplicação. Conferir abertura de portal para jogador e lista para GM.
+2. Criar notícia; confirmar compêndio `world.holonews-workspace`, permissões PLAYER/TRUSTED=NONE, ASSISTANT/GAMEMASTER=OWNER. Como jogador, tentar carregar o compêndio e o ID de um rascunho; o servidor precisa negar.
+3. Digitar no editor ProseMirror, formatar, inserir link de documento, escolher capa no File Picker e conferir prévia/legenda. Esperar autosave, fechar e reabrir; conteúdo precisa continuar salvo.
+4. Publicar para todos. Abrir como player; conferir corpo, views, data e imagem. Verificar flags do Journal público: nenhum notes, draft ou backup.
+5. Editar título/corpo/contador/visibilidade; esperar autosave. Player precisa continuar vendo a versão anterior. Publicar revisão e conferir atualização sem reabrir janela.
+6. Publicar para jogador selecionado. GM e selecionado podem ler; outro jogador não vê no portal e não tem OBSERVER no Journal. Trocar para GM-only e conferir remoção da permissão anterior.
+7. Retirar do portal, duplicar, excluir com confirmação. Fechar portal; uma alteração posterior não deve reabri-lo.
+8. Exportar/importar backup; importação cria rascunhos novos com notas. Simular erro de gravação pública; pending aparece e tentar sincronizar recupera o estado.
+9. Conectar segundo GM: erro deve indicar responsável. Abrir a mesma notícia em duas janelas do mesmo GM; a segunda gravação de revisão antiga precisa ser rejeitada. Desconectar responsável, conferir mudança de responsabilidade e recuperação.
+10. Mundo v1: clicar Trazer notícias antigas. Conferir backup integral, rascunhos/notes/views/autores/atualizações, execução repetida sem duplicatas e manutenção dos documentos antigos. Revisar público antes de publicar. Validar antes de remover documentos v1.
+11. Recarregar com GM offline: portal deve continuar lendo as publicadas. Conferir janela redimensionada, teclado, busca e preferência de redução de movimento.
 
-Registre antes do teste:
+Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir esse passo. Registre versão exata do Foundry/Core, navegador e erro do console.
 
-- versão exata do Foundry v13 e build;
-- sistema de jogo e versão;
-- HoloSuite Core e versão;
-- HoloNews e hash SHA-256 do ZIP;
-- navegador de cada cliente;
-- mundo novo ou cópia descartável usada no teste.
-
-Use pelo menos dois clientes simultâneos: um GM e um jogador sem privilégios. Para visibilidade específica, use também um segundo jogador.
-
-## Preparação
-
-1. Instale o ZIP runtime com `module.json` na raiz de `Data/modules/holosuite-news`.
-2. Ative HoloSuite Core e HoloNews.
-3. Abra o console do GM e dos jogadores; preserve logs desde o carregamento do mundo.
-4. Confirme que existe exatamente um mosaico HoloNews no HoloSuite.
-5. Confirme que não apareceu launcher concorrente em Scene Controls.
-
-## Fluxo vertical obrigatório
-
-1. Como GM, abra HoloNews e crie uma Publicação.
-2. Crie uma Edição e confirme que a Capa inicial foi criada.
-3. Crie uma Matéria com título, ProseMirror formatado, imagem, texto alternativo e `18.432` views.
-4. Faça preview como jogador e confirme ausência de notas, regras de visibilidade, audit log e controles de edição.
-5. Publique a Edição explicitamente.
-6. No cliente jogador, abra HoloSuite, HoloNews, a Capa e a Matéria.
-7. Confirme `18.432` visualizações e nenhum controle administrativo.
-8. Como GM, abra **Leituras reais** e confirme que o jogador correto foi registrado.
-
-## Segurança e permissões
-
-1. Crie um rascunho e confirme que nenhum jogador recebe título, ID, corpo ou bloco relacionado.
-2. Crie uma Matéria `specific-users` para Jogador A. Confirme que A vê e B não vê.
-3. Crie uma Matéria `exclude-users` excluindo A. Confirme que A não vê e B vê.
-4. Desative uma Publicação e confirme sua remoção das projeções.
-5. Pelo console do jogador, tente chamar `createPublication`, `publishIssue`, `importBackup` e `openManager`; confirme rejeição ou bloqueio antes de mutação.
-6. Inspecione os `JournalEntry` disponíveis ao jogador. O Master data não pode aparecer; apenas sua projeção deve ser legível.
-7. Envie mensagens de socket com `userId`, tipo desconhecido e campos extras; confirme que não há mutação.
-
-## Ciclo de vida e rede
-
-1. Publique, despublique e arquive uma Edição; verifique ambos os clientes a cada transição.
-2. Desconecte o GM, abra uma matéria como jogador e reconecte o GM; confirme processamento posterior do sinal pendente.
-3. Mantenha dois GMs ativos; confirme que uma leitura incrementa apenas uma vez.
-4. Crie e exclua um usuário; confirme reconstrução e remoção das projeções correspondentes.
-5. Recarregue o módulo/mundo; confirme registro HoloSuite sem duplicação e persistência de dados.
-6. Agende uma Edição para dois minutos no futuro; confirme publicação por um único GM primário.
-
-## UI e acessibilidade
-
-1. Teste Reader em 320×568, 360×800, 390×844 e 430×932.
-2. Teste Mesa editorial em 1366×768 e 1920×1080.
-3. Navegue somente com teclado; confirme foco visível, ordem lógica e retorno por Escape.
-4. Ative alto contraste, escala máxima de texto e redução de movimento.
-5. Teste os sete temas, títulos longos, matéria extensa, imagem vertical, horizontal e ausente.
-6. Confirme ausência de scroll horizontal da janela inteira; tabelas podem usar o contêiner dedicado.
-
-## Evidência mínima
-
-Preserve:
-
-- screenshots de Capa, Matéria, Mesa editorial e visibilidade específica;
-- console e network logs dos clientes;
-- vídeo curto ou trace do fluxo vertical;
-- lista dos documentos visíveis a cada função;
-- versão, ambiente, data, operador e resultado de cada caso;
-- falhas com passos reprodutíveis, resultado esperado e resultado observado.
-
-Classifique a entrega como validada em Foundry somente quando todos os casos obrigatórios passarem em um host real.
+12. Motion: conferir abertura, cartões, troca de categoria, capa/matéria, progresso de leitura, novas linhas e seções do criador. Alterar a preferência Reduzir animações com o editor aberto; não deve apagar valores nem remontar o formulário. Ocultar a aba e fechar/reabrir repetidamente; não deve acumular efeitos.
+13. Rebaixar a função do GM numa sessão de teste: as janelas administrativas precisam desaparecer imediatamente e novas chamadas de criar/publicar/exportar devem ser recusadas. Voltar a GM e reabrir normalmente.

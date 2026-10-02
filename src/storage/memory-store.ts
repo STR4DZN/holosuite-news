@@ -1,29 +1,38 @@
-import { HoloNewsError } from "../domain/errors";
-import { createEmptyState } from "../domain/factories";
-import type { MasterState, PublishedProjection, ReaderIdentity } from "../domain/model";
-import { buildPublishedProjection } from "../domain/projection";
-import type { MasterStore, PublishedStore } from "./contracts";
-import { sameMasterStateIgnoringRevision } from "./state-equality";
-
-export class MemoryMasterStore implements MasterStore {
-  private state: MasterState;
-  constructor(initial: MasterState = createEmptyState()) { this.state = structuredClone(initial); }
-  async load(): Promise<MasterState> { return structuredClone(this.state); }
-  async save(next: MasterState, expectedRevision: number): Promise<MasterState> {
-    if (this.state.revision !== expectedRevision) throw new HoloNewsError("NEWSPAPER_REVISION_CONFLICT", `Expected revision ${expectedRevision}, found ${this.state.revision}.`);
-    if (sameMasterStateIgnoringRevision(this.state, next)) return structuredClone(this.state);
-    this.state = structuredClone({ ...next, revision: expectedRevision + 1 });
-    return structuredClone(this.state);
+import type { Article, NewsItem } from "../domain/model";
+import type { NewsStore } from "./contracts";
+import { validateItem } from "../domain/validation";
+export class MemoryNewsStore implements NewsStore {
+  items = new Map<string, NewsItem>();
+  articles = new Map<string, Article>();
+  failSync = false;
+  syncCount = 0;
+  async list(): Promise<NewsItem[]> {
+    return structuredClone([...this.items.values()]);
   }
-}
-
-export class MemoryPublishedStore implements PublishedStore {
-  private projections = new Map<string, PublishedProjection>();
-  async rebuild(state: MasterState, readers: ReaderIdentity[]): Promise<void> {
-    const staged = new Map<string, PublishedProjection>();
-    for (const reader of readers) staged.set(reader.id, buildPublishedProjection(state, reader));
-    this.projections = staged;
+  async get(id: string): Promise<NewsItem | null> {
+    return structuredClone(this.items.get(id) ?? null);
   }
-  async read(userId: string): Promise<PublishedProjection | null> { return structuredClone(this.projections.get(userId) ?? null); }
-  async removeAll(): Promise<void> { this.projections.clear(); }
+  async save(item: NewsItem, expected: number): Promise<NewsItem> {
+    if ((this.items.get(item.id)?.revision ?? 0) !== expected)
+      throw new Error("Conflito de revisão.");
+    const next = validateItem({ ...item, revision: expected + 1 });
+    this.items.set(next.id, structuredClone(next));
+    return next;
+  }
+  async sync(item: NewsItem): Promise<void> {
+    this.syncCount++;
+    if (this.failSync) throw new Error("Falha de publicação.");
+    if (item.published)
+      this.articles.set(item.id, structuredClone(item.published));
+    else this.articles.delete(item.id);
+  }
+  async remove(id: string, expected: number): Promise<void> {
+    if (this.items.get(id)?.revision !== expected)
+      throw new Error("Conflito de revisão.");
+    this.articles.delete(id);
+    this.items.delete(id);
+  }
+  async publicArticles(): Promise<Article[]> {
+    return structuredClone([...this.articles.values()].reverse());
+  }
 }

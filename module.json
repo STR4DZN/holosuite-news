@@ -1,8 +1,8 @@
 {
   "id": "holosuite-news",
   "title": "HoloNews",
-  "description": "Jornal digital in-world com CMS editorial do GM e leitor seguro para jogadores, integrado ao HoloSuite Core.",
-  "version": "1.0.1",
+  "description": "Portal de notícias do RPG com criador do mestre, rascunhos separados e visualizações narrativas. Integrado ao HoloSuite Core.",
+  "version": "2.1.0",
   "authors": [
     {
       "name": "STR4DZN"
@@ -12,12 +12,9 @@
     }
   ],
   "url": "https://github.com/STR4DZN/holosuite-news",
-  "manifest": "https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json",
-  "download": "https://github.com/STR4DZN/holosuite-news/releases/download/v1.0.1/holosuite-news-v1.0.1.zip",
-  "readme": "https://raw.githubusercontent.com/STR4DZN/holosuite-news/main/README.md",
   "compatibility": {
     "minimum": "13",
-    "verified": "13"
+    "maximum": "13"
   },
   "esmodules": [
     "dist/main.js"
@@ -30,22 +27,20 @@
       "lang": "pt-BR",
       "name": "Português (Brasil)",
       "path": "dist/languages/pt-BR.json"
-    },
-    {
-      "lang": "en",
-      "name": "English",
-      "path": "dist/languages/en.json"
     }
   ],
   "relationships": {
     "requires": [
-        {
-          "id": "holosuite-core",
-          "type": "module"
-        }
+      {
+        "id": "holosuite-core",
+        "type": "module"
+      }
     ]
   },
-  "socket": true,
+  "socket": false,
   "packs": [],
-  "license": "All rights reserved"
+  "license": "All rights reserved",
+  "manifest": "https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json",
+  "download": "https://github.com/STR4DZN/holosuite-news/releases/download/v2.1.0/holosuite-news-v2.1.0.zip",
+  "changelog": "https://github.com/STR4DZN/holosuite-news/releases/tag/v2.1.0"
 }

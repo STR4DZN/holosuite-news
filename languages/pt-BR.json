@@ -1,20 +1,5 @@
 {
   "HOLONEWS.Title": "HoloNews",
-  "HOLONEWS.Reader": "Leitor",
-  "HOLONEWS.Editorial": "Mesa editorial",
-  "HOLONEWS.Current": "Atual",
-  "HOLONEWS.Archive": "Arquivo",
-  "HOLONEWS.Search": "Pesquisar notícias",
-  "HOLONEWS.Empty.Title": "Nenhuma edição publicada",
-  "HOLONEWS.Empty.Body": "A rede está ativa, mas ainda não há notícias disponíveis para você.",
-  "HOLONEWS.Action.Save": "Salvar",
-  "HOLONEWS.Action.Publish": "Publicar",
-  "HOLONEWS.Action.Unpublish": "Despublicar",
-  "HOLONEWS.Action.Archive": "Arquivar",
-  "HOLONEWS.Action.Delete": "Excluir",
-  "HOLONEWS.Status.Draft": "Rascunho",
-  "HOLONEWS.Status.Scheduled": "Agendada",
-  "HOLONEWS.Status.Published": "Publicada",
-  "HOLONEWS.Status.Archived": "Arquivada",
-  "HOLONEWS.Status.Hidden": "Oculta"
+  "HOLONEWS.Portal": "Portal",
+  "HOLONEWS.Creator": "Criador de notícias"
 }

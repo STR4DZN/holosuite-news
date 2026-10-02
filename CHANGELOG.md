@@ -1,17 +1,24 @@
 # Changelog
 
-## 1.0.1 — 2026-09-20
+## 2.1.0 — Motion editorial e acesso do mestre
 
-- corrige a ativação no Foundry quando uma instalação funcional do HoloSuite Core não satisfaz a restrição de versão declarada pelo HoloNews;
-- mantém o HoloSuite Core como dependência obrigatória pelo ID canônico `holosuite-core`.
+- Pesquisa de 14 referências de design/motion e documentação de escolhas.
+- Motion nativo nos portais do jogador e mestre, transição capa/matéria, entradas em sequência e microinterações.
+- Criador com seções animadas, prévia suave e estados de salvar/publicar.
+- Redução de movimento do sistema e do módulo em ambas as interfaces, com cancelamento e limpeza de efeitos.
+- Prévia com administração exclusiva da simulação Mestre; jogador vê apenas notícias.
+- Verificação de acesso ao construir/montar janelas e fechamento imediato ao perder papel de mestre.
+- 32 testes unitários e 14 testes de navegador.
 
-## 1.0.0 — 2026-09-20
+## 2.0.0 — Reformulação
 
-- implementa Reader e Mesa editorial separados por função;
-- adiciona armazenamento Master e projeções publicadas por usuário;
-- adiciona Publicações, Edições, Páginas, blocos, Matérias, autores, categorias e templates;
-- adiciona publicação, despublicação, arquivamento, agendamento e duplicação;
-- adiciona views narrativas, leituras reais privadas e estado local de leitura;
-- adiciona busca, arquivo, sete temas, responsividade e preferências de acessibilidade;
-- adiciona integração pública com HoloSuite Core 1.0.12;
-- adiciona backup/importação, migrações, audit log, API, testes e pacotes separados.
+- Notícias individuais substituem publicações, edições, páginas e blocos.
+- Portal editorial claro com identidade sci-fi civil, categorias, busca e paginação.
+- Criador com texto rico nativo, autosave de rascunho e prévia ao lado.
+- Revisão separada da notícia publicada, contador narrativo, público e notas privadas.
+- Dados por notícia, sem cópias completas por jogador ou sinais de leitura real.
+- Compêndio privado para rascunhos; publicação individual com recuperação de falhas.
+- Migração v1 preservada em backup e importada como rascunhos.
+- Prévia independente, empacotamento portátil e testes de fluxos completos.
+
+As versões 1.x e suas decisões permanecem no histórico Git.

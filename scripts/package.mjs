@@ -1,56 +1,50 @@
-import { createHash } from "node:crypto";
-import { cp, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
-import { tmpdir } from "node:os";
-import path from "node:path";
+import { mkdir, readFile, writeFile, stat } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
-
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const workspace = path.resolve(root, "..", "..");
-const output = path.join(workspace, "outputs");
-const staging = await mkdtemp(path.join(tmpdir(), "holosuite-news-"));
-const manifest = JSON.parse(await readFile(path.join(root, "module.json"), "utf8"));
-const version = manifest.version;
-
-if (path.basename(output).toLowerCase() !== "outputs" || !output.startsWith(workspace)) throw new Error(`Refusing unsafe output path: ${output}`);
-if (!staging.startsWith(path.resolve(tmpdir()))) throw new Error(`Refusing unsafe staging path: ${staging}`);
-
-await mkdir(path.join(staging, "runtime"), { recursive: true });
-await mkdir(path.join(staging, "source"), { recursive: true });
+const output = path.join(root, "artifacts");
 await mkdir(output, { recursive: true });
-
-for (const name of ["module.json", "README.md", "CHANGELOG.md", "LICENSE"]) await cp(path.join(root, name), path.join(staging, "runtime", name));
-await cp(path.join(root, "dist"), path.join(staging, "runtime", "dist"), { recursive: true });
-
-const excluded = new Set(["node_modules", ".release", ".git", "coverage", "test-results", "playwright-report"]);
-await cp(root, path.join(staging, "source"), {
-  recursive: true,
-  filter: (source) => {
-    const relative = path.relative(root, source);
-    if (!relative) return true;
-    return !relative.split(path.sep).some((part) => excluded.has(part));
-  }
-});
-
-const runtimeZip = path.join(output, `holosuite-news-v${version}.zip`);
-const sourceZip = path.join(output, `holosuite-news-v${version}-source.zip`);
-for (const target of [runtimeZip, sourceZip]) await rm(target, { force: true });
-createZip(path.join(staging, "runtime"), runtimeZip);
-createZip(path.join(staging, "source"), sourceZip);
-
-const artifacts = [];
-for (const target of [runtimeZip, sourceZip]) {
-  const bytes = await readFile(target);
-  const sha256 = createHash("sha256").update(bytes).digest("hex");
-  await writeFile(`${target}.sha256`, `${sha256}  ${path.basename(target)}\n`, "utf8");
-  artifacts.push({ file: path.basename(target), bytes: (await stat(target)).size, sha256 });
-}
-
-await writeFile(path.join(output, `holosuite-news-v${version}-release.json`), `${JSON.stringify({ module: manifest.id, version, foundry: manifest.compatibility, requires: manifest.relationships.requires, artifacts, evidence: { unitAndStatic: "validated locally", browserPreview: "run separately", foundryRuntime: "requires external smoke procedure" } }, null, 2)}\n`, "utf8");
-await rm(staging, { recursive: true, force: true });
-console.log(JSON.stringify({ output, artifacts }, null, 2));
-
-function createZip(source, target) {
-  const result = spawnSync("tar.exe", ["-a", "-cf", target, "-C", source, "."], { stdio: "inherit" });
-  if (result.status !== 0) throw new Error(`Could not create ${target}`);
+const { version } = JSON.parse(
+  await readFile(path.join(root, "module.json"), "utf8"),
+);
+const result = spawnSync(
+  "python3",
+  [
+    "-c",
+    `
+from pathlib import Path
+from zipfile import ZipFile, ZIP_DEFLATED
+import sys,subprocess
+root=Path(sys.argv[1]); out=Path(sys.argv[2]); version=sys.argv[3]
+with ZipFile(out/f'holosuite-news-v{version}.zip','w',ZIP_DEFLATED) as z:
+ for name in ['module.json','README.md','CHANGELOG.md','LICENSE','dist','docs/foundry-smoke-test.md','docs/security-review.md','docs/motion-research.md']:
+  p=root/name
+  for f in ([p] if p.is_file() else sorted(p.rglob('*'))):
+   if f.is_file() and not f.name.endswith('.map'): z.write(f,f.relative_to(root))
+with ZipFile(out/f'holosuite-news-v{version}-source.zip','w',ZIP_DEFLATED) as z:
+ excluded={'node_modules','.git','artifacts','test-results','playwright-report','coverage','preview-dist','dist'}
+ names=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard','-z'],cwd=root).decode().split(chr(0))
+ for f in sorted({root/name for name in names if name}):
+  if f.is_file() and not any(x in excluded for x in f.relative_to(root).parts): z.write(f,f.relative_to(root))
+ z.write(root/'preview-dist/HoloNews-Preview.html','HoloNews-Preview.html')
+`,
+    root,
+    output,
+    version,
+  ],
+  { stdio: "inherit" },
+);
+if (result.status !== 0) throw new Error("Falha ao gerar ZIPs");
+for (const name of [
+  `holosuite-news-v${version}.zip`,
+  `holosuite-news-v${version}-source.zip`,
+]) {
+  const bytes = await readFile(path.join(output, name));
+  const sha = createHash("sha256").update(bytes).digest("hex");
+  await writeFile(path.join(output, `${name}.sha256`), `${sha}  ${name}\n`);
+  console.log(
+    `${name}: ${(await stat(path.join(output, name))).size} bytes · ${sha}`,
+  );
 }

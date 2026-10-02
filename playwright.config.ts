@@ -8,12 +8,24 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:4173",
     trace: "retain-on-failure",
-    screenshot: "only-on-failure"
+    screenshot: "only-on-failure",
+    launchOptions: process.env.HN_BROWSER_PATH
+      ? {
+          executablePath: process.env.HN_BROWSER_PATH,
+          args: [
+            "--no-sandbox",
+            "--disable-dev-shm-usage",
+            "--use-gl=angle",
+            "--use-angle=swiftshader",
+            "--disable-gpu",
+          ],
+        }
+      : {},
   },
   webServer: {
     command: "npx vite --host 127.0.0.1 --port 4173",
     port: 4173,
-    reuseExistingServer: true
+    reuseExistingServer: true,
   },
-  projects: [{ name: "chromium", use: { browserName: "chromium" } }]
+  projects: [{ name: "chromium", use: { browserName: "chromium" } }],
 });
