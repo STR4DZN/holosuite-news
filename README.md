@@ -1,10 +1,10 @@
-# HoloNews 2.1
+# HoloNews 2.2 · Prisma
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
 ## O que está pronto
 
-- Portal claro, responsivo, com manchete, capas, categorias, busca sem acentos, paginação e leitura completa.
+- Portal escuro Prisma, responsivo, com manchete, capas, categorias, busca sem acentos, paginação e leitura completa.
 - Criador com título, resumo, texto rico do Foundry, capa pelo File Picker, legenda, categoria, autor, tags e data fictícia.
 - Destaque, notícia urgente e contador narrativo de visualizações definido pelo mestre.
 - Salvamento automático de rascunhos, prévia ao lado e publicação explícita. Editar uma notícia publicada mantém sua versão atual no portal até publicar a revisão.
@@ -20,12 +20,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-A release [v2.1.1](https://github.com/STR4DZN/holosuite-news/releases/tag/v2.1.1) inclui o manifesto, o ZIP instalável, o código e a prévia independente. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.2.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.1.1.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.2.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -68,9 +68,15 @@ Node 22+ e Python 3 são necessários para gerar os ZIPs. O runtime não depende
 
 ## Validação e limites
 
-34 testes de domínio/adaptador/integração e 18 testes de navegador passaram nesta entrega. TypeScript, lint, build e integridade dos ZIPs também foram verificados. JS de runtime: cerca de 40 kB; CSS: cerca de 24 kB, sem fontes ou bibliotecas de editor adicionais carregadas pelo módulo.
+A suíte cobre domínio, permissões, adaptadores, editor nativo, prévia e fluxos no navegador. TypeScript, lint, build e integridade dos ZIPs são verificados na preparação do pacote. O runtime usa fontes do sistema e APIs nativas de animação, sem novas bibliotecas de editor ou motion.
 
 A validação em um mundo real Foundry v13 + HoloSuite Core ainda precisa ser feita. O manifesto declara v13 como alvo mínimo/máximo e **não declara uma versão verificada**. Veja [roteiro de teste](docs/foundry-smoke-test.md), especialmente criação do compêndio, edição rica, permissão de usuários e recarregamento. Seleção de público segue as permissões nativas do Foundry; não constitui criptografia ou revogação de cópias já recebidas.
+
+## Identidade Prisma
+
+A versão 2.2 adota a composição aprovada do Prisma: cabeçalho com marca orbital, cores por categoria, capa panorâmica, cartões editoriais e notícia completa. Roxo e ciano aparecem nos degradês e nos elementos de destaque sobre superfícies escuras. Nome, slogan e rede continuam configuráveis. A estimativa de leitura é calculada a partir do texto; o contador de visualizações continua narrativo e controlado pelo mestre.
+
+A logo está em `dist/assets/holonews-mark.svg`. As ilustrações de demonstração pertencem à prévia e não são inseridas nas notícias do mundo.
 
 ## Motion e separação de acesso
 

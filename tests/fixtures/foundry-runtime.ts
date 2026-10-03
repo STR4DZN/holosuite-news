@@ -4,6 +4,7 @@ import "../../styles/index.css";
 import managerTemplate from "../../templates/gm/manager.hbs?raw";
 import creatorTemplate from "../../templates/gm/editor.hbs?raw";
 import articleTemplate from "../../templates/reader/article.hbs?raw";
+import portalTemplate from "../../templates/reader/portal.hbs?raw";
 import { registerHelpers } from "../../src/settings";
 import { Newsroom } from "../../src/core/newsroom";
 import { MemoryNewsStore } from "../../src/storage/memory-store";
@@ -16,7 +17,8 @@ let active = "";
 const configs: any[] = [];
 const renders: Array<{ id: string; force?: boolean }> = [];
 registerHelpers(Handlebars);
-const templates = {manager: Handlebars.compile(managerTemplate), creator: Handlebars.compile(creatorTemplate), article: Handlebars.compile(articleTemplate)};
+Handlebars.registerPartial("modules/holosuite-news/dist/templates/reader/article.hbs", articleTemplate);
+const templates = {manager: Handlebars.compile(managerTemplate), creator: Handlebars.compile(creatorTemplate), article: Handlebars.compile(articleTemplate), portal: Handlebars.compile(portalTemplate)};
 
 class ApplicationContract {
   element?: HTMLElement;
@@ -34,7 +36,7 @@ class ApplicationContract {
     root.className = "hsn-window hn-no-motion";
     root.id = this.options.id;
     root.style.cssText = "width:1050px;height:760px;position:relative;margin:12px";
-    root.innerHTML = this.options.id.startsWith("holonews-creator") ? templates.creator(context) : templates.manager(context);
+    root.innerHTML = '<div class="window-content" style="height:100%">'+(this.options.id.startsWith("holonews-creator") ? templates.creator(context) : this.options.id === "holonews-portal" ? templates.portal(context) : templates.manager(context))+'</div>';
     if (!root.isConnected) document.body.append(root);
     this.element = root;
     this.rendered = true;
@@ -80,11 +82,13 @@ const style = document.createElement("style");
 style.textContent = '.prosemirror .editor-container {position:relative;flex:1;min-height:0}.prosemirror .editor-content {position:absolute;inset:0;min-height:0;color:#eee}';
 document.head.prepend(style);
 globals.foundry = {applications: {api: {ApplicationV2: ApplicationContract, HandlebarsApplicationMixin: (base: any) => base}, elements: {HTMLProseMirrorElement: RichTextContract}}};
-globals.game = {user: {id:"gm",isGM:true,active:true}, users:[{id:"gm",isGM:true,active:true}], settings:{get: (_module: string,key: string) => key === "reduceMotion"},journal:[]};
+const settings: Record<string, unknown> = {reduceMotion:true,fontScale:1,portalName:"HoloNews",portalTagline:"O seu mundo. Em transmissão.",portalLocation:"Rede de teste"};
+globals.game = {user: {id:"gm",isGM:true,active:true}, users:[{id:"gm",isGM:true,active:true}], settings:{get: (_module: string,key: string) => settings[key]},journal:[]};
 globals.ui = {notifications:{error:(message: string) => errors.push(message)}};
 globals.TextEditor = {enrichHTML: async (value: string) => value};
 globals.renderTemplate = async (_path: string, context: any) => templates.article(context);
 const {ManagerApp} = await import("../../src/apps/editorial-app");
+const {PortalApp} = await import("../../src/apps/reader-app");
 const store = new MemoryNewsStore();
 let manager: InstanceType<typeof ManagerApp>;
 const room = new Newsroom(store, () => {}, () => "new", () => manager?.refresh());
@@ -96,7 +100,8 @@ manager = new ManagerApp(room, () => {});
 await manager.render({force:true});
 await manager.edit(item.id);
 globals.fixture = {
-  errors, configs, renders, manager, room,
+  errors, configs, renders, manager, room, settings,
+  openReader: async () => {const portal = new PortalApp(room); await portal.render({force:true}); return portal;},
   active: () => active,
   creator: () => (manager as any).creators.get(item.id),
   saved: () => room.get(item.id),

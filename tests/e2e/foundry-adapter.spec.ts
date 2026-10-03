@@ -19,7 +19,8 @@ test("estrutura ProseMirror permanece visível, formata e salva HTML no rascunho
   const body = page.getByRole("textbox", {name:"Texto da notícia",exact:true});
   await expect(body).toContainText("Texto inicial visível");
   expect((await body.boundingBox())!.height).toBeGreaterThan(200);
-  expect(await body.evaluate(el => getComputedStyle(el).color)).toBe("rgb(35, 41, 44)");
+  expect(await body.evaluate(el => getComputedStyle(el).color)).toBe("rgb(203, 211, 223)");
+  expect(await body.evaluate(el => getComputedStyle(el).backgroundColor)).toBe("rgb(11, 20, 28)");
   await body.fill("Texto com título");
   await page.locator("[data-heading]").click();
   await page.locator("[data-native-save]").click();

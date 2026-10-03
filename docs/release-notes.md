@@ -1,8 +1,11 @@
-Correção dos problemas de edição relatados no Foundry após a versão 2.1.0.
+O visual Prisma passa a ser a identidade do HoloNews no portal dos jogadores, na leitura de notícias e nas ferramentas exclusivas do mestre.
 
-- **Autosave:** a janela Notícias do mestre aguarda o fechamento dos criadores para atualizar sua lista; ela não deve interromper a digitação. Atualizações automáticas não reabrem janelas fechadas.
-- **Texto da notícia:** editor ProseMirror sempre ativo, com altura explícita, layout flexível, texto/cursor legíveis e espaçamento para formatação.
-- **Erro querySelector:** remoção dos eventos ao fechar/remontar, proteção de timers e descarte de prévias de formulários antigos.
+- **Identidade:** logo geométrica redesenhada, fundo escuro, degradês roxos e ciano, cores por categoria e detalhes editoriais nas capas e nos cards.
+- **Leitura:** tempo estimado, identificação do autor, apresentação de notícias sem capa e layouts adaptados a janelas estreitas e texto ampliado.
+- **Mestre:** redação e lista de notícias com o mesmo visual, editor rico legível e autosave sem interromper a digitação ou levantar a lista de notícias.
+- **Campanha:** cabeçalho usa o nome, slogan e rede configurados; os jogadores continuam vendo apenas conteúdo publicado e autorizado.
+
+Sem novas dependências de execução. Inclui uma prévia HTML independente para experimentar o portal e o criador.
 
 ## Instalação / atualização
 
@@ -12,6 +15,6 @@ Atualize HoloNews nos módulos do Foundry. Se necessário, reinstale pelo mesmo 
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-A tag é **v2.1.1** e o pacote instalável é `holosuite-news-v2.1.1.zip`. Requer Foundry v13 e HoloSuite Core. Recarregue o navegador depois da atualização.
+A tag é **v2.2.0** e o pacote instalável é `holosuite-news-v2.2.0.zip`. Requer Foundry v13 e HoloSuite Core. Recarregue o navegador depois da atualização.
 
-34 testes unitários e 18 testes de navegador passaram, incluindo regressões de autosave/foco, estrutura do editor, HTML formatado, eventos tardios e prévias assíncronas. A simulação do adaptador não substitui o teste do engine nativo em um mundo real do Foundry.
+Validação: TypeScript, lint, 34 testes unitários, 21 testes de navegador e conferência do pacote. Os testes incluem texto, formatação, autosave, permissões, categorias e janelas estreitas. Os testes do adaptador não substituem a validação dentro de um mundo real do Foundry.

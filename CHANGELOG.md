@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.2.0 — Prisma
+
+- Prisma integrado ao portal, à notícia aberta, à lista e ao criador do mestre.
+- Nova logo geométrica com facetas, H e órbita; símbolo vetorial incluído no pacote.
+- Tema escuro com degradês de violeta e ciano, capa panorâmica, cortes diagonais e hierarquia editorial.
+- Cores consistentes por categoria, incluindo categorias próprias da campanha, e estimativa de leitura.
+- Nome, slogan e rede configuráveis preservados; nenhuma data ou edição fictícia fixa no runtime.
+- Layouts para matérias sem imagem, texto ampliado e janelas estreitas.
+- ProseMirror nativo com superfícies escuras, texto e cursor legíveis; correções de autosave da 2.1.1 preservadas.
+- Motion finito e preferência de movimento reduzido mantidos, sem novas bibliotecas no runtime.
+
 ## 2.1.1 — Correções do criador no Foundry
 
 - Autosave não redesenha a lista do mestre enquanto um criador está aberto; a lista atualiza ao fechar a edição.

@@ -22,6 +22,7 @@ import { MotionScene } from "../src/ui/motion";
 import skyline from "../assets/meridian.svg";
 import orbital from "../assets/preview-landscape.svg";
 import transit from "../assets/transit.svg";
+import cargo from "../assets/cargo.svg";
 
 registerHelpers(Handlebars);
 Handlebars.registerPartial(
@@ -38,6 +39,7 @@ const demoAssets: Record<string, string> = {
   "demo/meridian.svg": skyline,
   "demo/orbital.svg": orbital,
   "demo/transit.svg": transit,
+  "demo/cargo.svg": cargo,
 };
 function withCover(context: any): any {
   return context
@@ -77,6 +79,7 @@ class DemoRichText extends HTMLElement {
 customElements.define("prose-mirror", DemoRichText);
 
 const store = new MemoryNewsStore();
+const DEMO_STORAGE_KEY = "holonews-prisma-v2-2";
 const root = document.querySelector<HTMLElement>("#demo")!;
 const scene = new MotionScene();
 function assertDemoGM(): void {
@@ -98,7 +101,7 @@ const newsroom = new Newsroom(
 );
 function persist(): void {
   localStorage.setItem(
-    "holonews-demo-v2-final",
+    DEMO_STORAGE_KEY,
     JSON.stringify([...store.items.values()]),
   );
 }
@@ -155,6 +158,8 @@ function seed(): void {
       summary:
         "Comerciantes falam em escassez. Trabalhadores do porto contam outra história.",
       category: "Economia",
+      cover: "demo/cargo.svg",
+      coverAlt: "Contêineres junto ao porto orbital.",
       views: 34921,
       date: "23.08.2186 · 11:30",
     },
@@ -192,7 +197,7 @@ function seed(): void {
   persist();
 }
 try {
-  const saved = localStorage.getItem("holonews-demo-v2-final");
+  const saved = localStorage.getItem(DEMO_STORAGE_KEY);
   if (!saved) seed();
   else
     for (const value of JSON.parse(saved)) {

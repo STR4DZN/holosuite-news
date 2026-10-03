@@ -1,9 +1,11 @@
-# Direção visual v2
+# Prisma · identidade visual 2.2
 
-Portal editorial claro, inspirado na organização de um portal de notícias brasileiro: manchete, resumo, imagem, categorias e uma grade de matérias. A identidade de ficção científica vem de uma rede civil, com símbolo H interrompido por um sinal, metadados técnicos discretos e uma transmissão breve ao abrir.
+O Prisma aprovado guia o portal, a leitura e a redação do mestre. A marca combina um H geométrico, facetas e uma órbita. Os cortes diagonais, o símbolo, os metadados e as cores editoriais repetem essa linguagem em toda a interface.
 
-Papel mineral `#fbfcf9`, grafite `#23292c`, vermelho editorial `#a72d36`, infraestrutura verde/cinza `#203033`. Fontes do sistema, sem carregamentos de fonte externos. O vermelho organiza a hierarquia; não há glow ou animações infinitas.
+A base usa carvão e petróleo; o degradê de violeta, azul e ciano aparece na marca, navegação, botões e divisórias. Rosa, âmbar e ciano identificam categorias. Categorias personalizadas recebem cores estáveis sem novos campos ou dados persistidos.
 
-O criador tem escrita e prévia lado a lado. Campos opcionais se recolhem. Estados de salvamento aparecem em texto acessível. Container queries adaptam o portal à largura real da janela do Foundry. Em janelas pequenas o editor e a prévia se empilham.
+Manchetes e grades acomodam matérias sem capa. A leitura tem autoria, visualizações narrativas, estimativa de tempo e citações. O criador mantém escrita e prévia lado a lado, ou empilhadas em janelas menores. O editor nativo do Foundry conserva o layout flexível e o autosave corrigidos na 2.1.1.
 
-Os SVGs de demonstração fazem parte da prévia, não do runtime do módulo. Imagens de notícias são escolhidas pelo mestre.
+Estilos são limitados às janelas HoloNews. Fontes do sistema, SVG e animações finitas com CSS/WAAPI evitam dependências e requisições externas. Os controles respeitam movimento reduzido e tamanho de texto.
+
+Os SVGs de demonstração ficam na prévia; capas do mundo são escolhidas pelo mestre. Nome, slogan, rede, datas, autores e categorias vêm da campanha, sem edição/ano fictícios fixos.

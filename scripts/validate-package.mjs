@@ -26,6 +26,7 @@ for (const file of [
   "templates/gm/editor.hbs",
   "languages/pt-BR.json",
   "build-info.json",
+  "assets/holonews-mark.svg",
 ])
   await access(`dist/${file}`);
 const info = JSON.parse(await readFile("dist/build-info.json", "utf8"));

@@ -6,6 +6,7 @@ import { managerContext, editorContext } from "../ui/context";
 import { EditorSession } from "../ui/editor";
 import { legacyState, migrateLegacy } from "../storage/migrations";
 import { assertWriter } from "../permissions/authority";
+import { brand } from "../settings";
 
 export class CreatorApp extends HoloNewsApplication {
   static override DEFAULT_OPTIONS = {
@@ -33,7 +34,7 @@ export class CreatorApp extends HoloNewsApplication {
       newsroom,
       {
         preview: (context) =>
-          renderTemplate(`${TEMPLATE_ROOT}/reader/article.hbs`, context),
+          renderTemplate(`${TEMPLATE_ROOT}/reader/article.hbs`, { ...context, broadcastName: brand().name }),
         confirm: confirmAction,
         error: (error) => this.report(error),
         changed,

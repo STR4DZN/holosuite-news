@@ -6,6 +6,7 @@ import {
   type PortalBrand,
 } from "../domain/model";
 import { enrichSafeHtml, formatViews } from "../utils/format";
+import { channelTone, readingLabel, authorInitials } from "./identity";
 export interface PortalRoute {
   articleId?: string;
   query: string;
@@ -23,6 +24,9 @@ export async function articleContext(
 ): Promise<Record<string, unknown>> {
   return {
     ...article,
+    tone: channelTone(article.category),
+    readingLabel: readingLabel(article.body),
+    authorInitials: authorInitials(article.author),
     bodyHtml: await enrichSafeHtml(article.body),
     viewsLabel: `${formatViews(article.views)} visualizações`,
   };
@@ -61,6 +65,8 @@ export async function portalContext(
     cover: a.cover,
     coverAlt: a.coverAlt,
     category: a.category,
+    tone: channelTone(a.category),
+    readingLabel: readingLabel(a.body),
     author: a.author,
     date: a.date,
     urgent: a.urgent,
@@ -70,15 +76,16 @@ export async function portalContext(
     ? articles.find((a) => a.id === route.articleId)
     : null;
   return {
-    brand,
+    brand: { ...brand, isHoloNews: brand.name === "HoloNews" },
     categories: categories.map((name) => ({
       name,
+      tone: channelTone(name),
       active: name === route.category,
     })),
     allActive: !route.category,
     query: route.query,
     category: route.category,
-    article: opened ? await articleContext(opened) : null,
+    article: opened ? { ...(await articleContext(opened)), broadcastName: brand.name } : null,
     unavailable: !!route.articleId && !opened,
     isList: !route.articleId,
     lead:
@@ -127,6 +134,7 @@ export function managerContext(
       id: i.id,
       title: i.draft.title || "Notícia sem título",
       category: i.draft.category,
+      tone: channelTone(i.draft.category),
       cover: i.draft.cover,
       status: statusOf(i),
       published: !!i.published,

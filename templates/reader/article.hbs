@@ -1,13 +1,13 @@
-<article class="hn-article" data-article-id="{{id}}">
-  <header>
+<article class="hn-article" data-article-id="{{id}}" data-tone="{{tone}}">
+  <header><div class="article-edition"><span>{{#if broadcastName}}{{broadcastName}}{{else}}HoloNews{{/if}} / REPORTAGEM</span><span>{{#if readingLabel}}{{readingLabel}}{{else}}ARQUIVO DA REDE{{/if}}</span></div>
     <div class="hn-eyebrow">{{#if urgent}}<span
           class="hn-urgent"
         >Urgente</span>{{/if}}<span>{{category}}</span></div>
     <h1>{{#if title}}{{title}}{{else}}Sua próxima notícia começa aqui{{/if}}</h1>
     {{#if summary}}<p class="hn-deck">{{summary}}</p>{{/if}}
-    <div class="hn-byline"><div>{{#if author}}Por
+    <div class="hn-byline"><div class="hn-author"><span class="hn-author-mark" aria-hidden="true">{{authorInitials}}</span><div>{{#if author}}Por
           <strong>{{author}}</strong>{{else}}Redação{{/if}}{{#if date}}<span
-          >{{date}}</span>{{/if}}</div><span
+          >{{date}}</span>{{/if}}</div></div><span
         class="hn-views"
       >{{viewsLabel}}</span></div>
   </header>
@@ -16,7 +16,7 @@
         alt="{{coverAlt}}"
         decoding="async"
       /><figcaption>{{coverAlt}}</figcaption></figure>{{/if}}
-  <div class="hn-article-body">{{{bodyHtml}}}</div>
+  <div class="article-flow"><aside class="article-margin" aria-hidden="true"><svg class="identity-mark" viewBox="0 0 80 80" aria-hidden="true"><path class="hn-mark-face" d="M21 7h38l14 15v37L59 73H21L7 59V22z"/><path class="hn-mark-facet" d="M59 7l14 15v37L59 73H40z"/><path class="hn-mark-core" d="M23 23h10v12h15V23h10v34H48V44H33v13H23z"/><ellipse class="hn-mark-orbit" cx="40" cy="40" rx="38" ry="13" transform="rotate(-34 40 40)"/><path class="hn-mark-cut" d="M13 18l5 -5M62 67l5 -5"/></svg><span>UM MUNDO.<br>MUITAS VOZES.</span><i></i></aside><div class="hn-article-body">{{{bodyHtml}}}</div></div>
   {{#if tags}}<footer class="hn-tags">{{#each tags}}<span
         >{{this}}</span>{{/each}}</footer>{{/if}}
 </article>

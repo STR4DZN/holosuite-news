@@ -17,6 +17,8 @@ await cp(path.join(root, "languages"), path.join(dist, "languages"), {
   recursive: true,
   force: true,
 });
+await mkdir(path.join(dist, "assets"), { recursive: true });
+await cp(path.join(root, "assets/holonews-mark.svg"), path.join(dist, "assets/holonews-mark.svg"));
 await writeFile(
   path.join(dist, "build-info.json"),
   `${JSON.stringify({ moduleId: moduleManifest.id, version: moduleManifest.version, foundry: moduleManifest.compatibility, schemaVersion: 2 }, null, 2)}\n`,

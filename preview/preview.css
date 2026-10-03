@@ -2,12 +2,12 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background: #dce2db;
+  background: #0b111a;
   font-family: Arial, sans-serif;
-  color: #24322c;
+  color: #e5eaf4;
 }
 body {
-  background-image: linear-gradient(145deg, #e8ece5, #d0d9d2);
+  background-image: linear-gradient(145deg, #0b111a, #111827);
 }
 .demo-toolbar {
   display: flex;
@@ -15,7 +15,7 @@ body {
   align-items: center;
   gap: 20px;
   padding: 17px 30px;
-  background: #182629;
+  background: #0f1824;
   color: #ecf0e8;
   position: sticky;
   top: 0;
@@ -33,15 +33,15 @@ body {
 }
 .demo-toolbar strong span {
   font-size: 10px;
-  background: #3b4c48;
-  color: #d9e2d5;
+  background: #302941;
+  color: #ceb9e8;
   padding: 3px 5px;
   border-radius: 3px;
   margin-left: 4px;
 }
 .demo-toolbar small {
   font-size: 10px;
-  color: #99ada0;
+  color: #a8b8cd;
 }
 .demo-toolbar nav {
   display: flex;
@@ -50,7 +50,7 @@ body {
 }
 .demo-toolbar button,
 .demo-toolbar select {
-  border: 1px solid #465850;
+  border: 1px solid #475770;
   border-radius: 4px;
   font:
     11px Arial,
@@ -58,12 +58,12 @@ body {
   padding: 8px 12px;
   cursor: pointer;
   background: none;
-  color: #dfebdd;
+  color: #d1dbea;
 }
 .demo-toolbar button.is-active {
-  background: #e3eadf;
-  color: #263d30;
-  border-color: #e3eadf;
+  background: linear-gradient(110deg,#c299f4,#a3a9ef 45%,#74d3d0);
+  color: #211c30;
+  border-color: #b4a8d9;
 }
 .demo-toolbar label {
   display: flex;
@@ -71,7 +71,7 @@ body {
   font-size: 10px;
   align-items: center;
   margin-left: 10px;
-  color: #99ada0;
+  color: #a8b8cd;
 }
 .demo-toolbar select option {
   background: #203033;
@@ -86,7 +86,7 @@ body {
   height: calc(100vh - 126px);
   min-height: 600px;
   box-shadow: 0 18px 60px #243a3520;
-  border: 1px solid #c5cfc4;
+  border: 1px solid #576a82;
   border-radius: 8px;
 }
 .demo-stage .window-content {
@@ -101,8 +101,8 @@ body {
   left: 50%;
   transform: translateX(-50%);
   padding: 12px 22px;
-  background: #263a32;
-  color: #eff5eb;
+  background: #2b2640;
+  color: #e9edf7;
   font-size: 12px;
   border-radius: 5px;
   box-shadow: 0 5px 20px #20302020;
@@ -124,8 +124,8 @@ body {
   display: flex;
   gap: 3px;
   padding: 5px;
-  border-bottom: 1px solid #d8dddb;
-  background: #f0f3ed;
+  border-bottom: 1px solid #625675;
+  background: #263345;
 }
 .demo-rich-toolbar button {
   padding: 5px 9px;
@@ -139,9 +139,9 @@ body {
   margin: 15px 0;
 }
 .demo-editable blockquote {
-  border-left: 3px solid #a72d36;
+  border-left: 3px solid #b9a1ed;
   padding-left: 15px;
-  color: #697376;
+  color: #cbd3df;
 }
 @media (max-width: 760px) {
   .demo-toolbar {
@@ -202,3 +202,5 @@ body {
     animation: none;
   }
 }
+
+.demo-toolbar{position:relative}.demo-toolbar button,.demo-toolbar select{min-height:34px}.demo-stage .hsn-window{border-radius:5px}.demo-editable{color:#cbd3df;font:15px/1.85 Georgia,serif}.demo-editable h2{color:#eff0f6}.demo-rich-toolbar button{color:#d3d8e6}
