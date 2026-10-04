@@ -52,8 +52,8 @@ jobs:
           cp preview-dist/HoloNews-Preview.html artifacts/HoloNews-Prisma-Preview.html
           gh release create "v$VERSION" \
             --target "$GITHUB_SHA" \
-            --title "HoloNews v$VERSION — Prisma" \
-            --notes-file docs/release-notes.md \
+            --title "HoloNews v$VERSION" \
+            --notes-file /dev/null \
             --latest \
             module.json \
             "artifacts/holosuite-news-v$VERSION.zip" \

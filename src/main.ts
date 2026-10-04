@@ -6,6 +6,7 @@ import { assertWriter, primaryGM } from "./permissions/authority";
 import { ManagerApp } from "./apps/editorial-app";
 import { PortalApp } from "./apps/reader-app";
 import { registerSettings, registerHelpers } from "./settings";
+import { installSessionDice } from "./integration/session-dice";
 import {
   registerWithHoloSuite,
   type HoloSuiteAdapter,
@@ -38,7 +39,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.2.0",
+  version: "2.2.2",
   openReader: openPortal,
   openManager,
   openArticle: async (id: string) => {
@@ -82,6 +83,12 @@ Hooks.once("init", () => {
   (globalThis as any).HoloNews = api;
 });
 Hooks.once("ready", async () => {
+  installSessionDice({
+    prototype:
+      (globalThis as any).CONFIG?.Dice?.terms?.d?.prototype ??
+      foundry.dice?.terms?.Die?.prototype,
+    getUser: () => game.user,
+  });
   await templatesReady;
   registerTile();
   if (game.user.isGM && primaryGM()?.id === game.user.id) {

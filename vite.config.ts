@@ -14,7 +14,7 @@ export default defineConfig({
         assetFileNames: (asset) => asset.names.some((name) => name.endsWith(".css")) ? "style.css" : "assets/[name]-[hash][extname]"
       }
     },
-    sourcemap: true,
+    sourcemap: false,
     target: "es2022"
   }
 });
