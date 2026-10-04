@@ -39,7 +39,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.2.3",
+  version: "2.2.4",
   openReader: openPortal,
   openManager,
   openArticle: async (id: string) => {

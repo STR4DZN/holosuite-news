@@ -22,6 +22,7 @@ describe("HoloSuite registration adapter", () => {
       playerVisible: true,
       premium: false,
       featureId: "holosuite-news",
+      icon: "hn-prisma-app-glyph",
     });
     registration.open();
     expect(openManager).toHaveBeenCalledOnce();

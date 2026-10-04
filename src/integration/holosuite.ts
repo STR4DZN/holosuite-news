@@ -33,7 +33,7 @@ export function registerWithHoloSuite(adapter: HoloSuiteAdapter): boolean {
   api.registerApp({
     id: "holosuite-news",
     title: "HoloNews",
-    icon: "fa-solid fa-newspaper",
+    icon: "hn-prisma-app-glyph",
     premium: false,
     playerVisible: true,
     description: "Jornal e rede de notícias do universo da campanha.",

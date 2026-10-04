@@ -1,0 +1,42 @@
+/* Core accepts an icon class. Important declarations keep this app's mark
+   visible when Foundry layers module CSS below Core's device stylesheet. */
+.hn-prisma-app-glyph {
+  display: inline-block;
+  width: 1.6em;
+  height: 1.6em;
+  vertical-align: middle;
+  background: url("../assets/holonews-mark.svg") center / contain no-repeat;
+}
+
+html body .holosuite-app-tile[data-holosuite-app="holosuite-news"] {
+  --hs-app-accent: #c29bf3 !important;
+  --hs-app-accent-rgb: 194, 155, 243 !important;
+}
+
+html body :is(.holosuite-app-icon, .holosuite-whats-new-icon)[data-holosuite-app-icon="holosuite-news"] {
+  position: relative !important;
+  width: 38px !important;
+  height: 38px !important;
+  flex-shrink: 0;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+html body :is(.holosuite-app-icon, .holosuite-whats-new-icon)[data-holosuite-app-icon="holosuite-news"]::before {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  background: url("../assets/holonews-mark.svg") center / contain no-repeat !important;
+  mask: none !important;
+  -webkit-mask: none !important;
+}
+
+html body :is(.holosuite-app-icon, .holosuite-whats-new-icon)[data-holosuite-app-icon="holosuite-news"]::after,
+html body :is(.holosuite-app-icon, .holosuite-whats-new-icon)[data-holosuite-app-icon="holosuite-news"] > i {
+  display: none !important;
+}
