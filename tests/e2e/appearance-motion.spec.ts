@@ -74,10 +74,10 @@ test("notificações respeitam público e permissão, não repetem snapshots e a
   await expect(page.locator('.hn-broadcast-stack')).toHaveCount(0);
 });
 
-test("seis estilos cabem no portal estreito e a leitura permanece neutra", async ({ page }) => {
+test("nove estilos cabem no portal estreito e a leitura permanece neutra", async ({ page }) => {
   await page.goto('/preview/');await page.locator('#demo-reduce-motion').check();
   await page.setViewportSize({width:390,height:900});
-  for(const theme of ['prisma','gazeta','obsidiana','aurora','terminal','dossie']) {
+  for(const theme of ['prisma','gazeta','obsidiana','aurora','terminal','dossie','orbital','pulsar','nexo']) {
     await page.locator('[data-appearance]').click();await page.locator(`[data-theme-choice=${theme}]`).click();await page.locator('.demo-close-appearance').click();
     expect(await page.locator('.hn-portal').evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);
     await page.locator('.hn-lead [data-open]').first().click();

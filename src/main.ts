@@ -41,7 +41,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.4.0",
+  version: "2.5.0",
   openSettings: async () => { preferences ??= new PreferencesApp(); await preferences.render({ force: true }); return preferences; },
   openReader: openPortal,
   openManager,

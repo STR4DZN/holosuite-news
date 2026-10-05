@@ -102,7 +102,7 @@ function openPreferences(): void {
     const next = { ...demoAppearance(), [key]: value };
     if (key === "motionStyle") document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked = value === "reduced";
     localStorage.setItem(`holonews-appearance-${reader}`, JSON.stringify(next));
-  }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); session?.updateAppearance(); });
+  }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); scene.refreshTheme(); session?.updateAppearance(); });
   panel.querySelector("[data-test-portal-motion]")?.addEventListener("click", () => void (async () => {
     await settled();
     if (mode === "editor" && session && !(await session.beforeClose())) return;

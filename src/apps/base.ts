@@ -104,6 +104,7 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
     const value = appearance();
     applyAppearance(root, value);
     this.motion.setReduced(value.motionStyle === "reduced");
+    this.motion.refreshTheme();
     this.onAppearanceChanged();
   }
   protected onAppearanceChanged(): void {}

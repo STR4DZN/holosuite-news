@@ -199,6 +199,7 @@ export class EditorSession {
         this.previewEffects.stop();
         target.innerHTML = html;
         target.scrollTop = scroll;
+        this.motion.refreshTheme();
         // Typing updates content without replaying presentation effects.
       }
     }

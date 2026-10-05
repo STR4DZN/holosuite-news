@@ -8,6 +8,7 @@ export const THEME_MOTION = {
   prisma: { page: "signal", card: "depth" }, gazeta: { page: "fold", card: "editorial" },
   obsidiana: { page: "aperture", card: "unfold" }, aurora: { page: "depth", card: "rise" },
   terminal: { page: "signal", card: "alternate" }, dossie: { page: "slide", card: "unfold" },
+  orbital: { page: "depth", card: "unfold" }, pulsar: { page: "signal", card: "alternate" }, nexo: { page: "aperture", card: "editorial" },
 } as const;
 export function resolveMotion(value: string | undefined, theme: string | undefined, kind: "page" | "card"): string {
   const options = kind === "page" ? PAGE_MOTIONS : CARD_MOTIONS;

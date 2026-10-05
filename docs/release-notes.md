@@ -1,11 +1,15 @@
-# HoloNews 2.4.0 — posts, páginas e leitura em movimento
+# HoloNews 2.5.0 — Orbital, Pulsar e Nexo
 
-A configuração **Posts e páginas** acrescenta seis transições de página, cinco entradas de cartões e três efeitos de interação, além de desligamento e combinações automáticas para os seis temas.
+Três novas aparências sci-fi para o jornal civil da campanha, totalizando nove estilos individuais. Prisma mantém a apresentação aprovada.
 
-No criador, **Animações** agora separa entrada da notícia, movimento da capa, conteúdo durante a leitura e alerta. Quatro novas apresentações de capa e quatro receitas de leitura executam no leitor e na prévia. Use **Testar post completo** e role a prévia.
+- **Orbital:** painel editorial entre estações, azul profundo e âmbar, manchete e imagem em painéis separados, órbitas traçadas, cartões articulados e passagem de luz horizontal nas capas.
+- **Pulsar:** transmissão civil em violeta e ciano, manchete cinematográfica, grade assimétrica, ondas e espectro que se formam na abertura, varredura vertical nas imagens.
+- **Nexo:** rede conectada em verde suave, masthead em painel, notícia principal acima da imagem, feed com conexões e cartões horizontais, circuitos traçados e linha de transmissão nas capas.
 
-Abrir um post aproveita a posição da imagem de origem. Voltar recupera a rolagem e o foco na lista. As abas do editor têm resposta breve, e digitar não faz a prévia pulsar.
+As três aparências alcançam portal, notícia aberta, lista do mestre, editor e configurações. Molduras, índices editoriais e detalhes vetoriais permanecem separados do texto; não exibem dados ou indicadores fictícios. Cada pessoa escolhe seu tema e pode ajustar transição, cartões, interação, fonte, espaçamento e movimento.
 
-Efeitos finitos, cancelamento em navegação e movimento reduzido, sem dependência nova de animação. Prisma e os outros estilos conservam sua apresentação. Notícias e backups 2.3 recebem os novos padrões automaticamente. A integração de alteração de dados permanece removida.
+Animações finitas, com cancelamento ao navegar, fechar, ocultar a janela ou reduzir movimento. O modo sutil mantém os detalhes gráficos estáticos. A troca de tema preserva o editor rico, o conteúdo em edição e as escolhas da notícia. Sem biblioteca adicional no runtime.
 
-Pesquisa e decisões: `docs/editorial-motion-research.md`. Validação com TypeScript, lint, 38 testes unitários, 33 testes de navegador e inspeção visual; a sessão final no Foundry da mesa continua sendo a verificação do ambiente real.
+Validação: TypeScript, lint, 38 testes unitários, 37 testes de navegador e inspeção de portal, feed, leitura, editor e janela estreita. Os testes incluem troca de estilos sem recriar o ProseMirror e retorno ao Prisma sem camadas decorativas residuais. A sessão final no Foundry da mesa continua sendo necessária para conferir a integração do ambiente real.
+
+Guia de composição e uso: `docs/scifi-themes.md`.

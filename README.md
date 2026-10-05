@@ -1,10 +1,10 @@
-# HoloNews 2.4 · Motion editorial
+# HoloNews 2.5 · Redes sci-fi
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
 ## O que está pronto
 
-- Seis aparências individuais: Prisma original, Gazeta, Obsidiana, Aurora, Terminal e Dossiê. Preferências de fonte, espaçamento e movimento salvas por usuário.
+- Nove aparências individuais: Prisma original, Gazeta, Obsidiana, Aurora, Terminal, Dossiê, Orbital, Pulsar e Nexo. Preferências de fonte, espaçamento e movimento salvas por usuário.
 - Portal responsivo, com manchete, capas, categorias, busca sem acentos, paginação e leitura completa.
 - Criador com título, resumo, texto rico do Foundry, capa pelo File Picker, legenda, categoria, autor, tags e data fictícia.
 - Destaque, notícia urgente e contador narrativo de visualizações definido pelo mestre.
@@ -21,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.4.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.5.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.4.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.5.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -46,7 +46,9 @@ Se vários mestres estiverem conectados, o GM ativo com menor ID será o respons
 
 Use **Configurações** no portal, na lista ou no criador. Cada jogador e mestre escolhe sua própria aparência. Os temas usam fundos suaves, texto de alto contraste e fontes de leitura coerentes. Prisma mantém a marca orbital, os degradês violeta/ciano e a capa cinematográfica original.
 
-No criador, abra **Animações** para escolher uma das oito entradas animadas (ou nenhuma), um dos seis alertas (ou nenhum), intensidade, ritmo e importância. **Testar entrada** e **Testar alerta** são prévias locais; a notificação aos leitores acontece ao publicar. Os perfis acompanham o rascunho, a publicação, as cópias e os backups. Notícias antigas continuam abrindo normalmente.
+Orbital, Pulsar e Nexo acrescentam composições sci-fi próprias, diagramas vetoriais, molduras e movimento de transmissão. Veja [os três novos estilos](docs/scifi-themes.md). Em **Posts e páginas**, ajuste as transições, entradas de cartões e interações; **Automático** usa a combinação de cada tema.
+
+No criador, abra **Animações** para escolher uma das oito entradas animadas (ou nenhuma), um dos seis alertas (ou nenhum), intensidade, ritmo e importância. Também há efeitos para capa e conteúdo durante a leitura; use **Testar post completo** e role a prévia. **Testar entrada** e **Testar alerta** são prévias locais; a notificação aos leitores acontece ao publicar. Os perfis acompanham o rascunho, a publicação, as cópias e os backups. Notícias antigas continuam abrindo normalmente.
 
 Alertas aparecem somente para quem pode ler a publicação e possui permissão nativa no documento. Revisões em rascunho não notificam. A leitura permanece disponível depois que o movimento termina; o leitor pode abrir ou dispensar o aviso. Movimento reduzido do sistema ou do usuário tem prioridade sobre os efeitos da notícia.
 

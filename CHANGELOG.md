@@ -1,4 +1,17 @@
-# 2.4.0
+# Changelog
+
+## 2.5.0 — Três redes sci-fi
+
+- Orbital, Pulsar e Nexo acrescentados à escolha individual de aparência, totalizando nove temas.
+- Três composições editoriais próprias: painéis orbitais, capa de transmissão e feed conectado.
+- Diagramas vetoriais, molduras, índices, traçado de rotas, espectro e varreduras finitas nas capas.
+- Portal, leitura, lista, criador e configurações com superfícies escuras e tipografia legível.
+- Animações canceladas ao fechar ou reduzir movimento; decoração estática no modo sutil.
+- Troca de tema preserva o ProseMirror e o texto, sem camadas residuais ao voltar ao Prisma.
+- 38 testes unitários e 37 de navegador; nove aparências conferidas em janela estreita.
+
+
+## 2.4.0 — Motion editorial
 
 
 A configuração **Posts e páginas** acrescenta seis transições de página, cinco entradas de cartões e três efeitos de interação, além de desligamento e combinações automáticas para os seis temas.
@@ -10,8 +23,6 @@ Abrir um post aproveita a posição da imagem de origem. Voltar recupera a rolag
 Efeitos finitos, cancelamento em navegação e movimento reduzido, sem dependência nova de animação. Prisma e os outros estilos conservam sua apresentação. Notícias e backups 2.3 recebem os novos padrões automaticamente. A integração de alteração de dados permanece removida.
 
 Pesquisa e decisões: `docs/editorial-motion-research.md`. Validação com TypeScript, lint, testes unitários, testes de navegador e inspeção visual; a sessão final no Foundry da mesa continua sendo a verificação do ambiente real.
-
-# Changelog
 
 ## 2.3.0 — Aparências e alertas
 

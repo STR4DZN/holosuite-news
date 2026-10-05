@@ -7,6 +7,9 @@ export const THEMES = [
   { id: "aurora", name: "Aurora", detail: "Uma rede mais próxima", color: "#abd2c3" },
   { id: "terminal", name: "Terminal", detail: "CIVNET / RX: ONLINE", color: "#bbd593" },
   { id: "dossie", name: "Dossiê", detail: "Arquivo da rede civil", color: "#e4af88" },
+  { id: "orbital", name: "Orbital", detail: "Notícias entre estações", color: "#ffc58a" },
+  { id: "pulsar", name: "Pulsar", detail: "Frequências da rede civil", color: "#ecaff1" },
+  { id: "nexo", name: "Nexo", detail: "Um mundo conectado", color: "#a0eadb" },
 ] as const;
 export interface Appearance {
   pageMotion?: string;

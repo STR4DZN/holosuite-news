@@ -1,3 +1,4 @@
+import { SciFiScenes } from "./scifi-scenes";
 import { resolveMotion } from "../domain/portal-motion";
 /** Scoped editorial motion, inspired by Codrops/Motion/GSAP and Carbon.
  * WAAPI effects are finite, tracked and cancelled when a view closes/rebinds.
@@ -24,6 +25,7 @@ export function prefersReducedMotion(root: HTMLElement): boolean {
   );
 }
 export class MotionScene {
+  private readonly sciFi = new SciFiScenes();
   private newsEffects?: NewsEffects;
   private root?: HTMLElement;
   private started = false;
@@ -93,6 +95,7 @@ export class MotionScene {
         );
       this.reveal(root.querySelector(".hn-preview-pane"), 90, 14);
     }
+    this.sciFi.mount(root, first || this.navigate, true);
     this.bindDisclosures(root);
     this.bindInteractions(root);
     this.source = undefined;
@@ -303,6 +306,7 @@ export class MotionScene {
     const recipe = resolveMotion(this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnCardMotion, this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnTheme, "card");
     element.dataset.motionRecipe = recipe;
     if (recipe === "none") return;
+    this.sciFi.card(element);
     const d = this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle" ? .25 : 1;
     const starts: Record<string,string> = { rise: `translateY(${24*d}px)`, alternate: `translateX(${(index%2 ? 22 : -22)*d}px)`, depth: `translateY(${15*d}px) scale(.96)`, unfold: `perspective(1000px) rotateX(${7*d}deg) translateY(${12*d}px)`, editorial: `translateY(${7*d}px)` };
     const delay = Math.min(index*step, 150);
@@ -339,6 +343,7 @@ export class MotionScene {
     root.addEventListener("pointerover",activate,{signal}); root.addEventListener("focusin",activate,{signal});
     root.querySelector("[data-search]")?.addEventListener("submit",()=>{this.navigate=true;this.direction=1;this.returning=false;},{signal,capture:true});
   }
+  refreshTheme(): void { if (this.root) { this.sciFi.mount(this.root); if(this.root.closest<HTMLElement>("[data-hn-motion]")?.dataset.hnMotion !== "full") this.sciFi.stop(); } }
   panel(node: Element | null): void { this.reveal(node,0,8); }
   replay(): void {
     if (this.root && this.kind === "portal") { this.started=false; this.mount(this.root,"portal"); }
@@ -556,6 +561,7 @@ export class MotionScene {
     );
   }
   private finish(): void {
+    this.sciFi.stop();
     this.newsEffects?.stop();
     for (const effect of this.effects) {
       try {
@@ -568,6 +574,7 @@ export class MotionScene {
       if (node.classList.contains("hn-ink-ripple")) node.remove();
   }
   private stop(): void {
+    this.sciFi.dispose();
     this.newsEffects?.stop();
     this.controller?.abort();
     this.observer?.disconnect();
