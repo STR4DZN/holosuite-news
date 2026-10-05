@@ -1,3 +1,4 @@
+import { PAGE_MOTIONS, CARD_MOTIONS, HOVER_MOTIONS } from "../domain/portal-motion";
 import { MODULE_ID } from "../constants";
 export const THEMES = [
   { id: "prisma", name: "Prisma", detail: "Transmissão holográfica", color: "#bda5e8" },
@@ -8,6 +9,9 @@ export const THEMES = [
   { id: "dossie", name: "Dossiê", detail: "Arquivo da rede civil", color: "#e4af88" },
 ] as const;
 export interface Appearance {
+  pageMotion?: string;
+  cardMotion?: string;
+  hoverMotion?: string;
   theme: string;
   fontScale: number;
   density: "comfortable" | "compact";
@@ -17,6 +21,7 @@ export function appearance(): Appearance {
   const get = (key: string) => (globalThis as any).game?.settings?.get?.(MODULE_ID, key);
   const theme = get("theme"), fontScale = Number(get("fontScale")), motion = get("motionStyle");
   return {
+    pageMotion: get("pageMotion") || "auto", cardMotion: get("cardMotion") || "auto", hoverMotion: get("hoverMotion") || "lift",
     theme: THEMES.some(t => t.id === theme) ? theme : "prisma",
     fontScale: Number.isFinite(fontScale) ? Math.max(.9, Math.min(1.4, fontScale)) : 1,
     density: get("density") === "compact" ? "compact" : "comfortable",
@@ -24,6 +29,9 @@ export function appearance(): Appearance {
   };
 }
 export function applyAppearance(root: HTMLElement, value = appearance()): void {
+  root.dataset.hnPageMotion = value.pageMotion || "auto";
+  root.dataset.hnCardMotion = value.cardMotion || "auto";
+  root.dataset.hnHoverMotion = value.hoverMotion || "lift";
   root.dataset.hnTheme = value.theme;
   root.dataset.hnDensity = value.density;
   root.dataset.hnMotion = value.motionStyle;
@@ -34,9 +42,10 @@ export function applyAppearance(root: HTMLElement, value = appearance()): void {
   root.querySelectorAll<HTMLElement>(".hn-no-motion").forEach(n => n.classList.remove("hn-no-motion"));
 }
 export function preferencesContext(value: Appearance): Record<string, unknown> {
-  return { ...value, scalePercent: Math.round(value.fontScale * 100), themes: THEMES.map(t => ({ ...t, selected: t.id === value.theme })) };
+  const options = (catalog: Record<string,string>, key: string) => Object.entries(catalog).map(([value,label]) => ({value,label,selected:value === key}));
+  return { ...value, pageMotions: options(PAGE_MOTIONS,value.pageMotion || "auto"), cardMotions: options(CARD_MOTIONS,value.cardMotion || "auto"), hoverMotions: options(HOVER_MOTIONS,value.hoverMotion || "lift"), scalePercent: Math.round(value.fontScale * 100), themes: THEMES.map(t => ({ ...t, selected: t.id === value.theme })) };
 }
-export function bindPreferences(root: HTMLElement, initial: Appearance, save: (key: string, value: string | number) => Promise<unknown>, changed: (value: Appearance) => void): void {
+export function bindPreferences(root: HTMLElement, initial: Appearance, save: (key: string, value: string | number) => Promise<unknown>, changed: (value: Appearance) => void): () => Promise<unknown> {
   const current = { ...initial };
   let pending = Promise.resolve();
   function update(key: keyof Appearance, value: string | number): void {
@@ -54,7 +63,8 @@ export function bindPreferences(root: HTMLElement, initial: Appearance, save: (k
   }
   root.querySelectorAll<HTMLButtonElement>("[data-theme-choice]").forEach(b => b.onclick = () => update("theme", b.dataset.themeChoice!));
   root.querySelector<HTMLInputElement>("[name=fontScale]")?.addEventListener("input", e => update("fontScale", Number((e.target as HTMLInputElement).value)));
-  for (const key of ["density", "motionStyle"] as const)
+  for (const key of ["density", "motionStyle", "pageMotion", "cardMotion", "hoverMotion"] as const)
     root.querySelector<HTMLSelectElement>(`[name=${key}]`)?.addEventListener("change", e => update(key, (e.target as HTMLSelectElement).value));
   root.querySelector("form")?.addEventListener("submit", e => e.preventDefault());
+  return () => pending;
 }

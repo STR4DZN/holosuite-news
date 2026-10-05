@@ -19,7 +19,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import sys,subprocess
 root=Path(sys.argv[1]); out=Path(sys.argv[2]); version=sys.argv[3]
 with ZipFile(out/f'holosuite-news-v{version}.zip','w',ZIP_DEFLATED) as z:
- for name in ['module.json','README.md','CHANGELOG.md','LICENSE','dist','docs/foundry-smoke-test.md','docs/security-review.md','docs/motion-research.md']:
+ for name in ['module.json','README.md','CHANGELOG.md','LICENSE','dist','docs/foundry-smoke-test.md','docs/security-review.md','docs/motion-research.md','docs/editorial-motion-research.md']:
   p=root/name
   for f in ([p] if p.is_file() else sorted(p.rglob('*'))):
    if f.is_file() and not f.name.endswith('.map'): z.write(f,f.relative_to(root))

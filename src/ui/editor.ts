@@ -36,6 +36,7 @@ export function readForm(
         users: data.getAll("users").map(String),
       },
       motion: validateNewsMotion({
+        cover: text("motionCover") || undefined, reading: text("motionReading") || undefined,
         entry: text("motionEntry") || undefined, alert: text("motionAlert") || undefined,
         strength: text("motionStrength") || undefined, pace: text("motionPace") || undefined,
         priority: text("motionPriority") || (data.has("urgent") ? "urgent" : "normal"),
@@ -97,6 +98,7 @@ export class EditorSession {
     root.querySelectorAll<HTMLButtonElement>("[data-writing-tab]").forEach(button => button.addEventListener("click", () => {
       const tab = button.dataset.writingTab;
       root.querySelectorAll<HTMLElement>("[data-writing-panel]").forEach(panel => panel.hidden = panel.dataset.writingPanel !== tab);
+      this.motion.panel(root.querySelector(`[data-writing-panel="${tab}"]`));
       root.querySelectorAll<HTMLElement>("[data-writing-tab]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.writingTab === tab)));
     }, options));
     root.querySelector("[data-focus-editor]")?.addEventListener("click", e => {
@@ -197,7 +199,7 @@ export class EditorSession {
         this.previewEffects.stop();
         target.innerHTML = html;
         target.scrollTop = scroll;
-        this.motion.pulsePreview(target);
+        // Typing updates content without replaying presentation effects.
       }
     }
   }
@@ -209,7 +211,11 @@ export class EditorSession {
     await this.updatePreview();
     if (this.root !== root) return;
     const article = root.querySelector<HTMLElement>("[data-live-preview] .hn-article");
-    if (article) this.previewEffects.entry(article, readForm(form, this.item.id).draft.motion!);
+    if (article) {
+      const pane = root.querySelector<HTMLElement>("[data-live-preview]");
+      if (pane) pane.scrollTop = 0;
+      this.previewEffects.entry(article, readForm(form, this.item.id).draft.motion!);
+    }
     root.querySelector("[data-live-preview]")?.scrollIntoView({ block: "nearest", behavior: "instant" });
   }
   private testAlert(): void {

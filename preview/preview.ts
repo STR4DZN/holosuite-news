@@ -90,7 +90,7 @@ const windowRoot = root.closest<HTMLElement>(".hsn-window")!;
 function demoAppearance(): Appearance {
   let saved: Partial<Appearance> = {};
   try { saved = JSON.parse(localStorage.getItem(`holonews-appearance-${reader}`) || "{}"); } catch { /* defaults */ }
-  return { theme: saved.theme || "prisma", density: saved.density || "comfortable", fontScale: saved.fontScale || 1, motionStyle: document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked ? "reduced" : saved.motionStyle || "full" };
+  return { pageMotion: saved.pageMotion || "auto", cardMotion: saved.cardMotion || "auto", hoverMotion: saved.hoverMotion || "lift", theme: saved.theme || "prisma", density: saved.density || "comfortable", fontScale: saved.fontScale || 1, motionStyle: document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked ? "reduced" : saved.motionStyle || "full" };
 }
 function openPreferences(): void {
   document.getElementById("demo-preferences")?.remove();
@@ -98,11 +98,17 @@ function openPreferences(): void {
   panel.innerHTML = '<button type="button" class="demo-close-appearance" aria-label="Fechar configurações">Fechar</button>'+templates.preferences(preferencesContext(demoAppearance()));
   panel.querySelector(".demo-close-appearance")!.addEventListener("click", () => panel.remove());
   document.body.append(panel); applyAppearance(panel, demoAppearance());
-  bindPreferences(panel, demoAppearance(), async (key, value) => {
+  const settled = bindPreferences(panel, demoAppearance(), async (key, value) => {
     const next = { ...demoAppearance(), [key]: value };
     if (key === "motionStyle") document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked = value === "reduced";
     localStorage.setItem(`holonews-appearance-${reader}`, JSON.stringify(next));
   }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); session?.updateAppearance(); });
+  panel.querySelector("[data-test-portal-motion]")?.addEventListener("click", () => void (async () => {
+    await settled();
+    if (mode === "editor" && session && !(await session.beforeClose())) return;
+    if (mode !== "portal") { session = undefined; mode = "portal"; await render(); }
+    panel.remove(); scene.replay();
+  })().catch(error));
 }
 const scene = new MotionScene();
 function assertDemoGM(): void {

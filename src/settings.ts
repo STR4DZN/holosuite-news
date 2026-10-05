@@ -1,9 +1,15 @@
+import { PAGE_MOTIONS, CARD_MOTIONS, HOVER_MOTIONS } from "./domain/portal-motion";
 import { MODULE_ID } from "./constants";
 import type { PortalBrand } from "./domain/model";
 import { formatViews } from "./utils/format";
 import { THEMES } from "./ui/preferences";
 export function registerSettings(): void {
   const changed = () => Hooks.callAll(`${MODULE_ID}.appearanceChanged`);
+  for (const [key, name, choices, value] of [
+    ["pageMotion", "Transições de página", PAGE_MOTIONS, "auto"],
+    ["cardMotion", "Entrada dos posts", CARD_MOTIONS, "auto"],
+    ["hoverMotion", "Interação com posts", HOVER_MOTIONS, "lift"],
+  ] as const) game.settings.register(MODULE_ID, key, { name, scope: "client", config: false, type: String, default: value, choices, onChange: changed });
   game.settings.register(MODULE_ID, "theme", { name: "Aparência do HoloNews", scope: "client", config: true, type: String, default: "prisma", choices: Object.fromEntries(THEMES.map(t => [t.id, t.name])), onChange: changed });
   game.settings.register(MODULE_ID, "density", { name: "Espaçamento do HoloNews", scope: "client", config: true, type: String, default: "comfortable", choices: { comfortable: "Confortável", compact: "Compacto" }, onChange: changed });
   game.settings.register(MODULE_ID, "motionStyle", { name: "Movimento do HoloNews", scope: "client", config: true, type: String, default: "full", choices: { full: "Completo", subtle: "Sutil", reduced: "Reduzido" }, onChange: changed });

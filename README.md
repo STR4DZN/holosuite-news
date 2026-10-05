@@ -1,4 +1,4 @@
-# HoloNews 2.3 · Aparências e alertas
+# HoloNews 2.4 · Motion editorial
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
@@ -21,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.3.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.4.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.3.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.4.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -99,3 +99,7 @@ Jogadores veem apenas o portal. Criador, adição, publicação, importação, e
 
 A [pesquisa de motion](docs/motion-research.md) registra 14 referências, técnicas escolhidas e limites de desempenho. A implementação usa CSS e APIs nativas, sem engines adicionais de animação.
 
+
+## Motion editorial 2.4
+
+Configurações → Posts e páginas: transições, cartões e interação. Criador → Animações: entrada, capa e conteúdo durante a leitura. Use Testar post completo e role a prévia. Pesquisa e decisões em [docs/editorial-motion-research.md](docs/editorial-motion-research.md).

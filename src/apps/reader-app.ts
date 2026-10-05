@@ -43,6 +43,7 @@ export class PortalApp extends HoloNewsApplication {
     this.route.articleId = id;
     await this.rerender();
   }
+  replayMotion(): void { this.motion.replay(); }
   updateMotionPreference(reduced: boolean): void {
     this.motion.setReduced(reduced);
   }

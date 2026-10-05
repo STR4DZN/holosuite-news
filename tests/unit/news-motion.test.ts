@@ -36,3 +36,13 @@ describe("Perfis de publicação", () => {
     expect(imported.published).toBeNull();
   });
 });
+
+describe("Motion editorial v2.4", () => {
+  it("migra a 2.3 e valida capa e leitura sem aceitar chaves arbitrárias", () => {
+    const old = validateArticle({ ...newArticle("old"), motion: { entry: "hologram", alert: "card" } });
+    expect(old.motion?.cover).toBe("entry"); expect(old.motion?.reading).toBe("flow");
+    for (const motion of [{cover:"unknown"},{reading:"unknown"}]) expect(()=>validateArticle({...newArticle("bad"),motion})).toThrow();
+    const valid=validateArticle({...newArticle("new"),motion:{cover:"reveal",reading:"editorial"}});
+    expect(valid.motion?.cover).toBe("reveal");expect(valid.motion?.reading).toBe("editorial");
+  });
+});

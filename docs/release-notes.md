@@ -1,13 +1,11 @@
-# HoloNews 2.3.0
+# HoloNews 2.4.0 — posts, páginas e leitura em movimento
 
-Prisma mantém a aparência original aprovada: marca orbital, degradês violeta/ciano, cores de categorias e capa cinematográfica. A atualização acrescenta Gazeta, Obsidiana, Aurora, Terminal e Dossiê, com fundos suaves e tipografia de leitura ajustada.
+A configuração **Posts e páginas** acrescenta seis transições de página, cinco entradas de cartões e três efeitos de interação, além de desligamento e combinações automáticas para os seis temas.
 
-**Configurações** no portal e nas janelas do mestre permite escolher tema, tamanho do texto, espaçamento e movimento. Cada usuário salva suas próprias preferências.
+No criador, **Animações** agora separa entrada da notícia, movimento da capa, conteúdo durante a leitura e alerta. Quatro novas apresentações de capa e quatro receitas de leitura executam no leitor e na prévia. Use **Testar post completo** e role a prévia.
 
-No criador, a aba **Animações** oferece oito entradas e seis alertas, além das opções sem efeito. Intensidade, ritmo e importância são configuráveis por notícia. **Alerta crítico** destaca publicações muito urgentes com pulsos breves. Os botões de teste mostram uma prévia local; a publicação entrega o alerta somente a leitores com audiência e permissão adequadas.
+Abrir um post aproveita a posição da imagem de origem. Voltar recupera a rolagem e o foco na lista. As abas do editor têm resposta breve, e digitar não faz a prévia pulsar.
 
-Modo Foco, Ctrl/Cmd+S e troca de aparência sem recriar o editor completam as melhorias. Efeitos são finitos e respeitam movimento reduzido do usuário e do sistema. Notícias e backups existentes continuam compatíveis.
+Efeitos finitos, cancelamento em navegação e movimento reduzido, sem dependência nova de animação. Prisma e os outros estilos conservam sua apresentação. Notícias e backups 2.3 recebem os novos padrões automaticamente. A integração de alteração de dados permanece removida.
 
-**Removida integralmente a integração de alteração de rolagens.** Depois de atualizar o módulo, recarregue todos os clientes do Foundry.
-
-Validação: TypeScript, lint, 37 testes unitários, 29 testes de navegador, inspeção visual dos seis temas e validação dos pacotes instaláveis. Os testes do adaptador verificam o contrato das janelas e do editor; não substituem a sessão final no Foundry licenciado.
+Pesquisa e decisões: `docs/editorial-motion-research.md`. Validação com TypeScript, lint, 38 testes unitários, 33 testes de navegador e inspeção visual; a sessão final no Foundry da mesa continua sendo a verificação do ambiente real.

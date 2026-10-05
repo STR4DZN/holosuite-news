@@ -10,9 +10,10 @@ export class PreferencesApp extends HoloNewsApplication {
   static PARTS = { content: { template: `${TEMPLATE_ROOT}/preferences.hbs` } };
   protected override async _prepareContext(): Promise<Record<string, unknown>> { return preferencesContext(appearance()); }
   protected override bind(root: HTMLElement): void {
-    bindPreferences(root, appearance(), async (key, value) => {
+    const settled = bindPreferences(root, appearance(), async (key, value) => {
       if (key === "motionStyle") await game.settings.set(MODULE_ID, "reduceMotion", value === "reduced");
       await game.settings.set(MODULE_ID, key, value);
     }, value => applyAppearance(root, value));
+    root.querySelector("[data-test-portal-motion]")?.addEventListener("click", () => void (async () => { await settled(); await this.close(); Hooks.callAll(`${MODULE_ID}.replayMotion`); })().catch(error => this.report(error)));
   }
 }

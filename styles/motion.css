@@ -242,3 +242,26 @@
     transition: none !important;
   }
 }
+
+
+/* Local editorial layers: no document-wide transition or persistent loops. */
+.hn-paper,.hn-card,.hn-lead { position:relative; }
+.hn-page-trace,.hn-hover-line,.hn-reading-rule { pointer-events:none;position:absolute;display:block; }
+.hn-page-trace { z-index:2;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,#a28ae7),#66cddd,transparent);transform-origin:left; }
+.hn-page-aperture {height:3px;transform-origin:center;}
+.hn-hover-line {bottom:0;left:0;right:0;height:2px;background:var(--accent,#a28ae7);transform-origin:left;}
+.hn-reading-rule {position:absolute;height:2px;width:72px;bottom:0;left:0;background:currentColor;transform-origin:left;}
+.hn-cover-band {position:absolute;top:0;bottom:0;width:20.2%;background:var(--paper,#111827);transform-origin:bottom;transform:scaleY(0);}
+.hn-cover-edge {position:absolute;display:block;background:var(--accent,#9ddae4);opacity:0;}
+.hn-cover-edge-0 {top:10px;left:10px;right:10px;height:2px;transform-origin:left;}
+.hn-cover-edge-1 {top:10px;bottom:10px;right:10px;width:2px;transform-origin:top;}
+.hn-cover-edge-2 {bottom:10px;left:10px;right:10px;height:2px;transform-origin:right;}
+.hn-cover-edge-3 {top:10px;bottom:10px;left:10px;width:2px;transform-origin:bottom;}
+.hn-motion-preferences {margin-top:18px;border-top:1px solid var(--line,#434750);padding-top:14px;}
+.hn-motion-preferences summary {cursor:pointer;font-weight:700;}
+.hn-motion-preferences p,.hn-motion-fields small {font-size:12px;line-height:1.6;}
+.hsn-window[data-hn-hover-motion] .hn-card:hover,.hsn-window[data-hn-hover-motion] .hn-lead:hover {transform:none;}
+.hsn-window[data-hn-hover-motion] .hn-card:hover img,.hsn-window[data-hn-hover-motion] .hn-lead-image:hover img {transform:none;}
+@media(prefers-reduced-motion:reduce){.hn-page-trace,.hn-hover-line,.hn-reading-rule,.hn-fx-trace{display:none!important;}}
+
+.hn-article-body>h2,.hn-article-body>h3,.hn-article-body>blockquote{position:relative;}

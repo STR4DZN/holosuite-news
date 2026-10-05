@@ -41,7 +41,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.3.0",
+  version: "2.4.0",
   openSettings: async () => { preferences ??= new PreferencesApp(); await preferences.render({ force: true }); return preferences; },
   openReader: openPortal,
   openManager,
@@ -144,3 +144,5 @@ Hooks.on("updateUser", (user: any, changes: any) => {
   if (user.id === game.user.id && ("role" in changes || "active" in changes))
     refresh();
 });
+
+Hooks.on(`${MODULE_ID}.replayMotion`, () => void openPortal().then(app => { app.bringToFront?.(); app.replayMotion(); }).catch(report));

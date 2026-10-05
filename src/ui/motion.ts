@@ -1,3 +1,4 @@
+import { resolveMotion } from "../domain/portal-motion";
 /** Scoped editorial motion, inspired by Codrops/Motion/GSAP and Carbon.
  * WAAPI effects are finite, tracked and cancelled when a view closes/rebinds.
  */
@@ -36,6 +37,10 @@ export class MotionScene {
   private seen = new Set<string>();
   private source?: Rect;
   private navRect?: { x: number; width: number };
+  private direction = 1;
+  private returning = false;
+  private feedScroll = 0;
+  private openedId = "";
   private navigate = false;
   private articleId = "";
   private frame?: number;
@@ -89,6 +94,7 @@ export class MotionScene {
       this.reveal(root.querySelector(".hn-preview-pane"), 90, 14);
     }
     this.bindDisclosures(root);
+    this.bindInteractions(root);
     this.source = undefined;
     this.navigate = false;
   }
@@ -107,7 +113,7 @@ export class MotionScene {
     )
       return;
     const effect = element.animate(frames, {
-      duration: duration * (this.root.dataset.hnMotion === "subtle" ? .7 : 1),
+      duration: duration * (this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle" ? .7 : 1),
       delay,
       easing: ease,
       fill: "backwards",
@@ -123,7 +129,7 @@ export class MotionScene {
     return effect;
   }
   private reveal(element: Element | null, delay = 0, distance = 16): void {
-    if (this.root?.dataset.hnMotion === "subtle") distance *= .3;
+    if (this.root?.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle") distance *= .3;
     this.play(
       element,
       [
@@ -137,6 +143,12 @@ export class MotionScene {
   private capture(event: Event): void {
     const target = (event.target as Element).closest<HTMLElement>("button");
     if (!target || target.hasAttribute("disabled")) return;
+    this.direction = target.matches("[data-prev], [data-back]") ? -1 : 1;
+    this.returning = target.hasAttribute("data-back");
+    if (target.hasAttribute("data-open")) {
+      this.feedScroll = this.root?.querySelector(".hn-portal")?.scrollTop ?? 0;
+      this.openedId = target.dataset.open ?? "";
+    }
     const source = target.closest(".hn-lead, .hn-card")?.querySelector("img");
     if (target.hasAttribute("data-open"))
       this.source = source ? rect(source) : undefined;
@@ -233,9 +245,22 @@ export class MotionScene {
       .querySelector(".hn-portal")
       ?.toggleAttribute("data-reading", !!article);
     if (article && newArticle) {
+      const scroller = root.querySelector<HTMLElement>(".hn-portal");
+      if (scroller) scroller.scrollTop = 0;
+      this.page(root);
       this.newsEffects?.entry(article, profileFromArticle(article));
+      this.sharedCover(article);
+    } else if (article) {
+      this.newsEffects?.reading(article, profileFromArticle(article));
     } else if (!article && (first || this.navigate || this.articleId)) {
       this.seen.clear();
+      const scroller = root.querySelector<HTMLElement>(".hn-portal");
+      if (scroller && this.navigate) scroller.scrollTop = this.returning ? this.feedScroll : 0;
+      this.page(root);
+      if (this.returning && this.openedId) {
+        const button = [...root.querySelectorAll<HTMLElement>("[data-open]")].find(b => b.dataset.open === this.openedId);
+        button?.focus({ preventScroll: true });
+      }
       this.reveal(root.querySelector(".hn-feed-heading"), 60, 12);
       this.reveal(root.querySelector(".hn-lead-text"), 100, 18);
       this.reveal(root.querySelector(".hn-lead-image"), 150, 22);
@@ -250,6 +275,73 @@ export class MotionScene {
     this.articleId = id;
     this.observe(root, ".hn-card", ".hn-portal", 50);
     this.readingProgress(root);
+  }
+  private page(root: HTMLElement): void {
+    const paper = root.querySelector<HTMLElement>(".hn-paper");
+    if (!paper) return;
+    const recipe = resolveMotion(root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnPageMotion, root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnTheme, "page");
+    paper.dataset.motionRecipe = recipe;
+    if (recipe === "none") return;
+    const d = root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle" ? .25 : 1;
+    const starts: Record<string, string> = {
+      fade: "none", slide: `translateX(${this.direction * 34*d}px)`, depth: `translateY(${15*d}px) scale(.98)`,
+      fold: `perspective(1400px) rotateY(${this.direction * -5*d}deg) translateX(${this.direction * 12*d}px)`,
+      aperture: `translateY(${10*d}px) scaleY(.98)`, signal: `translateY(${6*d}px)`,
+    };
+    if (recipe === "aperture") {
+      [...paper.children].filter(n => !n.classList.contains("hn-page-trace")).slice(0,6).forEach((node,i) => this.play(node,[{opacity:.25,transform:`translateX(${(i%2 ? 16 : -16)*d}px)`},{opacity:1,transform:"none"}],400,Math.min(i*30,120)));
+    }
+    this.play(paper, [{ opacity: .25, transform: starts[recipe] }, { opacity: 1, transform: "none" }], 430);
+    if ((recipe === "signal" || recipe === "aperture") && d === 1 && !prefersReducedMotion(root)) {
+      const trace = document.createElement("span"); trace.className = `hn-page-trace hn-page-${recipe}`; trace.setAttribute("aria-hidden", "true"); paper.append(trace); this.nodes.add(trace);
+      const effect = this.play(trace, recipe === "signal" ? [{ opacity: 0, transform: "scaleX(0)" }, { opacity: .8, transform: "scaleX(1)", offset: .5 }, { opacity: 0, transform: "scaleX(1)" }] : [{ opacity: .45, transform: "scaleX(.2)" }, { opacity: 0, transform: "scaleX(1)" }], 600);
+      const clean = () => { trace.remove(); this.nodes.delete(trace); }; if (effect) void effect.finished.then(clean,clean); else clean();
+    }
+  }
+  private card(element: HTMLElement, index: number, step: number): void {
+    if (!this.root) return;
+    const recipe = resolveMotion(this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnCardMotion, this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnTheme, "card");
+    element.dataset.motionRecipe = recipe;
+    if (recipe === "none") return;
+    const d = this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle" ? .25 : 1;
+    const starts: Record<string,string> = { rise: `translateY(${24*d}px)`, alternate: `translateX(${(index%2 ? 22 : -22)*d}px)`, depth: `translateY(${15*d}px) scale(.96)`, unfold: `perspective(1000px) rotateX(${7*d}deg) translateY(${12*d}px)`, editorial: `translateY(${7*d}px)` };
+    const delay = Math.min(index*step, 150);
+    this.play(element, [{ opacity: .15, transform: starts[recipe] }, { opacity: 1, transform: "none" }], 380, delay);
+    if (recipe === "editorial") {
+      this.play(element.querySelector(".hn-card-image img"), [{ opacity: .3, transform: "scale(1.04)" }, { opacity: 1, transform: "none" }], 460, delay+40);
+      this.reveal(element.querySelector("h3"), delay+75, 5);
+      this.reveal(element.querySelector(".hn-card-meta"), delay+100, 3);
+    }
+  }
+  private sharedCover(article: HTMLElement): void {
+    const source = this.source, picture = article.querySelector("figure");
+    if (article.dataset.coverMotion === "none" || !source || !picture || !this.root || this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnMotion === "subtle" || resolveMotion(this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnPageMotion,this.root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnTheme,"page") === "none") return;
+    const destination = rect(picture);
+    if (!destination.width || !destination.height) return;
+    this.play(picture, [{ transformOrigin: "top left", transform: `translate(${source.x-destination.x}px,${source.y-destination.y}px) scale(${source.width/destination.width},${source.height/destination.height})`, opacity: .65 }, { transformOrigin: "top left", transform: "none", opacity: 1 }], 480);
+  }
+  private bindInteractions(root: HTMLElement): void {
+    const signal = this.controller!.signal;
+    const activate = (event: Event) => {
+      const target = event.target as Element;
+      const card = target.closest<HTMLElement>(".hn-card, .hn-lead");
+      if (!card || (event instanceof MouseEvent && event.relatedTarget instanceof Node && card.contains(event.relatedTarget))) return;
+      const recipe = root.closest<HTMLElement>("[data-hn-theme]")?.dataset.hnHoverMotion || "lift";
+      if (recipe === "none") return;
+      if (recipe === "image") this.play(card.querySelector("img"), [{ transform: "scale(1)" }, { transform: "scale(1.035)", offset: .55 }, { transform: "scale(1)" }], 650);
+      else if (recipe === "lift") this.play(card, [{ transform: "translateY(0)" }, { transform: "translateY(-3px)", offset: .5 }, { transform: "translateY(0)" }], 430);
+      else if (!prefersReducedMotion(root)) {
+        const line = document.createElement("i"); line.className="hn-hover-line"; line.setAttribute("aria-hidden","true"); card.append(line); this.nodes.add(line);
+        const effect=this.play(line,[{transform:"scaleX(0)",opacity:0},{transform:"scaleX(1)",opacity:.9,offset:.65},{transform:"scaleX(1)",opacity:0}],600);
+        const clean=()=>{line.remove();this.nodes.delete(line);}; if(effect) void effect.finished.then(clean,clean); else clean();
+      }
+    };
+    root.addEventListener("pointerover",activate,{signal}); root.addEventListener("focusin",activate,{signal});
+    root.querySelector("[data-search]")?.addEventListener("submit",()=>{this.navigate=true;this.direction=1;this.returning=false;},{signal,capture:true});
+  }
+  panel(node: Element | null): void { this.reveal(node,0,8); }
+  replay(): void {
+    if (this.root && this.kind === "portal") { this.started=false; this.mount(this.root,"portal"); }
   }
   private categoryTrack(root: HTMLElement): void {
     const nav = root.querySelector<HTMLElement>(".hn-categories");
@@ -335,7 +427,7 @@ export class MotionScene {
                   .open ?? "";
             if (!this.seen.has(key)) {
               this.seen.add(key);
-              this.reveal(element, Math.min(order++ * step, 180), 22);
+              this.card(element, order++, step);
             }
             this.observer?.unobserve(element);
           }
