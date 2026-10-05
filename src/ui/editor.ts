@@ -2,6 +2,9 @@ import type { Newsroom } from "../core/newsroom";
 import { statusOf, type Article, type NewsItem } from "../domain/model";
 import { articleContext } from "./context";
 import { MotionScene } from "./motion";
+import { validateNewsMotion } from "../domain/news-motion";
+import { NewsEffects } from "./news-effects";
+import { alertElement } from "./alerts";
 
 export function readForm(
   form: HTMLFormElement,
@@ -32,6 +35,11 @@ export function readForm(
         mode: text("audience") as Article["audience"]["mode"],
         users: data.getAll("users").map(String),
       },
+      motion: validateNewsMotion({
+        entry: text("motionEntry") || undefined, alert: text("motionAlert") || undefined,
+        strength: text("motionStrength") || undefined, pace: text("motionPace") || undefined,
+        priority: text("motionPriority") || (data.has("urgent") ? "urgent" : "normal"),
+      }, data.has("urgent")),
     },
     notes: text("notes"),
   };
@@ -44,6 +52,7 @@ export interface EditorPorts {
   pickImage(current: string): Promise<string | null>;
 }
 export class EditorSession {
+  private readonly previewEffects = new NewsEffects();
   private root?: HTMLElement;
   private timer?: ReturnType<typeof setTimeout>;
   private previewTimer?: ReturnType<typeof setTimeout>;
@@ -77,6 +86,29 @@ export class EditorSession {
     form.addEventListener("input", input, options);
     form.addEventListener("change", input, options);
     form.addEventListener("submit", (event) => event.preventDefault(), options);
+    form.querySelector('[name="motionPriority"]')?.addEventListener("change", e => {
+      const urgent = form.querySelector<HTMLInputElement>('[name="urgent"]');
+      if (urgent) urgent.checked = (e.target as HTMLSelectElement).value === "urgent";
+    }, options);
+    form.querySelector('[name="urgent"]')?.addEventListener("change", e => {
+      const priority = form.querySelector<HTMLSelectElement>('[name="motionPriority"]');
+      if (priority) priority.value = (e.target as HTMLInputElement).checked ? "urgent" : "normal";
+    }, options);
+    root.querySelectorAll<HTMLButtonElement>("[data-writing-tab]").forEach(button => button.addEventListener("click", () => {
+      const tab = button.dataset.writingTab;
+      root.querySelectorAll<HTMLElement>("[data-writing-panel]").forEach(panel => panel.hidden = panel.dataset.writingPanel !== tab);
+      root.querySelectorAll<HTMLElement>("[data-writing-tab]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.writingTab === tab)));
+    }, options));
+    root.querySelector("[data-focus-editor]")?.addEventListener("click", e => {
+      const creator = root.querySelector(".hn-creator");
+      const focused = creator?.classList.toggle("hn-focus-editor");
+      (e.currentTarget as HTMLElement).setAttribute("aria-pressed", String(!!focused));
+    }, options);
+    root.addEventListener("keydown", e => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") { e.preventDefault(); void this.flush().catch(this.ports.error); }
+    }, options);
+    root.querySelector("[data-test-entry]")?.addEventListener("click", () => void this.testEntry().catch(this.ports.error), options);
+    root.querySelector("[data-test-alert]")?.addEventListener("click", () => this.testAlert(), options);
     // ProseMirror emits save when its toolbar/keyboard save command is used.
     form.querySelector('prose-mirror[name="body"]')?.addEventListener("save", input, options);
     root
@@ -160,10 +192,39 @@ export class EditorSession {
     const target = this.root?.querySelector<HTMLElement>("[data-live-preview]");
     if (target && this.root === root && generation === this.previewGeneration) {
       const changed = target.innerHTML !== html;
-      target.innerHTML = html;
-      if (changed) this.motion.pulsePreview(target);
+      if (changed) {
+        const scroll = target.scrollTop;
+        this.previewEffects.stop();
+        target.innerHTML = html;
+        target.scrollTop = scroll;
+        this.motion.pulsePreview(target);
+      }
     }
   }
+  private async testEntry(): Promise<void> {
+    const root = this.root, form = this.form(); if (!root || !form) return;
+    root.querySelector(".hn-creator")?.classList.remove("hn-focus-editor");
+    root.querySelector("[data-focus-editor]")?.setAttribute("aria-pressed", "false");
+    root.querySelector<HTMLElement>("[data-alert-preview]")?.replaceChildren();
+    await this.updatePreview();
+    if (this.root !== root) return;
+    const article = root.querySelector<HTMLElement>("[data-live-preview] .hn-article");
+    if (article) this.previewEffects.entry(article, readForm(form, this.item.id).draft.motion!);
+    root.querySelector("[data-live-preview]")?.scrollIntoView({ block: "nearest", behavior: "instant" });
+  }
+  private testAlert(): void {
+    const form = this.form(), target = this.root?.querySelector<HTMLElement>("[data-alert-preview]"); if (!form || !target) return;
+    this.root?.querySelector(".hn-creator")?.classList.remove("hn-focus-editor");
+    this.root?.querySelector("[data-focus-editor]")?.setAttribute("aria-pressed", "false");
+    this.previewEffects.stop(); target.replaceChildren();
+    const draft = readForm(form, this.item.id).draft;
+    if (draft.motion!.alert === "none") return;
+    const close = () => { this.previewEffects.stop(); target.replaceChildren(); };
+    const notice = alertElement(draft, () => { close(); void this.testEntry().catch(this.ports.error); }, close);
+    target.append(notice); this.previewEffects.alert(notice, draft.motion!);
+    target.scrollIntoView({ block: "nearest", behavior: "instant" });
+  }
+  updateAppearance(): void { this.previewEffects.preferenceChanged(); }
   flush(): Promise<void> {
     clearTimeout(this.timer);
     const action = this.chain.then(async () => {
@@ -283,6 +344,7 @@ export class EditorSession {
     }
   }
   dispose(): void {
+    this.previewEffects.dispose();
     this.listeners?.abort();
     clearTimeout(this.timer);
     clearTimeout(this.previewTimer);

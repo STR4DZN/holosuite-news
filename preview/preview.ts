@@ -5,6 +5,9 @@ import portalTemplate from "../templates/reader/portal.hbs?raw";
 import managerTemplate from "../templates/gm/manager.hbs?raw";
 import editorTemplate from "../templates/gm/editor.hbs?raw";
 import articleTemplate from "../templates/reader/article.hbs?raw";
+import preferencesTemplate from "../templates/preferences.hbs?raw";
+import { applyAppearance, bindPreferences, preferencesContext, type Appearance } from "../src/ui/preferences";
+import motionTemplate from "../templates/gm/motion-fields.hbs?raw";
 import { registerHelpers } from "../src/settings";
 import { Newsroom } from "../src/core/newsroom";
 import { MemoryNewsStore } from "../src/storage/memory-store";
@@ -25,6 +28,7 @@ import transit from "../assets/transit.svg";
 import cargo from "../assets/cargo.svg";
 
 registerHelpers(Handlebars);
+Handlebars.registerPartial("modules/holosuite-news/dist/templates/gm/motion-fields.hbs", motionTemplate);
 Handlebars.registerPartial(
   "modules/holosuite-news/dist/templates/reader/article.hbs",
   articleTemplate,
@@ -34,6 +38,7 @@ const templates = {
   manager: Handlebars.compile(managerTemplate),
   editor: Handlebars.compile(editorTemplate),
   article: Handlebars.compile(articleTemplate),
+  preferences: Handlebars.compile(preferencesTemplate),
 };
 const demoAssets: Record<string, string> = {
   "demo/meridian.svg": skyline,
@@ -81,6 +86,24 @@ customElements.define("prose-mirror", DemoRichText);
 const store = new MemoryNewsStore();
 const DEMO_STORAGE_KEY = "holonews-prisma-v2-2";
 const root = document.querySelector<HTMLElement>("#demo")!;
+const windowRoot = root.closest<HTMLElement>(".hsn-window")!;
+function demoAppearance(): Appearance {
+  let saved: Partial<Appearance> = {};
+  try { saved = JSON.parse(localStorage.getItem(`holonews-appearance-${reader}`) || "{}"); } catch { /* defaults */ }
+  return { theme: saved.theme || "prisma", density: saved.density || "comfortable", fontScale: saved.fontScale || 1, motionStyle: document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked ? "reduced" : saved.motionStyle || "full" };
+}
+function openPreferences(): void {
+  document.getElementById("demo-preferences")?.remove();
+  const panel = document.createElement("section"); panel.id = "demo-preferences"; panel.className = "hsn-window demo-appearance-window";
+  panel.innerHTML = '<button type="button" class="demo-close-appearance" aria-label="Fechar configurações">Fechar</button>'+templates.preferences(preferencesContext(demoAppearance()));
+  panel.querySelector(".demo-close-appearance")!.addEventListener("click", () => panel.remove());
+  document.body.append(panel); applyAppearance(panel, demoAppearance());
+  bindPreferences(panel, demoAppearance(), async (key, value) => {
+    const next = { ...demoAppearance(), [key]: value };
+    if (key === "motionStyle") document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked = value === "reduced";
+    localStorage.setItem(`holonews-appearance-${reader}`, JSON.stringify(next));
+  }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); session?.updateAppearance(); });
+}
 const scene = new MotionScene();
 function assertDemoGM(): void {
   if (reader !== "gm")
@@ -228,6 +251,8 @@ async function edit(id: string): Promise<void> {
   await render();
 }
 async function render(): Promise<void> {
+  document.getElementById("demo-preferences")?.remove();
+  applyAppearance(windowRoot, demoAppearance());
   if (reader !== "gm" && mode !== "portal") {
     session?.dispose();
     session = undefined;
@@ -386,6 +411,8 @@ async function render(): Promise<void> {
     mount.replaceChildren(rich);
     session.bind(root);
   }
+  applyAppearance(windowRoot, demoAppearance());
+  root.querySelectorAll<HTMLButtonElement>("[data-appearance]").forEach(b => b.onclick = openPreferences);
 }
 document.querySelectorAll<HTMLButtonElement>("[data-mode]").forEach(
   (button) =>
@@ -420,6 +447,7 @@ document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.onchange = (
   event,
 ) => {
   scene.setReduced((event.target as HTMLInputElement).checked);
+  applyAppearance(windowRoot, demoAppearance()); session?.updateAppearance();
 };
 document.querySelector<HTMLButtonElement>("[data-reset]")!.onclick = () => {
   if (reader !== "gm") {

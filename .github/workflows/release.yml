@@ -49,15 +49,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.value }}
         run: |
-          cp preview-dist/HoloNews-Preview.html artifacts/HoloNews-Prisma-Preview.html
+          cp preview-dist/HoloNews-Preview.html artifacts/HoloNews-Preview.html
           gh release create "v$VERSION" \
             --target "$GITHUB_SHA" \
             --title "HoloNews v$VERSION" \
-            --notes-file /dev/null \
+            --notes-file docs/release-notes.md \
             --latest \
             module.json \
             "artifacts/holosuite-news-v$VERSION.zip" \
             "artifacts/holosuite-news-v$VERSION-source.zip" \
             "artifacts/holosuite-news-v$VERSION.zip.sha256" \
             "artifacts/holosuite-news-v$VERSION-source.zip.sha256" \
-            artifacts/HoloNews-Prisma-Preview.html
+            artifacts/HoloNews-Preview.html
+

@@ -9,6 +9,7 @@ import { assertWriter } from "../permissions/authority";
 import { brand } from "../settings";
 
 export class CreatorApp extends HoloNewsApplication {
+  protected override onAppearanceChanged(): void { this.session?.updateAppearance(); }
   static override DEFAULT_OPTIONS = {
     ...HoloNewsApplication.DEFAULT_OPTIONS,
     id: "holonews-creator",

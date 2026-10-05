@@ -1,5 +1,7 @@
 import { HoloNewsError } from "../domain/errors";
 import { MotionScene } from "../ui/motion";
+import { MODULE_ID } from "../constants";
+import { appearance, applyAppearance } from "../ui/preferences";
 
 const globalFoundry = () => (globalThis as any).foundry;
 
@@ -25,6 +27,8 @@ function resolveApplicationBase(): any {
 const RuntimeApplicationBase = resolveApplicationBase();
 
 export abstract class HoloNewsApplication extends RuntimeApplicationBase {
+  private appearanceListeners?: AbortController;
+  private appearanceHook?: number;
   protected readonly motion = new MotionScene();
   static DEFAULT_OPTIONS = {
     id: "holosuite-news-app",
@@ -43,6 +47,9 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
   }
 
   async close(options: object = {}): Promise<void> {
+    this.appearanceListeners?.abort();
+    if (this.appearanceHook !== undefined) (globalThis as any).Hooks?.off?.(`${MODULE_ID}.appearanceChanged`, this.appearanceHook);
+    this.appearanceHook = undefined;
     this.motion.dispose();
     await (
       super.close as ((options?: object) => Promise<void>) | undefined
@@ -69,13 +76,7 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
     )?.call(this, context, options);
     const root = this.root();
     if (root) {
-      root.classList.toggle(
-        "hn-no-motion",
-        (globalThis as any).game?.settings?.get?.(
-          "holosuite-news",
-          "reduceMotion",
-        ) === true,
-      );
+      this.bindAppearance(root);
       this.bind(root);
     }
   }
@@ -86,8 +87,26 @@ export abstract class HoloNewsApplication extends RuntimeApplicationBase {
       html,
     );
     const root = html?.[0] instanceof HTMLElement ? html[0] : html;
-    if (root instanceof HTMLElement) this.bind(root);
+    if (root instanceof HTMLElement) { this.bindAppearance(root); this.bind(root); }
   }
+  private bindAppearance(root: HTMLElement): void {
+    this.appearanceListeners?.abort();
+    this.appearanceListeners = new AbortController();
+    this.updateAppearance();
+    const hooks = (globalThis as any).Hooks;
+    if (this.appearanceHook === undefined && hooks?.on)
+      this.appearanceHook = hooks.on(`${MODULE_ID}.appearanceChanged`, () => this.updateAppearance());
+    root.querySelectorAll("[data-appearance]").forEach(b => b.addEventListener("click", () => hooks?.callAll?.(`${MODULE_ID}.openPreferences`), { signal: this.appearanceListeners!.signal }));
+  }
+  updateAppearance(): void {
+    const root = this.root();
+    if (!root) return;
+    const value = appearance();
+    applyAppearance(root, value);
+    this.motion.setReduced(value.motionStyle === "reduced");
+    this.onAppearanceChanged();
+  }
+  protected onAppearanceChanged(): void {}
 
   protected async rerender(): Promise<void> {
     // Background updates must never reopen a window that closed while awaiting data.

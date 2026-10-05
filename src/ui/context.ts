@@ -7,6 +7,7 @@ import {
 } from "../domain/model";
 import { enrichSafeHtml, formatViews } from "../utils/format";
 import { channelTone, readingLabel, authorInitials } from "./identity";
+import { motionOptions, PRIORITIES, validateNewsMotion } from "../domain/news-motion";
 export interface PortalRoute {
   articleId?: string;
   query: string;
@@ -22,8 +23,11 @@ export function normalize(value: string): string {
 export async function articleContext(
   article: Article,
 ): Promise<Record<string, unknown>> {
+  const motion = validateNewsMotion(article.motion, article.urgent);
   return {
     ...article,
+    motion,
+    priorityLabel: motion.priority === "normal" ? "" : PRIORITIES[motion.priority],
     tone: channelTone(article.category),
     readingLabel: readingLabel(article.body),
     authorInitials: authorInitials(article.author),
@@ -151,6 +155,7 @@ export function editorContext(
   categories: string[],
 ): Record<string, unknown> {
   return {
+    ...motionOptions(validateNewsMotion(item.draft.motion, item.draft.urgent)),
     item,
     article: item.draft,
     notes: item.notes,

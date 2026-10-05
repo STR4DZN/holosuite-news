@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.3.0 — Aparências e alertas
+
+- Prisma original preservado: marca orbital, degradês violeta/ciano, categorias coloridas e capa cinematográfica.
+- Cinco estilos adicionais com composição própria: Gazeta, Obsidiana, Aurora, Terminal e Dossiê.
+- Configurações individuais de tema, fonte, espaçamento e movimento, aplicadas sem recriar o texto rico.
+- Oito entradas e seis alertas por notícia, além das opções sem efeito; intensidade, ritmo e importância configuráveis.
+- Prévia local dos efeitos e notificações de publicação com audiência e permissões nativas verificadas.
+- Efeitos finitos, limpeza ao fechar e interrupção imediata com movimento reduzido.
+- Foco na escrita, atalho de salvar e prévia preservada quando não mudou.
+- Perfis de animação preservados na publicação, revisão, duplicação e backup; compatibilidade com notícias existentes.
+- Removida completamente a integração de alteração dos dados.
+
+
 ## 2.2.0 — Prisma
 
 - Prisma integrado ao portal, à notícia aberta, à lista e ao criador do mestre.
@@ -42,3 +55,4 @@
 - Prévia independente, empacotamento portátil e testes de fluxos completos.
 
 As versões 1.x e suas decisões permanecem no histórico Git.
+

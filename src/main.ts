@@ -6,13 +6,15 @@ import { assertWriter, primaryGM } from "./permissions/authority";
 import { ManagerApp } from "./apps/editorial-app";
 import { PortalApp } from "./apps/reader-app";
 import { registerSettings, registerHelpers } from "./settings";
-import { installSessionDice } from "./integration/session-dice";
+import { PreferencesApp } from "./apps/preferences-app";
+import { PublicationAlerts } from "./ui/alerts";
 import {
   registerWithHoloSuite,
   type HoloSuiteAdapter,
 } from "./integration/holosuite";
 
 let portal: PortalApp | undefined, manager: ManagerApp | undefined;
+let preferences: PreferencesApp | undefined, publicationAlerts: PublicationAlerts | undefined;
 let templatesReady: Promise<unknown>;
 function refresh(): void {
   if (portal?.rendered) void portal.render({ force: false });
@@ -39,7 +41,8 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.2.4",
+  version: "2.3.0",
+  openSettings: async () => { preferences ??= new PreferencesApp(); await preferences.render({ force: true }); return preferences; },
   openReader: openPortal,
   openManager,
   openArticle: async (id: string) => {
@@ -78,19 +81,15 @@ function report(error: unknown): void {
 Hooks.once("init", () => {
   registerSettings();
   registerHelpers();
-  templatesReady = loadTemplates([`${TEMPLATE_ROOT}/reader/article.hbs`]);
+  templatesReady = loadTemplates([`${TEMPLATE_ROOT}/reader/article.hbs`, `${TEMPLATE_ROOT}/gm/motion-fields.hbs`]);
   game.modules.get(MODULE_ID).api = api;
   (globalThis as any).HoloNews = api;
 });
 Hooks.once("ready", async () => {
-  installSessionDice({
-    prototype:
-      (globalThis as any).CONFIG?.Dice?.terms?.d?.prototype ??
-      foundry.dice?.terms?.Die?.prototype,
-    getUser: () => game.user,
-  });
   await templatesReady;
   registerTile();
+  publicationAlerts = new PublicationAlerts(api.openArticle);
+  publicationAlerts.prime(game.journal ?? []);
   if (game.user.isGM && primaryGM()?.id === game.user.id) {
     try {
       await newsroom.recover();
@@ -103,6 +102,8 @@ Hooks.once("ready", async () => {
 Hooks.on("holosuite-core.apiReady", registerTile);
 Hooks.on(`${MODULE_ID}.changed`, () => manager?.refresh());
 Hooks.on(`${MODULE_ID}.brandChanged`, refresh);
+Hooks.on(`${MODULE_ID}.openPreferences`, () => void api.openSettings().catch(report));
+Hooks.on(`${MODULE_ID}.appearanceChanged`, () => publicationAlerts?.appearanceChanged());
 Hooks.on(`${MODULE_ID}.motionChanged`, (reduced: boolean) => {
   portal?.updateMotionPreference(reduced);
   manager?.updateMotionPreference(reduced);
@@ -113,6 +114,10 @@ for (const event of [
   "deleteJournalEntry",
 ])
   Hooks.on(event, (doc: any, ...args: any[]) => {
+    if (!doc.pack) {
+      if (event === "deleteJournalEntry") publicationAlerts?.remove(doc);
+      else publicationAlerts?.observe(doc);
+    }
     const userId = args.at(-1);
     if (doc.pack === "world.holonews-workspace" && userId !== game.user.id)
       store.invalidate();
@@ -127,6 +132,7 @@ Hooks.on("updateSetting", (setting: any) => {
   if (setting.key === "core.compendiumConfiguration") store.invalidate();
 });
 Hooks.on("updateUser", (user: any, changes: any) => {
+  publicationAlerts?.permissionsChanged();
   if (user.id === game.user.id && "role" in changes && !game.user.isGM) {
     const previous = manager;
     manager = undefined;

@@ -1,10 +1,11 @@
-# HoloNews 2.2 · Prisma
+# HoloNews 2.3 · Aparências e alertas
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
 ## O que está pronto
 
-- Portal escuro Prisma, responsivo, com manchete, capas, categorias, busca sem acentos, paginação e leitura completa.
+- Seis aparências individuais: Prisma original, Gazeta, Obsidiana, Aurora, Terminal e Dossiê. Preferências de fonte, espaçamento e movimento salvas por usuário.
+- Portal responsivo, com manchete, capas, categorias, busca sem acentos, paginação e leitura completa.
 - Criador com título, resumo, texto rico do Foundry, capa pelo File Picker, legenda, categoria, autor, tags e data fictícia.
 - Destaque, notícia urgente e contador narrativo de visualizações definido pelo mestre.
 - Salvamento automático de rascunhos, prévia ao lado e publicação explícita. Editar uma notícia publicada mantém sua versão atual no portal até publicar a revisão.
@@ -20,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.2.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.3.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.2.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.3.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -40,6 +41,18 @@ O texto aceita links de documentos e enriquecimentos do Foundry. Não existe edi
 Rascunhos e notas ficam no compêndio de mundo **HoloNews · Rascunhos do mestre**, com acesso negado a PLAYER/TRUSTED e permitido a ASSISTANT/GAMEMASTER. Cada publicação gera um JournalEntry separado, sem notas ou texto de revisões não publicadas. O portal aplica a audiência e a permissão nativa do documento.
 
 Se vários mestres estiverem conectados, o GM ativo com menor ID será o responsável pelas escritas. O erro indica seu nome. Isso evita dois clientes publicando simultaneamente; outras janelas do mesmo mestre usam revisões por notícia e rejeitam versões antigas.
+
+## Aparência e animações
+
+Use **Configurações** no portal, na lista ou no criador. Cada jogador e mestre escolhe sua própria aparência. Os temas usam fundos suaves, texto de alto contraste e fontes de leitura coerentes. Prisma mantém a marca orbital, os degradês violeta/ciano e a capa cinematográfica original.
+
+No criador, abra **Animações** para escolher uma das oito entradas animadas (ou nenhuma), um dos seis alertas (ou nenhum), intensidade, ritmo e importância. **Testar entrada** e **Testar alerta** são prévias locais; a notificação aos leitores acontece ao publicar. Os perfis acompanham o rascunho, a publicação, as cópias e os backups. Notícias antigas continuam abrindo normalmente.
+
+Alertas aparecem somente para quem pode ler a publicação e possui permissão nativa no documento. Revisões em rascunho não notificam. A leitura permanece disponível depois que o movimento termina; o leitor pode abrir ou dispensar o aviso. Movimento reduzido do sistema ou do usuário tem prioridade sobre os efeitos da notícia.
+
+O modo **Foco** amplia a escrita e **Ctrl/Cmd+S** salva o rascunho. Mudar a aparência ou a aba mantém o editor rico e o texto em edição.
+
+Depois de atualizar para 2.3.0, recarregue todos os clientes do Foundry. Esta versão remove integralmente a antiga integração que alterava rolagens.
 
 ## Conteúdo da versão anterior
 
@@ -85,3 +98,4 @@ A versão 2.1 inclui abertura em sequência, assinatura de transmissão, cartõe
 Jogadores veem apenas o portal. Criador, adição, publicação, importação, exportação e notas são exclusivos do mestre. A API e os construtores de janelas verificam permissão; controles ocultos não são a barreira de segurança. Perder o papel de mestre fecha as janelas administrativas.
 
 A [pesquisa de motion](docs/motion-research.md) registra 14 referências, técnicas escolhidas e limites de desempenho. A implementação usa CSS e APIs nativas, sem engines adicionais de animação.
+

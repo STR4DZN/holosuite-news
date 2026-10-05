@@ -4,6 +4,7 @@ export function bindPortal(
   route: PortalRoute,
   navigate: () => void,
 ): void {
+  root.querySelector("[data-dismiss-urgency]")?.addEventListener("click", e => (e.target as Element).closest(".hn-article-alert")?.remove());
   root.querySelectorAll<HTMLButtonElement>("[data-open]").forEach((button) =>
     button.addEventListener("click", () => {
       route.articleId = button.dataset.open;

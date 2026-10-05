@@ -1,6 +1,7 @@
 /** Scoped editorial motion, inspired by Codrops/Motion/GSAP and Carbon.
  * WAAPI effects are finite, tracked and cancelled when a view closes/rebinds.
  */
+import { NewsEffects, profileFromArticle } from "./news-effects";
 export type MotionKind = "portal" | "manager" | "creator";
 interface Rect {
   x: number;
@@ -16,11 +17,13 @@ function rect(element: Element): Rect {
 export function prefersReducedMotion(root: HTMLElement): boolean {
   return (
     root.matches(".hn-no-motion") ||
+    !!root.closest(".hn-no-motion") ||
     !!root.querySelector(".hn-no-motion") ||
     globalThis.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
   );
 }
 export class MotionScene {
+  private newsEffects?: NewsEffects;
   private root?: HTMLElement;
   private started = false;
   private kind?: MotionKind;
@@ -43,6 +46,7 @@ export class MotionScene {
 
   mount(root: HTMLElement, kind: MotionKind): void {
     this.stop();
+    this.newsEffects ??= new NewsEffects();
     this.root = root;
     this.controller = new AbortController();
     const signal = this.controller.signal;
@@ -103,7 +107,7 @@ export class MotionScene {
     )
       return;
     const effect = element.animate(frames, {
-      duration,
+      duration: duration * (this.root.dataset.hnMotion === "subtle" ? .7 : 1),
       delay,
       easing: ease,
       fill: "backwards",
@@ -119,6 +123,7 @@ export class MotionScene {
     return effect;
   }
   private reveal(element: Element | null, delay = 0, distance = 16): void {
+    if (this.root?.dataset.hnMotion === "subtle") distance *= .3;
     this.play(
       element,
       [
@@ -228,38 +233,7 @@ export class MotionScene {
       .querySelector(".hn-portal")
       ?.toggleAttribute("data-reading", !!article);
     if (article && newArticle) {
-      this.reveal(article.querySelector(".hn-eyebrow"), 0, 8);
-      this.reveal(article.querySelector("h1"), 45, 22);
-      this.reveal(article.querySelector(".hn-deck"), 95, 14);
-      this.reveal(article.querySelector(".hn-byline"), 140, 8);
-      const figure = article.querySelector("figure"),
-        image = figure?.querySelector("img");
-      if (this.source && figure && image) {
-        const target = rect(figure),
-          source = this.source;
-        if (
-          target.width > 0 &&
-          target.height > 0 &&
-          source.width > 0 &&
-          source.height > 0
-        ) {
-          const transform = `translate(${source.x - target.x}px,${source.y - target.y}px) scale(${source.width / target.width},${source.height / target.height})`;
-          this.play(
-            figure,
-            [
-              { transform, transformOrigin: "0 0", opacity: 0.6 },
-              {
-                transform: "translate(0,0) scale(1,1)",
-                transformOrigin: "0 0",
-                opacity: 1,
-              },
-            ],
-            560,
-            35,
-          );
-        }
-      } else this.reveal(figure, 140, 20);
-      this.reveal(article.querySelector(".hn-article-body"), 180, 12);
+      this.newsEffects?.entry(article, profileFromArticle(article));
     } else if (!article && (first || this.navigate || this.articleId)) {
       this.seen.clear();
       this.reveal(root.querySelector(".hn-feed-heading"), 60, 12);
@@ -476,6 +450,7 @@ export class MotionScene {
       prefersReducedMotion(this.root),
     );
     if (prefersReducedMotion(this.root)) this.finish();
+    this.newsEffects?.preferenceChanged();
   }
   feedback(target: Element | null): void {
     this.play(
@@ -489,6 +464,7 @@ export class MotionScene {
     );
   }
   private finish(): void {
+    this.newsEffects?.stop();
     for (const effect of this.effects) {
       try {
         effect.finish();
@@ -500,6 +476,7 @@ export class MotionScene {
       if (node.classList.contains("hn-ink-ripple")) node.remove();
   }
   private stop(): void {
+    this.newsEffects?.stop();
     this.controller?.abort();
     this.observer?.disconnect();
     this.resize?.disconnect();
@@ -512,6 +489,8 @@ export class MotionScene {
   }
   dispose(): void {
     this.stop();
+    this.newsEffects?.dispose();
+    this.newsEffects = undefined;
     this.root = undefined;
     this.started = false;
     this.rows.clear();
