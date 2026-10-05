@@ -109,6 +109,9 @@ body {
   z-index: 20;
   display: none;
 }
+.demo-appearance-window { position:fixed;inset:6vh auto auto 50%;transform:translateX(-50%);width:min(620px,calc(100vw - 24px));height:min(680px,85vh);z-index:50;box-shadow:0 18px 70px #0008;container-type:inline-size;container-name:hn-window; }
+.demo-close-appearance { float:right;margin:12px 15px 0;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 10px; }
+.demo-appearance-window .hn-preferences { height:calc(100% - 36px);clear:both; }
 .demo-editable {
   min-height: 220px;
   padding: 13px;

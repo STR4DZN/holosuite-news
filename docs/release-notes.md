@@ -1,20 +1,13 @@
-O visual Prisma passa a ser a identidade do HoloNews no portal dos jogadores, na leitura de notícias e nas ferramentas exclusivas do mestre.
+# HoloNews 2.3.0
 
-- **Identidade:** logo geométrica redesenhada, fundo escuro, degradês roxos e ciano, cores por categoria e detalhes editoriais nas capas e nos cards.
-- **Leitura:** tempo estimado, identificação do autor, apresentação de notícias sem capa e layouts adaptados a janelas estreitas e texto ampliado.
-- **Mestre:** redação e lista de notícias com o mesmo visual, editor rico legível e autosave sem interromper a digitação ou levantar a lista de notícias.
-- **Campanha:** cabeçalho usa o nome, slogan e rede configurados; os jogadores continuam vendo apenas conteúdo publicado e autorizado.
+Prisma mantém a aparência original aprovada: marca orbital, degradês violeta/ciano, cores de categorias e capa cinematográfica. A atualização acrescenta Gazeta, Obsidiana, Aurora, Terminal e Dossiê, com fundos suaves e tipografia de leitura ajustada.
 
-Sem novas dependências de execução. Inclui uma prévia HTML independente para experimentar o portal e o criador.
+**Configurações** no portal e nas janelas do mestre permite escolher tema, tamanho do texto, espaçamento e movimento. Cada usuário salva suas próprias preferências.
 
-## Instalação / atualização
+No criador, a aba **Animações** oferece oito entradas e seis alertas, além das opções sem efeito. Intensidade, ritmo e importância são configuráveis por notícia. **Alerta crítico** destaca publicações muito urgentes com pulsos breves. Os botões de teste mostram uma prévia local; a publicação entrega o alerta somente a leitores com audiência e permissão adequadas.
 
-Atualize HoloNews nos módulos do Foundry. Se necessário, reinstale pelo mesmo manifesto:
+Modo Foco, Ctrl/Cmd+S e troca de aparência sem recriar o editor completam as melhorias. Efeitos são finitos e respeitam movimento reduzido do usuário e do sistema. Notícias e backups existentes continuam compatíveis.
 
-```text
-https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
-```
+**Removida integralmente a integração de alteração de rolagens.** Depois de atualizar o módulo, recarregue todos os clientes do Foundry.
 
-A tag é **v2.2.0** e o pacote instalável é `holosuite-news-v2.2.0.zip`. Requer Foundry v13 e HoloSuite Core. Recarregue o navegador depois da atualização.
-
-Validação: TypeScript, lint, 34 testes unitários, 21 testes de navegador e conferência do pacote. Os testes incluem texto, formatação, autosave, permissões, categorias e janelas estreitas. Os testes do adaptador não substituem a validação dentro de um mundo real do Foundry.
+Validação: TypeScript, lint, 37 testes unitários, 29 testes de navegador, inspeção visual dos seis temas e validação dos pacotes instaláveis. Os testes do adaptador verificam o contrato das janelas e do editor; não substituem a sessão final no Foundry licenciado.

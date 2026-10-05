@@ -4,7 +4,10 @@ import "../../styles/index.css";
 import managerTemplate from "../../templates/gm/manager.hbs?raw";
 import creatorTemplate from "../../templates/gm/editor.hbs?raw";
 import articleTemplate from "../../templates/reader/article.hbs?raw";
+import motionTemplate from "../../templates/gm/motion-fields.hbs?raw";
 import portalTemplate from "../../templates/reader/portal.hbs?raw";
+import preferencesTemplate from "../../templates/preferences.hbs?raw";
+import { PublicationAlerts } from "../../src/ui/alerts";
 import { registerHelpers } from "../../src/settings";
 import { Newsroom } from "../../src/core/newsroom";
 import { MemoryNewsStore } from "../../src/storage/memory-store";
@@ -16,9 +19,17 @@ const errors: string[] = [];
 let active = "";
 const configs: any[] = [];
 const renders: Array<{ id: string; force?: boolean }> = [];
+let nextHook = 0;
+const hooks = new Map<string, Map<number, (...args: any[]) => void>>();
+globals.Hooks = {
+  on(event: string, callback: (...args: any[]) => void) { const id = ++nextHook; if (!hooks.has(event)) hooks.set(event, new Map()); hooks.get(event)!.set(id, callback); return id; },
+  off(event: string, id: number) { hooks.get(event)?.delete(id); },
+  callAll(event: string, ...args: any[]) { for (const cb of hooks.get(event)?.values() ?? []) cb(...args); },
+};
 registerHelpers(Handlebars);
+Handlebars.registerPartial("modules/holosuite-news/dist/templates/gm/motion-fields.hbs", motionTemplate);
 Handlebars.registerPartial("modules/holosuite-news/dist/templates/reader/article.hbs", articleTemplate);
-const templates = {manager: Handlebars.compile(managerTemplate), creator: Handlebars.compile(creatorTemplate), article: Handlebars.compile(articleTemplate), portal: Handlebars.compile(portalTemplate)};
+const templates = {manager: Handlebars.compile(managerTemplate), creator: Handlebars.compile(creatorTemplate), article: Handlebars.compile(articleTemplate), portal: Handlebars.compile(portalTemplate), preferences: Handlebars.compile(preferencesTemplate)};
 
 class ApplicationContract {
   element?: HTMLElement;
@@ -36,7 +47,7 @@ class ApplicationContract {
     root.className = "hsn-window hn-no-motion";
     root.id = this.options.id;
     root.style.cssText = "width:1050px;height:760px;position:relative;margin:12px";
-    root.innerHTML = '<div class="window-content" style="height:100%">'+(this.options.id.startsWith("holonews-creator") ? templates.creator(context) : this.options.id === "holonews-portal" ? templates.portal(context) : templates.manager(context))+'</div>';
+    root.innerHTML = '<div class="window-content" style="height:100%">'+(this.options.id.startsWith("holonews-creator") ? templates.creator(context) : this.options.id === "holonews-portal" ? templates.portal(context) : this.options.id === "holonews-preferences" ? templates.preferences(context) : templates.manager(context))+'</div>';
     if (!root.isConnected) document.body.append(root);
     this.element = root;
     this.rendered = true;
@@ -83,12 +94,15 @@ style.textContent = '.prosemirror .editor-container {position:relative;flex:1;mi
 document.head.prepend(style);
 globals.foundry = {applications: {api: {ApplicationV2: ApplicationContract, HandlebarsApplicationMixin: (base: any) => base}, elements: {HTMLProseMirrorElement: RichTextContract}}};
 const settings: Record<string, unknown> = {reduceMotion:true,fontScale:1,portalName:"HoloNews",portalTagline:"O seu mundo. Em transmissão.",portalLocation:"Rede de teste"};
-globals.game = {user: {id:"gm",isGM:true,active:true}, users:[{id:"gm",isGM:true,active:true}], settings:{get: (_module: string,key: string) => settings[key]},journal:[]};
+globals.game = {user: {id:"gm",isGM:true,active:true}, users:[{id:"gm",isGM:true,active:true}], settings:{get: (_module: string,key: string) => settings[key],set:async (_module: string,key: string,value: unknown) => { settings[key]=value; globals.Hooks.callAll("holosuite-news.appearanceChanged"); }},journal:[]};
 globals.ui = {notifications:{error:(message: string) => errors.push(message)}};
 globals.TextEditor = {enrichHTML: async (value: string) => value};
 globals.renderTemplate = async (_path: string, context: any) => templates.article(context);
 const {ManagerApp} = await import("../../src/apps/editorial-app");
 const {PortalApp} = await import("../../src/apps/reader-app");
+const {PreferencesApp} = await import("../../src/apps/preferences-app");
+const preferences = new PreferencesApp();
+globals.Hooks.on("holosuite-news.openPreferences", () => void preferences.render({force:true}));
 const store = new MemoryNewsStore();
 let manager: InstanceType<typeof ManagerApp>;
 const room = new Newsroom(store, () => {}, () => "new", () => manager?.refresh());
@@ -100,7 +114,8 @@ manager = new ManagerApp(room, () => {});
 await manager.render({force:true});
 await manager.edit(item.id);
 globals.fixture = {
-  errors, configs, renders, manager, room, settings,
+  errors, configs, renders, manager, room, settings, preferences,
+  makeAlerts(open: (id: string) => Promise<unknown>) { return new PublicationAlerts(open); },
   openReader: async () => {const portal = new PortalApp(room); await portal.render({force:true}); return portal;},
   active: () => active,
   creator: () => (manager as any).creators.get(item.id),

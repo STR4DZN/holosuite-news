@@ -1,3 +1,4 @@
+import { defaultNewsMotion, type NewsMotion } from "./news-motion";
 export interface Audience {
   mode: "all" | "selected" | "gm";
   users: string[];
@@ -17,6 +18,7 @@ export interface Article {
   urgent: boolean;
   views: number;
   audience: Audience;
+  motion?: NewsMotion;
 }
 export interface NewsItem {
   schemaVersion: 2;
@@ -62,6 +64,7 @@ export function newArticle(id: string): Article {
     urgent: false,
     views: 0,
     audience: { mode: "all", users: [] },
+    motion: defaultNewsMotion(),
   };
 }
 export function newItem(id: string, now = Date.now()): NewsItem {

@@ -1,0 +1,9 @@
+<div class="hn-motion-fields" data-writing-panel="motion" hidden>
+  <div class="editor-section"><span>FX</span><div><h2>Uma notícia. Uma presença.</h2><p>Defina a entrada e o alerta desta publicação.</p></div></div>
+  <div class="hn-field"><label for="hn-entry-{{item.id}}">Entrada da notícia</label><select id="hn-entry-{{item.id}}" name="motionEntry">{{#each entries}}<option value="{{value}}" {{hnCheckedOption selected}}>{{label}}</option>{{/each}}</select></div>
+  <div class="hn-field"><label for="hn-alert-{{item.id}}">Alerta de publicação</label><select id="hn-alert-{{item.id}}" name="motionAlert">{{#each alerts}}<option value="{{value}}" {{hnCheckedOption selected}}>{{label}}</option>{{/each}}</select></div>
+  <div class="hn-field-pair"><div class="hn-field"><label for="hn-strength-{{item.id}}">Intensidade</label><select id="hn-strength-{{item.id}}" name="motionStrength">{{#each strengths}}<option value="{{value}}" {{hnCheckedOption selected}}>{{label}}</option>{{/each}}</select></div><div class="hn-field"><label for="hn-pace-{{item.id}}">Ritmo</label><select id="hn-pace-{{item.id}}" name="motionPace">{{#each paces}}<option value="{{value}}" {{hnCheckedOption selected}}>{{label}}</option>{{/each}}</select></div></div>
+  <div class="hn-field"><label for="hn-priority-{{item.id}}">Importância da notícia</label><select id="hn-priority-{{item.id}}" name="motionPriority">{{#each priorities}}<option value="{{value}}" {{hnCheckedOption selected}}>{{label}}</option>{{/each}}</select></div>
+  <div class="hn-effect-buttons"><button type="button" class="hn-primary" data-test-entry>Testar entrada</button><button type="button" data-test-alert>Testar alerta</button></div>
+  <p class="hn-motion-description">A prévia mostra o que o leitor recebe. A preferência de movimento reduzido continua valendo.</p>
+</div>

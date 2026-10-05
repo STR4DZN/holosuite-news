@@ -1,5 +1,6 @@
 import type { Article, Backup, NewsItem } from "./model";
 import { isSafeClientUrl, stripHtml } from "../utils/format";
+import { validateNewsMotion } from "./news-motion";
 
 function fail(message: string): never {
   throw new Error(message);
@@ -59,7 +60,11 @@ export function validateArticle(value: unknown, publish = false): Article {
       users:
         mode === "selected" ? [...new Set(audience.users as string[])] : [],
     },
+    motion: validateNewsMotion(x.motion, x.urgent === true),
   };
+  // The old urgent flag remains compatible with existing portal consumers.
+  article.urgent = article.motion!.priority === "urgent";
+  if (x.urgent === true) { article.urgent = true; article.motion!.priority = "urgent"; }
   if (!article.id) fail("Identificador ausente.");
   if (!isSafeClientUrl(article.cover, true))
     fail("O endereço da imagem não é seguro.");
