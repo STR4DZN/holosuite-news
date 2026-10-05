@@ -1,3 +1,4 @@
+import { randomId } from "../src/utils/id";
 import Handlebars from "handlebars";
 import "../styles/index.css";
 import "./preview.css";
@@ -131,7 +132,7 @@ const urgentAlert=new GlobalUrgentAlert(async(id)=>{
 const newsroom = new Newsroom(
   store,
   assertDemoGM,
-  () => crypto.randomUUID().replaceAll("-", "").slice(0, 16),
+  () => randomId(),
   persist,
 );
 function persist(): void {

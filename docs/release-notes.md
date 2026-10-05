@@ -1,4 +1,4 @@
-# HoloNews 2.7.0 — Dois GMs e transmissão urgente
+# HoloNews 2.7.1 — Dois GMs e transmissão urgente
 
 Todos os GMs agora podem abrir e usar o módulo simultaneamente. A escolha de um coordenador vale para a fila de gravações e deixa de bloquear lista e criador. As operações do segundo GM passam pela mesma fila, mantendo a verificação de revisão para impedir sobrescritas.
 

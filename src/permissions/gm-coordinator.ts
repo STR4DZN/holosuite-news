@@ -1,3 +1,4 @@
+import { randomId } from "../utils/id";
 import { MODULE_ID, PRIVATE_PACK } from '../constants';
 import { primaryGM } from './authority';
 import type { WriteCommand } from '../core/commands';
@@ -32,7 +33,7 @@ export class GMWriteCoordinator {
     const current=primaryGM(context.users);
     if(!current || current.id===context.user.id) return local();
     if(!context.user.isGM) throw new Error('O criador de notícias é exclusivo do mestre.');
-    const id=crypto.randomUUID().replaceAll('-','').slice(0,16);
+    const id=randomId();
     const request={command,args,requester:context.user.id,target:current.id,status:'pending',createdAt:Date.now()};
     const response=new Promise<unknown>((resolve,reject)=>{
       const timer=setTimeout(()=>{this.pending.delete(id);reject(new Error('O mestre que coordena as gravações não respondeu. Suas alterações continuam na janela; confira a lista antes de tentar novamente.'));},this.timeout);

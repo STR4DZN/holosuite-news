@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.7.1 — Compatibilidade HTTP
+
+- Identificadores de comandos e transmissões usam getRandomValues, compatível com endereços HTTP de servidores Foundry.
+- Teste do envio com randomUUID indisponível; restante do fluxo de dois GMs e alerta global preservado.
+
 ## 2.7.0 — Dois GMs e alerta global
 
 - Todos os GMs podem abrir e usar a lista e o criador. Gravações passam pela mesma fila do GM coordenador, com revisões verificadas.

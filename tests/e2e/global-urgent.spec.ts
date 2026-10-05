@@ -1,6 +1,7 @@
 import { test,expect } from '@playwright/test';
 
 test('botão publica para todos e alerta dois leitores com o portal fechado, sem repetir ao reconectar',async({page,context})=>{
+ await context.addInitScript(()=>Object.defineProperty(Crypto.prototype,'randomUUID',{value:undefined,configurable:true}));
  await page.goto('/preview/');await page.locator('#demo-reader').selectOption('gm');
  const player=await context.newPage(),iris=await context.newPage();
  await player.goto('/preview/');await iris.goto('/preview/');await iris.locator('#demo-reader').selectOption('iris');

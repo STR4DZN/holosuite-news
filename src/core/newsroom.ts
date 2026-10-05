@@ -1,3 +1,4 @@
+import { randomId } from "../utils/id";
 import {
   canRead,
   newItem,
@@ -21,7 +22,7 @@ export class Newsroom {
   constructor(
     readonly store: NewsStore,
     private readonly authorize: () => void,
-    private readonly id: () => string = () => crypto.randomUUID(),
+    private readonly id: () => string = () => randomId(),
     private readonly changed: () => void = () => {},
     private readonly dispatch?: WriteDispatcher,
   ) {}
@@ -102,7 +103,7 @@ export class Newsroom {
     return this.coordinate("broadcastUrgent",[id,expected],async()=>{
       const item=await this.get(id);
       const article=validateArticle({...item.draft,urgent:true,audience:{mode:"all",users:[]},motion:{...validateNewsMotion(item.draft.motion),priority:"urgent"}},true);
-      const next=await this.store.save({...item,draft:article,published:article,publishedAt:item.publishedAt??Date.now(),updatedAt:Date.now(),pending:true,broadcast:{id:crypto.randomUUID(),sentAt:Date.now()}},expected);
+      const next=await this.store.save({...item,draft:article,published:article,publishedAt:item.publishedAt??Date.now(),updatedAt:Date.now(),pending:true,broadcast:{id:randomId(),sentAt:Date.now()}},expected);
       return this.synchronize(next);
     });
   }
