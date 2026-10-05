@@ -6,7 +6,7 @@ for(const theme of themes) {
     const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
     await page.goto('/preview/');await page.locator('[data-appearance]').click();await page.locator(`[data-theme-choice=${theme}]`).click();
     const active=await page.locator('.hn-categories .is-active').evaluate(e=>{const s=getComputedStyle(e);return {color:s.color,background:s.backgroundImage}});
-    expect(active.background).toContain('gradient');
+    if(theme==='pulsar') expect(active.background).toContain('gradient');
     expect(active.color).not.toBe('transparent');
     await page.locator('[data-test-portal-motion]').click();
     await expect(page.locator('.hn-sci-diagram')).toHaveCount(1);
@@ -18,11 +18,7 @@ for(const theme of themes) {
     await page.waitForFunction(()=>!document.getAnimations().some(a=>a.playState==='running'));
     await expect.poll(async()=>page.locator('.hn-card').first().evaluate(e=>getComputedStyle(e).opacity)).toBe('1');
     const display=await page.locator('.hn-grid').evaluate(e=>getComputedStyle(e).display);
-    expect(display).toBe(theme==='nexo'?'flex':'grid');
-    if(theme==='nexo'){
-      expect(await page.locator('.hn-card>button.hn-story-link').first().evaluate(e=>getComputedStyle(e).display)).toBe('grid');
-      expect(await page.locator('.hn-card-image').first().evaluate(e=>e.getBoundingClientRect().width)).toBeLessThan(300);
-    }
+    expect(display).toBe(theme==='pulsar'?'flex':'grid');
     await page.locator('.hn-lead [data-open]').first().click();
     await expect(page.locator('.hn-article .hn-sci-ruler')).toHaveCount(1);
     await expect(page.locator('.hn-article-body')).toContainText('06h14');

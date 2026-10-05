@@ -2,14 +2,14 @@ import { PAGE_MOTIONS, CARD_MOTIONS, HOVER_MOTIONS } from "../domain/portal-moti
 import { MODULE_ID } from "../constants";
 export const THEMES = [
   { id: "prisma", name: "Prisma", detail: "Transmissão holográfica", color: "#bda5e8" },
-  { id: "gazeta", name: "Gazeta", detail: "Jornal da rede civil", color: "#d7ab91" },
-  { id: "obsidiana", name: "Obsidiana", detail: "Edição de prestígio", color: "#d5bb80" },
-  { id: "aurora", name: "Aurora", detail: "Uma rede mais próxima", color: "#abd2c3" },
-  { id: "terminal", name: "Terminal", detail: "CIVNET / RX: ONLINE", color: "#bbd593" },
-  { id: "dossie", name: "Dossiê", detail: "Arquivo da rede civil", color: "#e4af88" },
-  { id: "orbital", name: "Orbital", detail: "Notícias entre estações", color: "#ffc58a" },
-  { id: "pulsar", name: "Pulsar", detail: "Frequências da rede civil", color: "#ecaff1" },
-  { id: "nexo", name: "Nexo", detail: "Um mundo conectado", color: "#a0eadb" },
+  { id: "gazeta", name: "Gazeta", detail: "Jornal da rede civil", color: "#f49a85" },
+  { id: "obsidiana", name: "Obsidiana", detail: "Edição de prestígio", color: "#dfc58f" },
+  { id: "aurora", name: "Aurora", detail: "Revista da comunidade", color: "#b2d7fa" },
+  { id: "terminal", name: "Terminal", detail: "Boletim técnico civil", color: "#f3cf72" },
+  { id: "dossie", name: "Dossiê", detail: "Arquivo da rede civil", color: "#e7b092" },
+  { id: "orbital", name: "Orbital", detail: "Notícias entre estações", color: "#a8cfff" },
+  { id: "pulsar", name: "Pulsar", detail: "Revista de transmissão", color: "#f5a9ca" },
+  { id: "nexo", name: "Nexo", detail: "Rede de informação", color: "#a3dbc7" },
 ] as const;
 export interface Appearance {
   pageMotion?: string;

@@ -1,15 +1,22 @@
-# HoloNews 2.5.0 — Orbital, Pulsar e Nexo
+# HoloNews 2.6.0 — Oito identidades editoriais
 
-Três novas aparências sci-fi para o jornal civil da campanha, totalizando nove estilos individuais. Prisma mantém a apresentação aprovada.
+Gazeta, Obsidiana, Aurora, Terminal, Dossiê, Orbital, Pulsar e Nexo reconstruídos com paletas, fontes, hierarquia e composição próprias. **Prisma preservado.**
 
-- **Orbital:** painel editorial entre estações, azul profundo e âmbar, manchete e imagem em painéis separados, órbitas traçadas, cartões articulados e passagem de luz horizontal nas capas.
-- **Pulsar:** transmissão civil em violeta e ciano, manchete cinematográfica, grade assimétrica, ondas e espectro que se formam na abertura, varredura vertical nas imagens.
-- **Nexo:** rede conectada em verde suave, masthead em painel, notícia principal acima da imagem, feed com conexões e cartões horizontais, circuitos traçados e linha de transmissão nas capas.
+- **Gazeta:** jornal serifado, grafite quente, vermelhão, marca central e feed em três colunas.
+- **Obsidiana:** revista com fotografia dominante, serifas em itálico, dourado e amplo espaço entre notícias.
+- **Aurora:** revista de comunidade em azuis próximos, painéis arredondados e grade desigual.
+- **Terminal:** boletim civil âmbar, identidade monoespaçada, manchete centrada no texto e feed em lista.
+- **Dossiê:** arquivo em tons minerais, abas, lombada e registros numerados.
+- **Orbital:** azuis de aviação, capa panorâmica com painel sólido de manchete e notícias em painéis horizontais.
+- **Pulsar:** família rosa, títulos condensados, capa em blocos e fotografias alternadas no feed.
+- **Nexo:** família jade, manchete dividida e quadro de notícias com nós e conectores.
 
-As três aparências alcançam portal, notícia aberta, lista do mestre, editor e configurações. Molduras, índices editoriais e detalhes vetoriais permanecem separados do texto; não exibem dados ou indicadores fictícios. Cada pessoa escolhe seu tema e pode ajustar transição, cartões, interação, fonte, espaçamento e movimento.
+Texto de leitura em superfícies sólidas, funções de cor separadas e degradês restritos a matizes próximos. Fontes WOFF2 locais com licenças OFL incluídas. Portal, leitura, lista, editor e configurações acompanham o tema; trocar a aparência mantém o editor rico e o texto.
 
-Animações finitas, com cancelamento ao navegar, fechar, ocultar a janela ou reduzir movimento. O modo sutil mantém os detalhes gráficos estáticos. A troca de tema preserva o editor rico, o conteúdo em edição e as escolhas da notícia. Sem biblioteca adicional no runtime.
+As animações de posts, páginas, cartões, capas e leitura continuam disponíveis. Orbital, Pulsar e Nexo conservam seus diagramas e movimentos finitos, com cancelamento ao navegar, fechar, ocultar a janela ou reduzir movimento.
 
-Validação: TypeScript, lint, 38 testes unitários, 37 testes de navegador e inspeção de portal, feed, leitura, editor e janela estreita. Os testes incluem troca de estilos sem recriar o ProseMirror e retorno ao Prisma sem camadas decorativas residuais. A sessão final no Foundry da mesa continua sendo necessária para conferir a integração do ambiente real.
+Pesquisa com 18 referências primárias: Adobe, Carbon, W3C, NN/g, The Guardian, Financial Times, Pentagram e Territory Studio. Guia, decisões e contraste em `docs/color-design-research.md`.
 
-Guia de composição e uso: `docs/scifi-themes.md`.
+Validação: TypeScript, lint, 38 testes unitários e 46 de navegador. Novas verificações incluem cores computadas renderizadas, fontes locais, texto em 140%, oito composições distintas e preservação do ProseMirror. Inspeção de portal, feed, artigo, leitura, editor e janela de 390 px nas oito alternativas. O CSS Prisma permanece intacto e a comparação de captura verifica a área do módulo.
+
+A integração em um mundo real Foundry 13 + HoloSuite Core continua pendente; o manifesto não declara uma versão verificada. Use `docs/foundry-smoke-test.md`.

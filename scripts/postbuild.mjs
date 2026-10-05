@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,6 +19,9 @@ await cp(path.join(root, "languages"), path.join(dist, "languages"), {
 });
 await mkdir(path.join(dist, "assets"), { recursive: true });
 await cp(path.join(root, "assets/holonews-mark.svg"), path.join(dist, "assets/holonews-mark.svg"));
+await mkdir(path.join(dist, "assets/fonts"), {recursive:true});
+for (const name of await readdir(path.join(root, "assets/fonts")))
+  if (name.endsWith(".txt") || name === "README.md") await cp(path.join(root, "assets/fonts", name), path.join(dist, "assets/fonts", name));
 await writeFile(
   path.join(dist, "build-info.json"),
   `${JSON.stringify({ moduleId: moduleManifest.id, version: moduleManifest.version, foundry: moduleManifest.compatibility, schemaVersion: 2 }, null, 2)}\n`,

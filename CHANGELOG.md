@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.6.0 — Oito identidades editoriais
+
+- Gazeta, Obsidiana, Aurora, Terminal, Dossiê, Orbital, Pulsar e Nexo reconstruídos; Prisma preservado.
+- Paletas com papéis separados para superfícies, texto, ações, controles e urgência; degradês restritos a matizes próximos.
+- Manchetes, imagens, navegação e feeds com oito composições diferentes, além de tipografia local serifada, geométrica, condensada e monoespaçada.
+- Editor e leitura com as mesmas cores e fontes do portal; sem recriar o ProseMirror na troca de tema.
+- Pesquisa documentada com referências Adobe, Carbon, W3C, The Guardian, Financial Times, Pentagram e Territory Studio.
+- Fontes locais em WOFF2, licenças OFL incluídas e nenhum pedido externo de fontes em execução.
+- Animações de posts, capas, páginas e leitura preservadas, com cancelamento e movimento reduzido.
+- Novos testes de contraste calculado e renderizado, carregamento de fontes, texto ampliado e distinção estrutural das oito alternativas.
+
 ## 2.5.0 — Três redes sci-fi
 
 - Orbital, Pulsar e Nexo acrescentados à escolha individual de aparência, totalizando nove temas.
