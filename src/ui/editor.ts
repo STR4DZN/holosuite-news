@@ -50,6 +50,7 @@ export interface EditorPorts {
   confirm(title: string, content: string): Promise<boolean>;
   error(error: unknown): void;
   changed(): void;
+  broadcasted?(article: Article): void;
   pickImage(current: string): Promise<string | null>;
 }
 export class EditorSession {
@@ -127,6 +128,7 @@ export class EditorSession {
         () => void this.publish().catch(this.ports.error),
         options,
       );
+    root.querySelector("[data-broadcast-urgent]")?.addEventListener("click",()=>void this.broadcastUrgent().catch(this.ports.error),options);
     root
       .querySelector("[data-preview]")
       ?.addEventListener(
@@ -276,7 +278,7 @@ export class EditorSession {
     if (this.busy || !this.form()) return;
     this.busy = true;
     const controls = this.root?.querySelectorAll<HTMLButtonElement>(
-      "[data-publish], [data-unpublish], [data-save]",
+      "[data-publish], [data-unpublish], [data-save], [data-broadcast-urgent]",
     );
     controls?.forEach((b) => {
       b.disabled = true;
@@ -308,6 +310,20 @@ export class EditorSession {
       this.newsroom.publish(this.item.id, this.item.revision),
     );
     this.label("Notícia publicada", "published");
+  }
+  private async broadcastUrgent(): Promise<void> {
+    if(this.busy) return;
+    await this.operation(()=>this.newsroom.broadcastUrgent(this.item.id,this.item.revision));
+    const form=this.form();
+    if(form){
+      const urgent=form.querySelector<HTMLInputElement>('[name="urgent"]');if(urgent) urgent.checked=true;
+      const priority=form.querySelector<HTMLSelectElement>('[name="motionPriority"]');if(priority) priority.value='urgent';
+      const audience=form.querySelector<HTMLSelectElement>('[name="audience"]');if(audience) audience.value='all';
+      this.updateAudience();
+      await this.updatePreview();
+    }
+    this.label('Alerta global enviado', 'published');
+    if(this.item.published) this.ports.broadcasted?.(this.item.published);
   }
   private async unpublish(): Promise<void> {
     if (

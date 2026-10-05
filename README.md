@@ -1,4 +1,4 @@
-# HoloNews 2.6 · Oito identidades editoriais
+# HoloNews 2.7 · Transmissão urgente
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
@@ -21,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.6.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.7.0 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.6.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.7.0.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -40,7 +40,7 @@ O texto aceita links de documentos e enriquecimentos do Foundry. Não existe edi
 
 Rascunhos e notas ficam no compêndio de mundo **HoloNews · Rascunhos do mestre**, com acesso negado a PLAYER/TRUSTED e permitido a ASSISTANT/GAMEMASTER. Cada publicação gera um JournalEntry separado, sem notas ou texto de revisões não publicadas. O portal aplica a audiência e a permissão nativa do documento.
 
-Se vários mestres estiverem conectados, o GM ativo com menor ID será o responsável pelas escritas. O erro indica seu nome. Isso evita dois clientes publicando simultaneamente; outras janelas do mesmo mestre usam revisões por notícia e rejeitam versões antigas.
+Todos os GMs podem abrir, criar, editar e publicar simultaneamente. Um GM ativo coordena a fila de gravações; os demais encaminham suas operações pelo compêndio privado do Foundry. Notícias abertas com uma revisão antiga são recusadas ao salvar, evitando sobrescrever a revisão mais recente. A lista se atualiza sem remontar o texto rico que você está editando.
 
 ## Aparência e animações
 
@@ -55,6 +55,14 @@ Alertas aparecem somente para quem pode ler a publicação e possui permissão n
 O modo **Foco** amplia a escrita e **Ctrl/Cmd+S** salva o rascunho. Mudar a aparência ou a aba mantém o editor rico e o texto em edição.
 
 Depois de atualizar para 2.3.0, recarregue todos os clientes do Foundry. Esta versão remove integralmente a antiga integração que alterava rolagens.
+
+## Enviar uma notícia urgente para todos
+
+No criador, abra **Texto → Publicação e alcance → Transmissão urgente** e clique em **Enviar alerta global**. O botão salva o texto atual, publica a notícia como urgente para todos e exibe um painel de alerta na tela dos clientes conectados, mesmo com o portal fechado. **Abrir notícia** leva à matéria; **Dispensar** fecha o alerta. As notas privadas continuam fora da publicação.
+
+O alerta tem paleta própria de urgência, pulsos e entrada finitos. Movimento reduzido mantém o comunicado e os botões sem animação. Marcar apenas **Notícia urgente** ou salvar o rascunho não dispara esse painel global. É possível reenviar pelo mesmo botão; atualizar a página não repete alertas antigos.
+
+Depois da atualização, **todos os clientes precisam recarregar o Foundry**, incluindo os dois GMs. Veja [o guia da função](docs/global-urgent.md).
 
 ## Conteúdo da versão anterior
 

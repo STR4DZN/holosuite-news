@@ -95,6 +95,7 @@ export function validateItem(value: unknown): NewsItem {
         : integer(x.publishedAt, "Data de publicação"),
     updatedAt: integer(x.updatedAt, "Data de edição"),
     pending: bool(x.pending),
+    ...(x.broadcast !== undefined ? (() => {const event=object(x.broadcast);return {broadcast:{id:string(event.id,'transmissão',100),sentAt:integer(event.sentAt,'Data de transmissão')}};})() : {}),
     ...(typeof x.sourceId === "string"
       ? { sourceId: string(x.sourceId, "origem", 160) }
       : {}),

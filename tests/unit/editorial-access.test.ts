@@ -68,6 +68,7 @@ describe("Separação mestre/jogador", () => {
       () => room.get("a"),
       () => room.save("a", item.draft, "segredo", item.revision),
       () => room.publish("a", item.revision),
+      () => room.broadcastUrgent("a", item.revision),
       () => room.unpublish("a", item.revision),
       () => room.duplicate("a"),
       () => room.remove("a", item.revision),
@@ -85,6 +86,13 @@ describe("Separação mestre/jogador", () => {
     expect(await store.get("a")).toEqual(item);
     expect(store.syncCount).toBe(0);
     expect(await room.articles({ id: "player", isGM: false })).toEqual([]);
+  });
+  it("permite que os dois GMs abram o gerente e o criador", async () => {
+    const {room}=setup(true);
+    (globalThis as any).game.users.push({id:'a',name:'Outro mestre',isGM:true,active:true});
+    const manager=new ManagerApp(room,()=>{}),creator=new CreatorApp(newItem('a'),room,()=>{});
+    expect(await (manager as any)._prepareContext()).toBeDefined();
+    expect(await (creator as any)._prepareContext()).toBeDefined();
   });
   it("tile do jogador abre somente o portal", () => {
     const api = { registerApp: vi.fn() },

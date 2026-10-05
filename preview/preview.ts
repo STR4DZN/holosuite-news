@@ -20,6 +20,7 @@ import {
   type PortalRoute,
 } from "../src/ui/context";
 import { bindPortal } from "../src/ui/portal";
+import { GlobalUrgentAlert } from "../src/ui/global-urgent";
 import { EditorSession } from "../src/ui/editor";
 import { MotionScene } from "../src/ui/motion";
 import skyline from "../assets/meridian.svg";
@@ -102,7 +103,7 @@ function openPreferences(): void {
     const next = { ...demoAppearance(), [key]: value };
     if (key === "motionStyle") document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.checked = value === "reduced";
     localStorage.setItem(`holonews-appearance-${reader}`, JSON.stringify(next));
-  }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); scene.refreshTheme(); session?.updateAppearance(); });
+  }, value => { applyAppearance(panel, value); applyAppearance(windowRoot, value); scene.setReduced(value.motionStyle === "reduced"); scene.refreshTheme(); session?.updateAppearance(); urgentAlert.preferenceChanged(); });
   panel.querySelector("[data-test-portal-motion]")?.addEventListener("click", () => void (async () => {
     await settled();
     if (mode === "editor" && session && !(await session.beforeClose())) return;
@@ -122,6 +123,11 @@ let mode: "portal" | "manager" | "editor" = "portal",
 let session: EditorSession | undefined;
 let renderGeneration = 0;
 const route: PortalRoute = { query: "", category: "", page: 1 };
+const seenUrgent=new Map<string,string>();
+const urgentAlert=new GlobalUrgentAlert(async(id)=>{
+  if(session && !(await session.beforeClose())) return;
+  session=undefined;mode='portal';route.articleId=id;await render();
+},()=>demoAppearance());
 const newsroom = new Newsroom(
   store,
   assertDemoGM,
@@ -237,6 +243,22 @@ try {
 } catch {
   seed();
 }
+for(const item of store.items.values()) if(item.broadcast) seenUrgent.set(item.id,item.broadcast.id);
+window.addEventListener('storage',event=>{
+  if(event.key!==DEMO_STORAGE_KEY || !event.newValue) return;
+  try {
+    const items=(JSON.parse(event.newValue) as unknown[]).map(validateItem);
+    store.items.clear();store.articles.clear();
+    for(const item of items){
+      store.items.set(item.id,item);if(item.published)store.articles.set(item.id,item.published);
+      if(item.published && !item.pending && item.broadcast && seenUrgent.get(item.id)!==item.broadcast.id && Date.now()-item.broadcast.sentAt<300_000){
+        seenUrgent.set(item.id,item.broadcast.id);
+        urgentAlert.show(item.published,()=>{const current=store.articles.get(item.id);return !!current && canRead(current,{id:reader,isGM:reader==='gm'});});
+      }
+    }
+    if(mode==='portal') void render().catch(error);
+  }catch(reason){error(reason);}
+});
 async function edit(id: string): Promise<void> {
   assertDemoGM();
   const item = await newsroom.get(id);
@@ -250,6 +272,7 @@ async function edit(id: string): Promise<void> {
       confirm: async (_title, text) => confirm(text),
       error,
       changed: persist,
+      broadcasted: article=>{const event=store.items.get(article.id)?.broadcast;if(event)seenUrgent.set(article.id,event.id);urgentAlert.show(article);},
       pickImage: async (current) => prompt("Caminho ou URL da imagem", current),
     },
     scene,
@@ -453,7 +476,7 @@ document.querySelector<HTMLInputElement>("#demo-reduce-motion")!.onchange = (
   event,
 ) => {
   scene.setReduced((event.target as HTMLInputElement).checked);
-  applyAppearance(windowRoot, demoAppearance()); session?.updateAppearance();
+  applyAppearance(windowRoot, demoAppearance()); session?.updateAppearance(); urgentAlert.preferenceChanged();
 };
 document.querySelector<HTMLButtonElement>("[data-reset]")!.onclick = () => {
   if (reader !== "gm") {

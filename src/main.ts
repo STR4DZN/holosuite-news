@@ -7,6 +7,8 @@ import { ManagerApp } from "./apps/editorial-app";
 import { PortalApp } from "./apps/reader-app";
 import { registerSettings, registerHelpers } from "./settings";
 import { PreferencesApp } from "./apps/preferences-app";
+import { GMWriteCoordinator } from "./permissions/gm-coordinator";
+import { runNewsroomCommand } from "./core/commands";
 import { PublicationAlerts } from "./ui/alerts";
 import {
   registerWithHoloSuite,
@@ -21,12 +23,15 @@ function refresh(): void {
   manager?.refresh();
 }
 const store = new FoundryNewsStore();
+let writer: GMWriteCoordinator;
 const newsroom = new Newsroom(
   store,
   assertWriter,
   () => foundry.utils.randomID(),
   () => Hooks.callAll(`${MODULE_ID}.changed`),
+  (command,args,local)=>writer.run(command,args,local),
 );
+writer=new GMWriteCoordinator((command,args)=>runNewsroomCommand(newsroom,command,args),()=>store.workspace());
 async function openPortal(): Promise<PortalApp> {
   portal ??= new PortalApp(newsroom);
   await portal.render({ force: true });
@@ -41,7 +46,7 @@ async function openManager(): Promise<ManagerApp> {
   return manager;
 }
 const api = Object.freeze({
-  version: "2.6.0",
+  version: "2.7.0",
   openSettings: async () => { preferences ??= new PreferencesApp(); await preferences.render({ force: true }); return preferences; },
   openReader: openPortal,
   openManager,
@@ -88,6 +93,7 @@ Hooks.once("init", () => {
 Hooks.once("ready", async () => {
   await templatesReady;
   registerTile();
+  writer.listen();
   publicationAlerts = new PublicationAlerts(api.openArticle);
   publicationAlerts.prime(game.journal ?? []);
   if (game.user.isGM && primaryGM()?.id === game.user.id) {
@@ -114,13 +120,14 @@ for (const event of [
   "deleteJournalEntry",
 ])
   Hooks.on(event, (doc: any, ...args: any[]) => {
+    const userId = args.at(-1);
     if (!doc.pack) {
       if (event === "deleteJournalEntry") publicationAlerts?.remove(doc);
-      else publicationAlerts?.observe(doc);
+      else publicationAlerts?.observe(doc,userId);
     }
-    const userId = args.at(-1);
-    if (doc.pack === "world.holonews-workspace" && userId !== game.user.id)
-      store.invalidate();
+    if (doc.pack === "world.holonews-workspace" && doc.getFlag(MODULE_ID,"kind")==="workspace" && userId !== game.user.id) {
+      store.invalidate(); manager?.refresh();
+    }
     if (
       !doc.pack &&
       doc.getFlag(MODULE_ID, "kind") === "article" &&
@@ -132,13 +139,16 @@ Hooks.on("updateSetting", (setting: any) => {
   if (setting.key === "core.compendiumConfiguration") store.invalidate();
 });
 Hooks.on("updateUser", (user: any, changes: any) => {
+  if("active" in changes || "role" in changes) writer.leadershipChanged();
   publicationAlerts?.permissionsChanged();
   if (user.id === game.user.id && "role" in changes && !game.user.isGM) {
     const previous = manager;
     manager = undefined;
     void previous?.revokeAccess().catch(report);
     store.invalidate();
+    writer.dispose();
   }
+  if(user.id===game.user.id && "role" in changes && game.user.isGM) writer.listen();
   if ("active" in changes && game.user.isGM && primaryGM()?.id === game.user.id)
     void newsroom.recover().catch(report);
   if (user.id === game.user.id && ("role" in changes || "active" in changes))
@@ -146,3 +156,5 @@ Hooks.on("updateUser", (user: any, changes: any) => {
 });
 
 Hooks.on(`${MODULE_ID}.replayMotion`, () => void openPortal().then(app => { app.bringToFront?.(); app.replayMotion(); }).catch(report));
+
+Hooks.on("updateCompendium", (pack:any,_documents:any[],_options:any,userId:string)=>{if(pack.collection==="world.holonews-workspace" && userId!==game.user.id){store.invalidate();manager?.refresh();}});

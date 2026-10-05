@@ -103,7 +103,7 @@ describe("Adaptador Foundry", () => {
     pack.ownership.PLAYER = "OBSERVER";
     await expect(store.list()).rejects.toThrow("exclusivo");
   });
-  it("bloqueia segundo GM ativo e qualquer jogador", async () => {
+  it("leituras aceitam segundo GM; gravação direta fica no coordenador e jogadores são negados", async () => {
     const { store, user } = fixture();
     (globalThis as any).game.users.push({
       id: "a",
@@ -111,6 +111,7 @@ describe("Adaptador Foundry", () => {
       isGM: true,
       active: true,
     });
+    expect(await store.list()).toEqual([]);
     await expect(store.save(newItem("article000000001"), 0)).rejects.toThrow(
       "mestre responsável",
     );

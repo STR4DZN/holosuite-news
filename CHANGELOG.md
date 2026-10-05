@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.7.0 — Dois GMs e alerta global
+
+- Todos os GMs podem abrir e usar a lista e o criador. Gravações passam pela mesma fila do GM coordenador, com revisões verificadas.
+- Operações encaminhadas por documentos do compêndio privado; remetente validado pelos hooks nativos do Foundry, sem socket customizado.
+- Botão Enviar alerta global salva e publica a versão atual como urgente para todos os jogadores.
+- Painel de urgência independente do portal, com paleta semântica, entrada, molduras e pulsos finitos, Abrir notícia e Dispensar.
+- Evento único por envio, reenvio explícito, recuperação sem duplicar alertas e nenhum replay ao reconectar.
+- Movimento reduzido, permissão revalidada e remoção de alertas quando a publicação deixa de estar disponível.
+- Prévia permite testar o envio entre abas; notas privadas não entram no alerta nem na publicação.
+
 ## 2.6.0 — Oito identidades editoriais
 
 - Gazeta, Obsidiana, Aurora, Terminal, Dossiê, Orbital, Pulsar e Nexo reconstruídos; Prisma preservado.

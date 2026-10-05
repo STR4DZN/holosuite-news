@@ -13,6 +13,9 @@ import {
 } from "../domain/validation";
 import type { NewsStore } from "../storage/contracts";
 
+import type { WriteCommand, WriteDispatcher } from "./commands";
+import { validateNewsMotion } from "../domain/news-motion";
+
 export class Newsroom {
   private queue: Promise<unknown> = Promise.resolve();
   constructor(
@@ -20,7 +23,13 @@ export class Newsroom {
     private readonly authorize: () => void,
     private readonly id: () => string = () => crypto.randomUUID(),
     private readonly changed: () => void = () => {},
+    private readonly dispatch?: WriteDispatcher,
   ) {}
+  async coordinate<T>(command: WriteCommand, args: unknown[], action: () => Promise<T>): Promise<T> {
+    this.authorize();
+    if (this.dispatch) return this.dispatch(command,args,()=>this.write(action));
+    return this.write(action);
+  }
   private write<T>(action: () => Promise<T>): Promise<T> {
     const result = this.queue.then(() => {
       this.authorize();
@@ -45,7 +54,7 @@ export class Newsroom {
     );
   }
   create(): Promise<NewsItem> {
-    return this.write(async () => {
+    return this.coordinate("create", [], async () => {
       const item = await this.store.save(newItem(this.id()), 0);
       this.changed();
       return item;
@@ -57,7 +66,7 @@ export class Newsroom {
     notes: string,
     expected: number,
   ): Promise<NewsItem> {
-    return this.write(async () => {
+    return this.coordinate("save", [id,draft,notes,expected], async () => {
       const item = await this.get(id);
       if (draft.id !== id)
         throw new Error("Identificador da notícia inválido.");
@@ -73,7 +82,7 @@ export class Newsroom {
     });
   }
   publish(id: string, expected: number): Promise<NewsItem> {
-    return this.write(async () => {
+    return this.coordinate("publish", [id,expected], async () => {
       const item = await this.get(id);
       const next = await this.store.save(
         {
@@ -82,18 +91,27 @@ export class Newsroom {
           published: validateArticle(item.draft, true),
           publishedAt: item.publishedAt ?? Date.now(),
           pending: true,
+          broadcast: undefined,
         },
         expected,
       );
       return this.synchronize(next);
     });
   }
+  broadcastUrgent(id: string, expected: number): Promise<NewsItem> {
+    return this.coordinate("broadcastUrgent",[id,expected],async()=>{
+      const item=await this.get(id);
+      const article=validateArticle({...item.draft,urgent:true,audience:{mode:"all",users:[]},motion:{...validateNewsMotion(item.draft.motion),priority:"urgent"}},true);
+      const next=await this.store.save({...item,draft:article,published:article,publishedAt:item.publishedAt??Date.now(),updatedAt:Date.now(),pending:true,broadcast:{id:crypto.randomUUID(),sentAt:Date.now()}},expected);
+      return this.synchronize(next);
+    });
+  }
   unpublish(id: string, expected: number): Promise<NewsItem> {
-    return this.write(async () => {
+    return this.coordinate("unpublish", [id,expected], async () => {
       const item = await this.get(id);
       return this.synchronize(
         await this.store.save(
-          { ...item, published: null, publishedAt: null, pending: true },
+          { ...item, published: null, publishedAt: null, pending: true, broadcast: undefined },
           expected,
         ),
       );
@@ -108,14 +126,14 @@ export class Newsroom {
     }
   }
   retry(id: string): Promise<NewsItem> {
-    return this.write(async () => this.synchronize(await this.get(id)));
+    return this.coordinate("retry", [id], async () => this.synchronize(await this.get(id)));
   }
   async recover(): Promise<void> {
     for (const item of await this.list())
       if (item.pending) await this.retry(item.id);
   }
   duplicate(id: string): Promise<NewsItem> {
-    return this.write(async () => {
+    return this.coordinate("duplicate", [id], async () => {
       const original = await this.get(id),
         item = newItem(this.id());
       item.draft = {
@@ -131,7 +149,7 @@ export class Newsroom {
     });
   }
   remove(id: string, expected: number): Promise<void> {
-    return this.write(async () => {
+    return this.coordinate("remove", [id,expected], async () => {
       await this.store.remove(id, expected);
       this.changed();
     });
@@ -146,7 +164,7 @@ export class Newsroom {
   }
   importBackup(value: unknown): Promise<number> {
     const backup = validateBackup(value);
-    return this.write(async () => {
+    return this.coordinate("importBackup", [value], async () => {
       // Always import as fresh drafts: never overwrite or expose content from a backup.
       let count = 0;
       for (const original of backup.items) {

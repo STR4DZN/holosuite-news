@@ -20,6 +20,7 @@ export interface Article {
   audience: Audience;
   motion?: NewsMotion;
 }
+export interface UrgentBroadcast { id: string; sentAt: number; }
 export interface NewsItem {
   schemaVersion: 2;
   id: string;
@@ -31,6 +32,7 @@ export interface NewsItem {
   updatedAt: number;
   pending: boolean;
   sourceId?: string;
+  broadcast?: UrgentBroadcast;
 }
 export interface PortalBrand {
   name: string;

@@ -1,22 +1,19 @@
-# HoloNews 2.6.0 — Oito identidades editoriais
+# HoloNews 2.7.0 — Dois GMs e transmissão urgente
 
-Gazeta, Obsidiana, Aurora, Terminal, Dossiê, Orbital, Pulsar e Nexo reconstruídos com paletas, fontes, hierarquia e composição próprias. **Prisma preservado.**
+Todos os GMs agora podem abrir e usar o módulo simultaneamente. A escolha de um coordenador vale para a fila de gravações e deixa de bloquear lista e criador. As operações do segundo GM passam pela mesma fila, mantendo a verificação de revisão para impedir sobrescritas.
 
-- **Gazeta:** jornal serifado, grafite quente, vermelhão, marca central e feed em três colunas.
-- **Obsidiana:** revista com fotografia dominante, serifas em itálico, dourado e amplo espaço entre notícias.
-- **Aurora:** revista de comunidade em azuis próximos, painéis arredondados e grade desigual.
-- **Terminal:** boletim civil âmbar, identidade monoespaçada, manchete centrada no texto e feed em lista.
-- **Dossiê:** arquivo em tons minerais, abas, lombada e registros numerados.
-- **Orbital:** azuis de aviação, capa panorâmica com painel sólido de manchete e notícias em painéis horizontais.
-- **Pulsar:** família rosa, títulos condensados, capa em blocos e fotografias alternadas no feed.
-- **Nexo:** família jade, manchete dividida e quadro de notícias com nós e conectores.
+No criador, **Texto → Publicação e alcance → Transmissão urgente → Enviar alerta global** salva o texto atual e publica essa versão como urgente para todos. Um painel aparece na tela dos clientes conectados, mesmo com o portal fechado, com **Abrir notícia** e **Dispensar**.
 
-Texto de leitura em superfícies sólidas, funções de cor separadas e degradês restritos a matizes próximos. Fontes WOFF2 locais com licenças OFL incluídas. Portal, leitura, lista, editor e configurações acompanham o tema; trocar a aparência mantém o editor rico e o texto.
+- Paleta de urgência em vermelho quente/âmbar, painel legível, linha de transmissão, molduras e pulsos finitos.
+- Movimento reduzido mantém comunicado e botões sem animação; ativar redução durante o efeito cancela a sequência.
+- Reenvio explícito, sem duplicação por hooks repetidos ou replay ao reconectar.
+- Notas privadas fora da notícia e do alerta; permissão de leitura revalidada ao abrir.
+- Encaminhamento dos GMs pelo compêndio privado, com origem verificada nos hooks nativos. Sem socket customizado ou dependência adicional.
+- Notícias diferentes podem ser editadas pelos dois GMs; uma revisão antiga da mesma notícia é rejeitada preservando o texto na janela.
+- Prisma e as oito identidades editoriais mantidos.
 
-As animações de posts, páginas, cartões, capas e leitura continuam disponíveis. Orbital, Pulsar e Nexo conservam seus diagramas e movimentos finitos, com cancelamento ao navegar, fechar, ocultar a janela ou reduzir movimento.
+Validação: TypeScript, lint, 48 testes unitários e 52 de navegador. A suíte inclui testes unitários de dois GMs, conflitos, origem, recuperação e timeout; testes de navegador com dois leitores, portal fechado, redução de movimento, conteúdo longo, reenvio, reconexão e abertura da notícia. A validação no mundo real Foundry 13 + HoloSuite Core continua pendente.
 
-Pesquisa com 18 referências primárias: Adobe, Carbon, W3C, NN/g, The Guardian, Financial Times, Pentagram e Territory Studio. Guia, decisões e contraste em `docs/color-design-research.md`.
+**Todos os clientes, incluindo os dois GMs e os jogadores, devem recarregar o Foundry depois da atualização.**
 
-Validação: TypeScript, lint, 38 testes unitários e 46 de navegador. Novas verificações incluem cores computadas renderizadas, fontes locais, texto em 140%, oito composições distintas e preservação do ProseMirror. Inspeção de portal, feed, artigo, leitura, editor e janela de 390 px nas oito alternativas. O CSS Prisma permanece intacto e a comparação de captura verifica a área do módulo.
-
-A integração em um mundo real Foundry 13 + HoloSuite Core continua pendente; o manifesto não declara uma versão verificada. Use `docs/foundry-smoke-test.md`.
+Guia: `docs/global-urgent.md`. Roteiro do mundo real: `docs/foundry-smoke-test.md`.

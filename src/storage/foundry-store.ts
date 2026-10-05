@@ -1,13 +1,14 @@
 import { MODULE_ID, PRIVATE_PACK } from "../constants";
 import { canRead, type Article, type NewsItem } from "../domain/model";
 import { validateArticle, validateItem } from "../domain/validation";
-import { assertGM, assertWriter } from "../permissions/authority";
+import { assertGM, assertPrimaryWriter, primaryGM } from "../permissions/authority";
 import type { NewsStore } from "./contracts";
 
 export class FoundryNewsStore implements NewsStore {
   private documents = new Map<string, any>();
   private loaded = false;
   private packPromise?: Promise<any>;
+  workspace(): Promise<any> { return this.pack(); }
   private pack(): Promise<any> {
     assertGM();
     if (!this.packPromise)
@@ -19,8 +20,13 @@ export class FoundryNewsStore implements NewsStore {
   }
   private async preparePack(): Promise<any> {
     let pack = game.packs.get(PRIVATE_PACK);
+    // The elected writer initializes the pack; a second GM can open while that finishes.
+    if(!pack && primaryGM() && primaryGM()?.id!==game.user.id) {
+      const deadline=Date.now()+10_000;
+      while(!pack && Date.now()<deadline && primaryGM()?.id!==game.user.id) {await new Promise(resolve=>setTimeout(resolve,200));pack=game.packs.get(PRIVATE_PACK);}
+    }
     if (!pack) {
-      assertWriter();
+      assertPrimaryWriter();
       const Compendium =
         (globalThis as any).foundry?.documents?.collections
           ?.CompendiumCollection ?? (globalThis as any).CompendiumCollection;
@@ -73,7 +79,7 @@ export class FoundryNewsStore implements NewsStore {
     return validateItem(document.getFlag(MODULE_ID, "item"));
   }
   async save(item: NewsItem, expected: number): Promise<NewsItem> {
-    assertWriter();
+    assertPrimaryWriter();
     const pack = await this.pack();
     const doc = await pack.getDocument(item.id);
     const current = doc ? validateItem(doc.getFlag(MODULE_ID, "item")) : null;
@@ -82,7 +88,7 @@ export class FoundryNewsStore implements NewsStore {
         "Esta notícia mudou em outra janela. Reabra a notícia antes de salvar.",
       );
     const saved = validateItem({ ...item, revision: expected + 1 });
-    assertWriter();
+    assertPrimaryWriter();
     const data = {
       name: saved.draft.title || "Notícia sem título",
       flags: { [MODULE_ID]: { kind: "workspace", item: saved } },
@@ -105,7 +111,7 @@ export class FoundryNewsStore implements NewsStore {
     );
   }
   async sync(item: NewsItem): Promise<void> {
-    assertWriter();
+    assertPrimaryWriter();
     const doc = this.publicDocument(item.id);
     if (!item.published) {
       if (doc) await doc.delete();
@@ -125,6 +131,7 @@ export class FoundryNewsStore implements NewsStore {
           kind: "article",
           article,
           publishedAt: item.publishedAt,
+          urgentBroadcast: item.broadcast ?? null,
         },
       },
     };
@@ -133,7 +140,7 @@ export class FoundryNewsStore implements NewsStore {
       throw new Error("Não foi possível publicar a notícia.");
   }
   async remove(id: string, expected: number): Promise<void> {
-    assertWriter();
+    assertPrimaryWriter();
     const item = await this.get(id);
     if (!item || item.revision !== expected)
       throw new Error("A notícia mudou. Reabra antes de excluir.");

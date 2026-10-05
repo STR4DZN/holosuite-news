@@ -3,6 +3,7 @@ import { canRead, type Article } from "../domain/model";
 import { PRIORITIES, validateNewsMotion } from "../domain/news-motion";
 import { validateArticle } from "../domain/validation";
 import { NewsEffects } from "./news-effects";
+import { GlobalUrgentAlert } from "./global-urgent";
 import { applyAppearance } from "./preferences";
 
 export function alertElement(article: Article, read: () => void, close: () => void): HTMLElement {
@@ -23,7 +24,14 @@ export class PublicationAlerts {
   private known = new Map<string, string>();
   private visible = new Map<string, { root: HTMLElement; scene: NewsEffects; doc: any }>();
   private stack?: HTMLElement;
-  constructor(private readonly open: (id: string) => Promise<unknown>) {}
+  private knownBroadcasts = new Map<string,string>();
+  private global: GlobalUrgentAlert;
+  private globalDoc?: any;
+  constructor(private readonly open: (id: string) => Promise<unknown>) { this.global=new GlobalUrgentAlert(open); }
+  private broadcast(doc:any,article:Article): string | null {
+    const event=doc.getFlag(MODULE_ID,"urgentBroadcast");
+    return article.urgent && article.audience.mode==="all" && typeof event?.id==="string" && event.id.length>0 && event.id.length<=100 && Number.isSafeInteger(event.sentAt) && event.sentAt>0 && Date.now()-event.sentAt<300_000 && event.sentAt<=Date.now()+60_000 ? event.id : null;
+  }
   private article(doc: any): Article | null {
     if (doc.pack || doc.getFlag(MODULE_ID, "kind") !== "article") return null;
     try {
@@ -32,13 +40,20 @@ export class PublicationAlerts {
     } catch { return null; }
   }
   prime(docs: Iterable<any>): void {
-    for (const doc of docs) { const article = this.article(doc); if (article) this.known.set(article.id, JSON.stringify(article)); }
+    for (const doc of docs) { const article = this.article(doc); if (article) {this.known.set(article.id, JSON.stringify(article));const event=this.broadcast(doc,article);if(event)this.knownBroadcasts.set(article.id,event);} }
   }
-  observe(doc: any): void {
+  observe(doc: any, userId?: string): void {
     const id = doc.getFlag(MODULE_ID, "article")?.id;
     const article = this.article(doc);
-    if (!article) { if (id) this.dismiss(id); return; }
+    if (!article) { if (id) this.dismiss(id);if(this.globalDoc?.id===doc.id){this.global.close();this.globalDoc=undefined;}return; }
+    if(this.globalDoc && (this.globalDoc===doc || this.globalDoc.id===doc.id) && (!article.urgent || article.audience.mode!=='all')) {this.global.close();this.globalDoc=undefined;}
     const fingerprint = JSON.stringify(article);
+    const event=this.broadcast(doc,article);
+    const trustedSender=[...(game.users??[])].some((user:any)=>user.id===userId && user.isGM);
+    if(event && trustedSender && this.knownBroadcasts.get(article.id)!==event) {
+      this.knownBroadcasts.set(article.id,event);this.known.set(article.id,fingerprint);this.dismiss(article.id);this.globalDoc=doc;
+      this.global.show(article,()=>{const current=this.article(doc);return !!current && current.urgent && current.audience.mode==='all';});return;
+    }
     if (this.known.get(article.id) === fingerprint) return;
     this.known.set(article.id, fingerprint);
     this.dismiss(article.id);
@@ -51,12 +66,12 @@ export class PublicationAlerts {
     const notice = alertElement(article, () => { this.dismiss(article.id); if (this.article(doc)) void this.open(article.id).catch(console.error); }, () => this.dismiss(article.id));
     root.append(notice); this.stack.append(root); this.visible.set(article.id, { root, scene, doc }); scene.alert(notice, profile);
   }
-  remove(doc: any): void { const id = doc.getFlag(MODULE_ID, "article")?.id; if (id) { this.known.delete(id); this.dismiss(id); } }
+  remove(doc: any): void { const id = doc.getFlag(MODULE_ID, "article")?.id; if (id) { this.known.delete(id); this.knownBroadcasts.delete(id);this.dismiss(id);if(this.globalDoc===doc || this.globalDoc?.id===doc.id){this.global.close();this.globalDoc=undefined;} } }
   dismiss(id: string): void {
     const item = this.visible.get(id); if (!item) return;
     item.scene.dispose(); item.root.remove(); this.visible.delete(id);
     if (!this.visible.size) { this.stack?.remove(); this.stack = undefined; }
   }
-  appearanceChanged(): void { for (const { root, scene } of this.visible.values()) { applyAppearance(root); scene.preferenceChanged(); } }
-  permissionsChanged(): void { for (const [id, item] of this.visible) if (!this.article(item.doc)) this.dismiss(id); }
+  appearanceChanged(): void { this.global.preferenceChanged();for (const { root, scene } of this.visible.values()) { applyAppearance(root); scene.preferenceChanged(); } }
+  permissionsChanged(): void { if(this.globalDoc && !this.article(this.globalDoc)){this.global.close();this.globalDoc=undefined;}for (const [id, item] of this.visible) if (!this.article(item.doc)) this.dismiss(id); }
 }

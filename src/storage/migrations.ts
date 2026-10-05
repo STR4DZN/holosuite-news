@@ -72,7 +72,7 @@ export function legacyState(): unknown {
 }
 let activeMigration: Promise<number> | undefined;
 export function migrateLegacy(newsroom: Newsroom): Promise<number> {
-  activeMigration ??= runMigration(newsroom).finally(() => {
+  activeMigration ??= newsroom.coordinate("migrateLegacy",[],()=>runMigration(newsroom)).finally(() => {
     activeMigration = undefined;
   });
   return activeMigration;
