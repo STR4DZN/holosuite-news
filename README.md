@@ -21,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.7.2 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.7.3 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.7.2.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.7.3.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -57,6 +57,8 @@ O modo **Foco** amplia a escrita e **Ctrl/Cmd+S** salva o rascunho. Mudar a apar
 Depois de atualizar para 2.3.0, recarregue todos os clientes do Foundry. Esta versão remove integralmente a antiga integração que alterava rolagens.
 
 ## Enviar uma notícia urgente para todos
+
+Em **Texto → Publicação e alcance**, o mestre pode ativar ou desativar **Notificar jogadores ao publicar** para cada notícia. Desativado, publicar ou revisar atualiza o portal sem notificação. A escolha fica salva e conserva o estilo de alerta selecionado. O botão de urgência permanece independente.
 
 No criador, abra **Texto → Publicação e alcance → Transmissão urgente** e clique em **Enviar alerta global**. O botão salva o texto atual, publica a notícia como urgente para todos e exibe um painel de alerta na tela dos clientes conectados, mesmo com o portal fechado. **Abrir notícia** fecha imediatamente o alerta e leva à matéria; **Dispensar** fecha o alerta. As notas privadas continuam fora da publicação.
 

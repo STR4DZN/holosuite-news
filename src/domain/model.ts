@@ -16,6 +16,8 @@ export interface Article {
   tags: string[];
   featured: boolean;
   urgent: boolean;
+  /** Controls ordinary publication notices; explicit urgent broadcasts are independent. */
+  notify?: boolean;
   views: number;
   audience: Audience;
   motion?: NewsMotion;
@@ -64,6 +66,7 @@ export function newArticle(id: string): Article {
     tags: [],
     featured: false,
     urgent: false,
+    notify: true,
     views: 0,
     audience: { mode: "all", users: [] },
     motion: defaultNewsMotion(),

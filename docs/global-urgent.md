@@ -35,4 +35,4 @@ Referências oficiais consultadas: [updateDocument, v13](https://foundryvtt.com/
 
 A prévia permite testar o envio entre abas do mesmo navegador. Os testes automatizados simulam o contrato do Foundry e não substituem o servidor licenciado. Execute [o roteiro no mundo real](foundry-smoke-test.md), com dois GMs e jogadores separados.
 
-**Após instalar 2.7.2, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.
+**Após instalar 2.7.3, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.

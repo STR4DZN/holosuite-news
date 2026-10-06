@@ -58,7 +58,7 @@ export class PublicationAlerts {
     this.known.set(article.id, fingerprint);
     this.dismiss(article.id);
     const profile = validateNewsMotion(article.motion, article.urgent);
-    if (profile.alert === "none") return;
+    if (article.notify === false || profile.alert === "none") return;
     if (!this.stack) { this.stack = document.createElement("div"); this.stack.className = "hn-broadcast-stack"; this.stack.setAttribute("aria-label", "Notícias recém-publicadas"); document.body.append(this.stack); }
     while (this.visible.size >= 3) this.dismiss(this.visible.keys().next().value!);
     const root = document.createElement("div"), scene = new NewsEffects();

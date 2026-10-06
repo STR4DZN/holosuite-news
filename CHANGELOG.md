@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.3 — Notificação opcional por notícia
+
+- Checkbox Notificar jogadores ao publicar no criador: publicar normalmente pode atualizar só o portal, sem aviso na tela.
+- Preferência salva por notícia, preservada em rascunhos, publicações e backups sem apagar o estilo de alerta.
+- Alerta global urgente independente dessa escolha; notícias antigas continuam compatíveis.
+
 ## 2.7.2 — Emergência vermelha e preta
 
 - Alerta global grande no centro da tela, com preto e vermelho, manchete ampla e faixa de emergência.

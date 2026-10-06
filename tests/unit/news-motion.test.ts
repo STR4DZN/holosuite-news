@@ -46,3 +46,17 @@ describe("Motion editorial v2.4", () => {
     expect(valid.motion?.cover).toBe("reveal");expect(valid.motion?.reading).toBe("editorial");
   });
 });
+
+describe('Notificação por notícia',()=>{
+ it('valida a opção, mantém notícias antigas e conserva a escolha em publicação e backup',async()=>{
+  const legacy={...newArticle('legacy')};delete legacy.notify;
+  expect(validateArticle(legacy).notify).toBe(true);
+  expect(validateArticle({...legacy,motion:{...defaultNewsMotion(),alert:'none'}}).notify).toBe(false);
+  expect(()=>validateArticle({...legacy,notify:'false'})).toThrow('Opção inválida');
+  let id=0;const store=new MemoryNewsStore(),room=new Newsroom(store,()=>{},()=>`notify${++id}`);
+  let item=await room.create();item=await room.save(item.id,{...item.draft,title:'Publicação silenciosa',body:'<p>Texto público</p>',notify:false,motion:{...defaultNewsMotion(),alert:'radar'}},'',item.revision);
+  item=await room.publish(item.id,item.revision);expect(store.articles.get(item.id)?.notify).toBe(false);expect(store.articles.get(item.id)?.motion?.alert).toBe('radar');
+  await room.importBackup(await room.backup());expect((await room.list()).find(i=>i.id!==item.id)?.draft.notify).toBe(false);
+  item=await room.save(item.id,{...item.draft,notify:true},'',item.revision);item=await room.publish(item.id,item.revision);expect(item.published?.notify).toBe(true);expect(item.published?.motion?.alert).toBe('radar');
+ });
+});

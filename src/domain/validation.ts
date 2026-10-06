@@ -63,6 +63,7 @@ export function validateArticle(value: unknown, publish = false): Article {
     motion: validateNewsMotion(x.motion, x.urgent === true),
   };
   // The old urgent flag remains compatible with existing portal consumers.
+  article.notify = x.notify === undefined ? article.motion!.alert !== "none" : bool(x.notify);
   article.urgent = article.motion!.priority === "urgent";
   if (x.urgent === true) { article.urgent = true; article.motion!.priority = "urgent"; }
   if (!article.id) fail("Identificador ausente.");

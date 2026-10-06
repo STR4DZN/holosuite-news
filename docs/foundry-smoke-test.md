@@ -37,3 +37,9 @@ Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir 
 - Com movimento reduzido, enviar novamente: comunicado estático e botões presentes. Ativar redução durante a animação: os efeitos param. Ocultar a aba e voltar: não deve haver animação infinita ou camadas acumuladas.
 - Retirar/excluir a notícia ou revogar permissão nativa com o alerta aberto: o overlay deve ser removido.
 - Como jogador, tentar uma publicação ou um comando no compêndio privado: o servidor deve negar. Hooks sem userId de GM não devem emitir alerta global.
+
+## Notificação opcional de publicação normal
+
+- Desmarcar Notificar jogadores ao publicar, salvar, reabrir e publicar uma notícia normal. Nenhum jogador recebe aviso; a matéria aparece no portal para sua audiência.
+- Ativar novamente e publicar uma revisão: a notificação normal deve aparecer uma vez. Desativar conserva o estilo selecionado.
+- Com a opção desativada, Enviar alerta global continua exibindo a emergência central para todos.

@@ -30,6 +30,7 @@ export function readForm(
         .filter(Boolean),
       featured: data.has("featured"),
       urgent: data.has("urgent"),
+      notify: form.querySelector('[name="notify"]') ? data.has("notify") : text("motionAlert") !== "none",
       views: Number(text("views") || 0),
       audience: {
         mode: text("audience") as Article["audience"]["mode"],
@@ -88,6 +89,16 @@ export class EditorSession {
     form.addEventListener("input", input, options);
     form.addEventListener("change", input, options);
     form.addEventListener("submit", (event) => event.preventDefault(), options);
+    const notification = form.querySelector<HTMLInputElement>('[name="notify"]');
+    const alertStyle = form.querySelector<HTMLSelectElement>('[name="motionAlert"]');
+    notification?.addEventListener("change", () => {
+      if (notification.checked && alertStyle?.value === "none") alertStyle.value = "card";
+      if (!notification.checked) { this.previewEffects.stop(); root.querySelector('[data-alert-preview]')?.replaceChildren(); }
+    }, options);
+    alertStyle?.addEventListener("change", () => {
+      if (notification && alertStyle.value === "none") notification.checked = false;
+      if (alertStyle.value === "none") { this.previewEffects.stop(); root.querySelector('[data-alert-preview]')?.replaceChildren(); }
+    }, options);
     form.querySelector('[name="motionPriority"]')?.addEventListener("change", e => {
       const urgent = form.querySelector<HTMLInputElement>('[name="urgent"]');
       if (urgent) urgent.checked = (e.target as HTMLSelectElement).value === "urgent";
@@ -227,7 +238,7 @@ export class EditorSession {
     this.root?.querySelector("[data-focus-editor]")?.setAttribute("aria-pressed", "false");
     this.previewEffects.stop(); target.replaceChildren();
     const draft = readForm(form, this.item.id).draft;
-    if (draft.motion!.alert === "none") return;
+    if (draft.notify === false || draft.motion!.alert === "none") return;
     const close = () => { this.previewEffects.stop(); target.replaceChildren(); };
     const notice = alertElement(draft, () => { close(); void this.testEntry().catch(this.ports.error); }, close);
     target.append(notice); this.previewEffects.alert(notice, draft.motion!);

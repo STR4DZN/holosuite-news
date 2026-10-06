@@ -157,7 +157,7 @@ export function editorContext(
   return {
     ...motionOptions(validateNewsMotion(item.draft.motion, item.draft.urgent)),
     item,
-    article: item.draft,
+    article: { ...item.draft, notify: item.draft.notify !== false && validateNewsMotion(item.draft.motion, item.draft.urgent).alert !== "none" },
     notes: item.notes,
     status: statusOf(item),
     published: !!item.published,
