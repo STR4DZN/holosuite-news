@@ -30,7 +30,7 @@ Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir 
 ## Transmissão urgente — 2.7
 
 - Recarregar todos os clientes após atualizar. Conectar dois GMs e dois jogadores, um deles com o portal fechado.
-- Pelo segundo GM, preencher título/resumo/corpo e notas privadas; clicar Enviar alerta global. Conferir que ambos os jogadores recebem o painel de urgência e Abrir notícia leva ao mesmo texto. Notas não podem aparecer.
+- Pelo segundo GM, preencher título/resumo/corpo e notas privadas; clicar Enviar alerta global. Conferir que ambos os jogadores recebem um painel grande vermelho e preto no centro da tela; Abrir notícia fecha o alerta antes de mostrar o mesmo texto. Notas não podem aparecer.
 - Repetir com uma notícia antes restrita: o botão informa publicação para todos e deve atualizar audiência/ownership para todos, além de marcar urgência.
 - Conferir que salvar, publicar normalmente ou marcar apenas Notícia urgente não dispara o painel global.
 - Dispensar; reenviar explicitamente; conferir novo alerta, sem duplicar por callbacks repetidos. Recarregar um cliente: o alerta antigo não se repete.

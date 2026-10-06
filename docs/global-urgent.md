@@ -11,9 +11,9 @@ Se dois GMs editarem a mesma notícia a partir da mesma revisão, apenas a prime
 1. No criador, escreva título, resumo e corpo.
 2. Em **Texto → Publicação e alcance → Transmissão urgente**, clique em **Enviar alerta global**.
 3. O botão salva o rascunho atual e publica essa versão como **urgente para todos**. Notas privadas não são incluídas.
-4. O comunicado aparece na tela dos clientes conectados, com o portal aberto ou fechado. **Abrir notícia** mostra a matéria; **Dispensar** remove o alerta.
+4. O comunicado aparece na tela dos clientes conectados, com o portal aberto ou fechado. **Abrir notícia** fecha imediatamente o alerta e mostra a matéria; **Dispensar** remove o alerta.
 
-O painel usa fundo escuro, vermelho quente e âmbar, com texto claro, marca de urgência, molduras, linha de transmissão e pulsos suaves. Os efeitos terminam; a notícia e os botões continuam disponíveis. Títulos e resumos longos rolam dentro do painel, mantendo as ações acessíveis.
+O painel grande fica centralizado na tela, com fundo preto, faixa vermelha de emergência, manchete ampla, triângulo de alerta, faixas de perigo em movimento e pulsos vermelhos na moldura. Os efeitos terminam; a notícia e os botões continuam disponíveis. Títulos e resumos longos rolam dentro do painel, mantendo as ações acessíveis.
 
 Marcar apenas **Notícia urgente**, salvar rascunho ou publicar normalmente não equivale a enviar esse painel global. O botão é uma ação explícita e informa que torna a notícia pública para todos, mesmo se o rascunho estivesse restrito.
 
@@ -35,4 +35,4 @@ Referências oficiais consultadas: [updateDocument, v13](https://foundryvtt.com/
 
 A prévia permite testar o envio entre abas do mesmo navegador. Os testes automatizados simulam o contrato do Foundry e não substituem o servidor licenciado. Execute [o roteiro no mundo real](foundry-smoke-test.md), com dois GMs e jogadores separados.
 
-**Após instalar 2.7.1, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.
+**Após instalar 2.7.2, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.

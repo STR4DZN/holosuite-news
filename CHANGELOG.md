@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.7.2 — Emergência vermelha e preta
+
+- Alerta global grande no centro da tela, com preto e vermelho, manchete ampla e faixa de emergência.
+- Faixas de perigo em movimento, indicador de transmissão e pulsos vermelhos finitos; modo reduzido permanece estático.
+- Abrir notícia fecha o alerta antes de navegar; centralização e ações visíveis verificadas em desktop, celular e tela baixa.
+
 ## 2.7.1 — Compatibilidade HTTP
 
 - Identificadores de comandos e transmissões usam getRandomValues, compatível com endereços HTTP de servidores Foundry.

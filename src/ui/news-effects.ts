@@ -129,11 +129,14 @@ export class NewsEffects {
     this.stop();this.scope=panel;if(this.reduced())return;
     const profile=validateNewsMotion({priority:'urgent',alert:'critical',strength:'high',pace:'cinema'});
     const scale=this.scale(profile),duration=600*scale.time;
-    this.play(panel,[{opacity:0,transform:`translateY(${20*scale.distance}px) scale(.985)`},{opacity:1,transform:'none'}],duration);
+    this.play(panel,[{opacity:0,transform:`scale(${1-.06*scale.distance})`},{opacity:1,transform:'none'}],duration);
     this.play(panel.querySelector('.hn-urgent-copy'),[{opacity:0,transform:'translateY(6px)'},{opacity:1,transform:'none'}],duration,100);
     this.play(panel.querySelector('.hn-urgent-rule'),[{transform:'scaleX(0)'},{transform:'scaleX(1)'}],1400*scale.time,100);
     if(scale.decorative){
-      panel.querySelectorAll('.hn-urgent-emblem>i').forEach((ring,i)=>this.play(ring,[{opacity:.3,transform:'scale(.9)'},{opacity:.08,transform:'scale(1.65)'}],1400,200+i*350,3));
+      this.play(panel.querySelector('.hn-urgent-hazard>span'),[{transform:'translateX(-48px)'},{transform:'translateX(0)'}],1400,0,3);
+      this.play(panel.querySelector('.hn-urgent-network>i'),[{opacity:1},{opacity:.45,offset:.5},{opacity:1}],1400,0,3);
+      this.play(panel.querySelector('.hn-urgent-pulse'),[{opacity:0},{opacity:.85,offset:.5},{opacity:0}],1400,0,3);
+      panel.querySelectorAll('.hn-urgent-emblem>i').forEach((ring,i)=>this.play(ring,[{opacity:.5,transform:'scale(.9)'},{opacity:.04,transform:'scale(1.75)'}],1400,200+i*350,3));
       panel.querySelectorAll('.hn-urgent-corners>i').forEach((edge,i)=>this.play(edge,[{opacity:0},{opacity:.55}],duration,80+i*70));
     }
   }

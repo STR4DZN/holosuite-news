@@ -21,12 +21,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.7.1 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.7.2 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.7.1.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.7.2.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 
@@ -58,9 +58,9 @@ Depois de atualizar para 2.3.0, recarregue todos os clientes do Foundry. Esta ve
 
 ## Enviar uma notícia urgente para todos
 
-No criador, abra **Texto → Publicação e alcance → Transmissão urgente** e clique em **Enviar alerta global**. O botão salva o texto atual, publica a notícia como urgente para todos e exibe um painel de alerta na tela dos clientes conectados, mesmo com o portal fechado. **Abrir notícia** leva à matéria; **Dispensar** fecha o alerta. As notas privadas continuam fora da publicação.
+No criador, abra **Texto → Publicação e alcance → Transmissão urgente** e clique em **Enviar alerta global**. O botão salva o texto atual, publica a notícia como urgente para todos e exibe um painel de alerta na tela dos clientes conectados, mesmo com o portal fechado. **Abrir notícia** fecha imediatamente o alerta e leva à matéria; **Dispensar** fecha o alerta. As notas privadas continuam fora da publicação.
 
-O alerta tem paleta própria de urgência, pulsos e entrada finitos. Movimento reduzido mantém o comunicado e os botões sem animação. Marcar apenas **Notícia urgente** ou salvar o rascunho não dispara esse painel global. É possível reenviar pelo mesmo botão; atualizar a página não repete alertas antigos.
+O alerta é um painel grande no centro da tela, em vermelho e preto, com faixa de emergência, manchete ampla, faixas de perigo e pulsos finitos. Movimento reduzido mantém o comunicado e os botões sem animação. Marcar apenas **Notícia urgente** ou salvar o rascunho não dispara esse painel global. É possível reenviar pelo mesmo botão; atualizar a página não repete alertas antigos.
 
 Depois da atualização, **todos os clientes precisam recarregar o Foundry**, incluindo os dois GMs. Veja [o guia da função](docs/global-urgent.md).
 

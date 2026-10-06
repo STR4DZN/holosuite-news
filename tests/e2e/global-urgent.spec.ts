@@ -32,7 +32,7 @@ test('alerta no fluxo nativo termina, cabe em 390 px, respeita redução e reval
  await page.goto('/tests/fixtures/foundry-runtime.html');await page.waitForFunction(()=>!!(window as any).fixture);
  await page.evaluate(async()=>{
   const f=(window as any).fixture;await f.creator().close();await f.manager.close();(window as any).game.user={id:'player',isGM:false};f.settings.reduceMotion=false;f.settings.motionStyle='full';
-  f.opened=[];f.alerts=f.makeAlerts(async(id:string)=>f.opened.push(id));f.allowed=true;
+  f.opened=[];f.alerts=f.makeAlerts(async(id:string)=>{f.closedBeforeOpen=!document.querySelector('.hn-urgent-overlay');f.opened.push(id);});f.allowed=true;
   const original=(await f.saved()).draft;f.a={...original,title:'Alerta global da rede civil',summary:'Uma emergência exige atenção imediata.',urgent:true,audience:{mode:'all',users:[]},motion:{entry:'none',alert:'none',strength:'low',pace:'quick',priority:'urgent'}};
   f.token={id:'first',sentAt:Date.now()};f.doc={id:'public-urgent',getFlag:(_s:string,k:string)=>k==='kind'?'article':k==='article'?f.a:k==='urgentBroadcast'?f.token:null,testUserPermission:()=>f.allowed};
   f.alerts.observe(f.doc,'gm');f.alerts.observe(f.doc,'gm');
@@ -41,6 +41,7 @@ test('alerta no fluxo nativo termina, cabe em 390 px, respeita redução e reval
  await page.waitForFunction(()=>!document.getAnimations().some(a=>a.playState==='running'),{},{timeout:7000});
  await page.setViewportSize({width:390,height:900});expect(await page.locator('.hn-urgent-panel').evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);await expect(page.locator('[data-urgent-read]')).toBeInViewport();
  await page.locator('[data-urgent-read]').click();expect(await page.evaluate(()=>(window as any).fixture.opened)).toEqual(['fixture']);
+ await expect(page.locator('.hn-urgent-overlay')).toHaveCount(0);expect(await page.evaluate(()=>(window as any).fixture.closedBeforeOpen)).toBe(true);
  await page.evaluate(()=>{const f=(window as any).fixture;f.settings.reduceMotion=true;f.token={id:'second',sentAt:Date.now()};f.alerts.observe(f.doc,'gm');});
  await expect(page.locator('.hn-urgent-overlay')).toHaveCount(1);expect(await page.evaluate(()=>document.getAnimations().some(a=>a.playState==='running'))).toBe(false);
  await page.evaluate(()=>{const f=(window as any).fixture;f.allowed=false;f.alerts.permissionsChanged();});await expect(page.locator('.hn-urgent-overlay')).toHaveCount(0);expect(errors).toEqual([]);
@@ -83,4 +84,22 @@ test('texto longo e conteúdo literal ficam legíveis; redução já ativa não 
  const title='<img src=x onerror=alert(1)> '+('Emergência civil ').repeat(12);await page.locator('[name=title]').fill(title);await page.locator('[name=summary]').fill('Procurem os abrigos indicados. '.repeat(30));await page.locator('[data-broadcast-urgent]').click();await expect(page.locator('.hn-urgent-panel h2')).toHaveText(title);
  await expect(page.locator('.hn-urgent-panel img')).toHaveCount(0);await expect(page.locator('[data-urgent-read]')).toBeInViewport();expect(await page.evaluate(()=>document.getAnimations().some(a=>a.playState==='running'))).toBe(false);
  expect(await page.locator('.hn-urgent-panel').evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);
+});
+
+test('emergência vermelha e preta é grande e centralizada em qualquer viewport',async({page})=>{
+ await page.setViewportSize({width:1440,height:1000});await page.goto('/preview/');await page.locator('#demo-reduce-motion').check();await page.locator('#demo-reader').selectOption('gm');await page.locator('[data-mode=manager]').click();await page.locator('[data-edit="demo000000000000"]').first().click();
+ await page.locator('[name=title]').fill('Evacuação imediata da Estação Nove');await page.locator('[name=summary]').fill('Uma emergência exige atenção imediata.');await page.locator('[data-broadcast-urgent]').click();
+ for(const size of [{width:1440,height:1000},{width:1920,height:1080},{width:390,height:900},{width:900,height:500}]){
+  await page.setViewportSize(size);
+  const box=await page.locator('.hn-urgent-panel').boundingBox();expect(box).not.toBeNull();
+  expect(Math.abs(box!.x+box!.width/2-size.width/2)).toBeLessThan(2);
+  expect(Math.abs(box!.y+box!.height/2-size.height/2)).toBeLessThan(2);
+  if(size.width===1440){expect(box!.width).toBeGreaterThan(1000);expect(box!.height).toBeGreaterThanOrEqual(620);}
+  await expect(page.locator('[data-urgent-read]')).toBeInViewport();
+  expect(await page.locator('.hn-urgent-panel').evaluate(e=>e.scrollWidth-e.clientWidth)).toBeLessThanOrEqual(1);
+ }
+ await expect(page.locator('.hn-urgent-panel')).toHaveCSS('background-color','rgb(9, 9, 11)');
+ await expect(page.locator('.hn-urgent-panel>header')).toHaveCSS('background-color','rgb(186, 16, 40)');
+ await expect(page.locator('.hn-urgent-network')).toContainText('ALERTA DE EMERGÊNCIA');
+ await page.locator('[data-urgent-read]').click();await expect(page.locator('.hn-urgent-overlay')).toHaveCount(0);await expect(page.locator('.hn-article h1')).toHaveText('Evacuação imediata da Estação Nove');
 });
