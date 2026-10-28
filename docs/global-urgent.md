@@ -47,7 +47,7 @@ Mudar para movimento reduzido ou redimensionar cancela a cascata e mantém a man
 
 O modo reduzido do usuário ou do sistema mantém o painel estático. Ativar redução ou ocultar a aba cancela os efeitos. Os efeitos são locais, finitos e usam APIs nativas, sem áudio automático, vídeo, canvas ou engine extra.
 
-O conteúdo vem do Journal publicado, sujeito à audiência e à permissão nativa. A origem do envio é conferida pelo userId do hook nativo. Perder a permissão, retirar a notícia ou excluí-la remove o alerta. Abrir notícia revalida a leitura antes de navegar. Textos recebidos entram por textContent, sem executar HTML de títulos/resumos.
+O conteúdo vem do Journal publicado, sujeito à audiência e à permissão nativa. O caminho dos hooks confere o userId nativo; o sinal alternativo usa uma configuração de mundo cuja gravação é controlada pelo servidor Foundry. Perder a permissão, retirar a notícia ou excluí-la remove o alerta. Abrir notícia revalida a leitura antes de navegar. Textos recebidos entram por textContent, sem executar HTML de títulos/resumos.
 
 ## Implementação e limites
 
@@ -59,4 +59,19 @@ Referências oficiais consultadas: [updateDocument, v13](https://foundryvtt.com/
 
 A prévia permite testar o envio entre abas do mesmo navegador. Os testes automatizados simulam o contrato do Foundry e não substituem o servidor licenciado. Execute [o roteiro no mundo real](foundry-smoke-test.md), com dois GMs e jogadores separados.
 
-**Após instalar 2.8.1, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.
+**Após instalar 2.8.2, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.
+
+
+## Entrega aos clientes — 2.8.2
+
+A publicação pública continua contendo o evento `urgentBroadcast`. Depois de concluir a gravação do Journal, o coordenador grava `holosuite-news.globalBroadcast`, uma configuração de mundo interna, com somente `id`, `articleId`, `documentId`, `sentAt` e `mode`. O `onChange` nativo entrega a referência aos clientes. A confirmação local do adaptador atende o coordenador mesmo se seu callback não ocorrer. Os hooks de Journal permanecem como caminho complementar.
+
+O receptor é iniciado antes da espera dos templates. Quando a notícia/ownership ainda não chegou ao cache, tenta resolver a referência local por até 15 segundos. Só apresenta notícia urgente, pública, validada e com leitura nativa permitida, cujo evento corresponda ao sinal. O sinal entregue ao vivo não compara o relógio local com o do GM. Ao carregar, a última referência e eventos existentes são registrados como histórico, sem replay.
+
+Se o sinal não puder ser salvo, o envio não apresenta sucesso: a publicação permanece pendente e informa Tentar sincronizar. Retry conserva o mesmo evento e não regrava um sinal já confirmado. O identificador deduplica hooks, callback e confirmação local.
+
+SPAM recebido enquanto a aba está oculta aguarda visibilidade no cliente conectado. Somente o mais recente fica aguardando; retirada, mudança de alcance/permissão ou exclusão cancela. Ocultar a aba depois que uma sequência começou continua encerrando a animação ativa. Recarregar descarta pendências locais e não repete a última transmissão.
+
+Referências oficiais v13: [ClientSettings](https://foundryvtt.com/api/v13/classes/foundry.helpers.ClientSettings.html), [SettingConfig](https://foundryvtt.com/api/v13/interfaces/foundry.types.SettingConfig.html), [WorldSettings](https://foundryvtt.com/api/v13/classes/foundry.documents.collections.WorldSettings.html), [updateDocument](https://foundryvtt.com/api/v13/functions/hookEvents.updateDocument.html).
+
+Os testes com quatro abas usam armazenamento, configuração e receptores reais do módulo, mas simulam a distribuição do servidor Foundry. Não equivalem a uma conferência em servidor licenciado. Após instalar, recarregar todos os clientes e reenviar explicitamente um alerta de cada tipo.

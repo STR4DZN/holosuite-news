@@ -53,3 +53,12 @@ Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir 
 - Reenviar antes de terminar; só uma sequência fica ativa. Recarregar/reconectar não deve repetir a anterior. Testar retirada/exclusão/perda de permissão enquanto o efeito está aberto.
 - Testar movimento reduzido do sistema e do usuário antes e durante a animação. Conferir painel estático, sem janelas duplicadas e com remoção automática. Redimensionar mantém a manchete estática pelo tempo restante; ocultar a aba encerra.
 - Conferir 390×844, desktop, janela baixa e zoom 125%. Não deve haver scroll da página, ações fora da tela, pisca-pisca ou efeitos após fechar. Enviar alerta global continua mostrando a emergência grande original.
+
+
+## Entrega global — 2.8.2
+
+- Instalar a mesma versão em todos os clientes e recarregar administrador, segundo GM e jogadores. Enviar um alerta de cada tipo, com o portal fechado nos leitores; todos devem vê-lo, inclusive quem enviou.
+- Conferir o sinal interno de mundo globalBroadcast: apenas IDs, modo e data; nenhum texto privado. Como jogador, tentar gravá-lo: o servidor deve recusar.
+- Com latência de rede, conferir entrega quando o sinal chega antes do Journal. Se a gravação do sinal falha, o GM deve receber erro e ver Sincronização pendente; Tentar sincronizar deve conservar o evento e não duplicar um aviso já visto.
+- Manter a aba de um jogador oculta durante um SPAM e voltar: a sequência deve começar nesse cliente. Enviar outro enquanto aguarda: só o mais recente aparece. Retirar/excluir/revogar acesso antes de voltar cancela.
+- Recarregar/reconectar não repete o último evento. Testar um navegador com relógio divergente: o sinal ao vivo deve chegar.

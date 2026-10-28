@@ -18,3 +18,8 @@ Os construtores de janelas administrativas, preparação de contexto e ligação
 Os dois GMs podem abrir e administrar o jornal. Uma fila no GM coordenador executa os comandos enviados pelos demais por documentos com kind=gm-command no compêndio privado. A execução valida o userId fornecido pelos hooks nativos, o destino e uma lista explícita de operações; não utiliza um socket de módulo que aceite remetentes declarados pelo payload. Também trata updateCompendium quando o cliente remoto possui apenas o índice. Respostas concluídas são removidas; requisições sem resposta não são repetidas automaticamente. Mudança de coordenador informa a falha e conserva a edição na janela.
 
 O alerta global recebe somente a notícia publicada e um identificador/data de transmissão. A origem precisa ser um GM no hook nativo e a notícia precisa ser urgente, pública e permitida nativamente. Título e resumo usam textContent. Notas e rascunhos administrativos nunca entram no documento público ou overlay. O botão informa que publica para todos; o envio é uma ação explícita do GM. A reconexão registra os eventos já existentes sem mostrá-los novamente.
+
+
+## Sinal de entrega — 2.8.2
+
+O sinal alternativo não é um socket de módulo. É uma configuração de mundo interna, sincronizada pelos documentos Setting do Foundry; a gravação passa pela autorização nativa do servidor. Contém só referências e modo, sem conteúdo de rascunhos, corpo ou notas privadas. O receptor valida formato, identidade do Journal, evento e permissão; textos vêm exclusivamente do artigo publicado. A confirmação local ocorre depois da persistência. Os testes de negação em clientes simulados não substituem o teste de autorização no servidor licenciado.
