@@ -1,4 +1,4 @@
-# HoloNews 2.7 · Transmissão urgente
+# HoloNews 2.8 · SPAM de alertas
 
 Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e destinado ao Foundry VTT 13. A versão 2 substitui o CMS de publicações/edições/páginas por notícias individuais.
 
@@ -13,6 +13,12 @@ Um portal de notícias para o universo do seu RPG, integrado ao HoloSuite Core e
 - Lista única de notícias com filtros, duplicação, retirada do portal, exclusão confirmada, backup e importação.
 - Recuperação de publicação interrompida e migração das matérias v1 como rascunhos.
 
+## SPAM de alertas
+
+No criador, em **Texto → Publicação e alcance**, use **Prévia só para mim** para testar o efeito sem publicar. **Enviar SPAM de alertas** salva e publica a versão atual como urgente para todos, transmitindo a sequência mesmo com o portal fechado.
+
+Janelas de alarme se multiplicam em ondas com triângulos de perigo, carimbos críticos, fitas de interdição e indicadores que se acendem em sequência. Um master alarm vermelho destaca EMERGÊNCIA e a manchete antes do recolhimento em cascata. A sequência dura 7 segundos e desaparece automaticamente. **Abrir notícia**, **Dispensar** e **Escape** continuam disponíveis. Movimento reduzido mostra um comunicado estático pelo mesmo período. O botão **Enviar alerta global** mantém o painel grande original.
+
 ## Instalação pelo Foundry
 
 Em **Add-on Modules → Install Module → Manifest URL**, cole:
@@ -21,12 +27,12 @@ Em **Add-on Modules → Install Module → Manifest URL**, cole:
 https://github.com/STR4DZN/holosuite-news/releases/latest/download/module.json
 ```
 
-O pacote v2.7.3 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
+O pacote v2.8.1 inclui o ZIP instalável, o código e a prévia independente. O manifesto usa a release mais recente publicada no GitHub. HoloSuite Core precisa estar instalado e ativo.
 
 ## Instalação manual
 
 1. Faça backup do seu mundo e da pasta do módulo antigo antes de substituí-lo.
-2. Feche o mundo. Extraia **holosuite-news-v2.7.3.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
+2. Feche o mundo. Extraia **holosuite-news-v2.8.1.zip** em `Data/modules/holosuite-news/`; `module.json` precisa ficar diretamente nessa pasta.
 3. Reinicie o Foundry, ative HoloSuite Core e HoloNews. Abra o app HoloNews pelo HoloSuite.
 4. O mestre verá **Suas notícias**; jogadores verão o portal. Nome, slogan e identificação da rede podem ser alterados nas configurações do módulo.
 

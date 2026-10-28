@@ -19,6 +19,30 @@ Marcar apenas **Notícia urgente**, salvar rascunho ou publicar normalmente não
 
 Pode reenviar pelo mesmo botão. Cada envio tem um identificador novo; callbacks repetidos e recuperação de uma gravação pendente preservam o identificador existente. Recarregar/reconectar registra os eventos antigos sem apresentá-los. Jogadores offline no momento do envio continuam podendo ler a notícia publicada ao entrar.
 
+## SPAM de alertas — 2.8
+
+Abaixo do envio original há um segundo controle: **Enviar SPAM de alertas**. A mesma fila salva e publica a versão atual como urgente para todos, mas o evento carrega `mode: "spam"`. Sem modo, ou com `mode: "panel"`, o receptor conserva o painel original. Cada envio recebe um identificador; retry conserva identificador e modo.
+
+**Prévia só para mim** usa o formulário atual, sem publicar nem transmitir. Abrir notícia nessa prévia leva à prévia da matéria no criador.
+
+| Elemento | Início | Duração / saída | Movimento reduzido |
+| --- | --- | --- | --- |
+| Retícula de interceptação | 0 ms | 1100 ms | Oculta |
+| Três primeiras janelas | 0 / 180 / 360 ms | Entrada 390 ms; saída escalonada | Ocultas |
+| Onda que cobre o viewport | 540–2440 ms | Entrada 390 ms; saída de 4820–6650 ms | Oculta |
+| Ecos diagonais | 2480–3200 ms | Entrada 390 ms; contração e retração em ordem reversa | Ocultos |
+| Manchete central | 3100 ms | Entrada 480 ms; saída 5620–6040 ms | Estática desde o início |
+| Barra de tempo | 0 ms | 7000 ms, linear | Estática |
+| Camada completa | 6580 ms | Fade 420 ms; remoção em 7000 ms | Remoção em 7000 ms |
+
+A 2.8.1 intensifica sinais e movimentos. Consulte [a pesquisa e a coreografia atual](spam-art-direction.md); os timings da tabela acima registram a primeira versão 2.8.0.
+
+Entradas usam `cubic-bezier(.16,1,.3,1)`; saídas, `cubic-bezier(.7,0,.84,0)`. São animações WAAPI locais de opacity/transform/scale/translate, sem loops. A grade opaca sobrepõe as bordas e cobre a área útil em telas desktop e móveis. O modo sutil reduz ecos e remove rotações. A contagem máxima é limitada a 60 janelas.
+
+**Abrir notícia** fecha antes de navegar e revalida acesso. **Dispensar** e **Escape** encerram imediatamente. O foco fica nos controles e retorna ao elemento anterior se ainda existir. Uma única região anuncia o comunicado; duplicatas decorativas ficam `aria-hidden`.
+
+Mudar para movimento reduzido ou redimensionar cancela a cascata e mantém a manchete estática somente pelo tempo restante. Ocultar a aba encerra a sequência; voltar não repete. Substituição, retirada, exclusão e perda de acesso removem os elementos e cancelam todos os timers, listeners e animações. Não há áudio automático.
+
 ## Movimento e privacidade
 
 O modo reduzido do usuário ou do sistema mantém o painel estático. Ativar redução ou ocultar a aba cancela os efeitos. Os efeitos são locais, finitos e usam APIs nativas, sem áudio automático, vídeo, canvas ou engine extra.
@@ -35,4 +59,4 @@ Referências oficiais consultadas: [updateDocument, v13](https://foundryvtt.com/
 
 A prévia permite testar o envio entre abas do mesmo navegador. Os testes automatizados simulam o contrato do Foundry e não substituem o servidor licenciado. Execute [o roteiro no mundo real](foundry-smoke-test.md), com dois GMs e jogadores separados.
 
-**Após instalar 2.7.3, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.
+**Após instalar 2.8.1, todos os clientes devem recarregar o Foundry.** Um cliente ainda executando a versão antiga não possui o novo encaminhamento e receptor de alerta.

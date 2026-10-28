@@ -43,3 +43,13 @@ Se algum passo falhar, não use a v2 no mundo principal até corrigir e repetir 
 - Desmarcar Notificar jogadores ao publicar, salvar, reabrir e publicar uma notícia normal. Nenhum jogador recebe aviso; a matéria aparece no portal para sua audiência.
 - Ativar novamente e publicar uma revisão: a notificação normal deve aparecer uma vez. Desativar conserva o estilo selecionado.
 - Com a opção desativada, Enviar alerta global continua exibindo a emergência central para todos.
+
+
+## SPAM de alertas — 2.8
+
+- Pelo segundo GM, testar Prévia só para mim com alterações ainda no formulário. Apenas esse cliente vê a sequência; nenhuma publicação/evento é criado. Abrir notícia leva à prévia do criador.
+- Enviar SPAM com dois jogadores conectados, um com o portal fechado. As janelas devem se multiplicar, cobrir a tela, destacar a manchete e desaparecer após 7 segundos; notas privadas não podem aparecer.
+- Durante a sequência, testar Abrir notícia, Dispensar, Escape e navegação Tab/Shift+Tab. O foco deve voltar ao controle anterior ao dispensar.
+- Reenviar antes de terminar; só uma sequência fica ativa. Recarregar/reconectar não deve repetir a anterior. Testar retirada/exclusão/perda de permissão enquanto o efeito está aberto.
+- Testar movimento reduzido do sistema e do usuário antes e durante a animação. Conferir painel estático, sem janelas duplicadas e com remoção automática. Redimensionar mantém a manchete estática pelo tempo restante; ocultar a aba encerra.
+- Conferir 390×844, desktop, janela baixa e zoom 125%. Não deve haver scroll da página, ações fora da tela, pisca-pisca ou efeitos após fechar. Enviar alerta global continua mostrando a emergência grande original.
